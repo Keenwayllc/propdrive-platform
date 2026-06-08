@@ -1,0 +1,46 @@
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  metadataBase: new URL("https://getpropdrive.com"),
+  title: {
+    default: "PropDrive — The real estate lead platform built for agents",
+    template: "%s | PropDrive",
+  },
+  description:
+    "PropDrive helps real estate agents capture, manage, and convert leads with property listings, a built-in CRM, branding tools, and AI-powered features.",
+  openGraph: {
+    title: "PropDrive — The real estate lead platform built for agents",
+    description:
+      "Property listings, lead CRM, branding editor, and AI tools for modern real estate agents.",
+    url: "https://getpropdrive.com",
+    siteName: "PropDrive",
+    type: "website",
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col">{children}</body>
+    </html>
+  );
+}
