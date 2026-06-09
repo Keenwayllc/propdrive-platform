@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 72" width="252" height="72" fill="none">
+  <!-- Mark: clay badge with a rising-roofline / momentum glyph -->
+  <g transform="translate(8,8) scale(0.875)">
+    <rect x="0" y="0" width="64" height="64" rx="18" fill="#B85C38"/>
+    <g stroke="#FAF7F2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 44 L26 27 L36 37 L50 19"/>
+      <path d="M40 19 L50 19 L50 29"/>
+    </g>
+  </g>
+  <!-- Wordmark -->
+  <text x="82" y="46" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="600" letter-spacing="-0.4">
+    <tspan fill="#1A1714">Prop</tspan><tspan fill="#B85C38">Drive</tspan>
+  </text>
+</svg>

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 560" width="800" height="560" fill="none">
+  <defs>
+    <g id="badge">
+      <rect x="0" y="0" width="64" height="64" rx="18" fill="#B85C38"/>
+      <g stroke="#FAF7F2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 44 L26 27 L36 37 L50 19"/>
+        <path d="M40 19 L50 19 L50 29"/>
+      </g>
+    </g>
+    <g id="badgeInk">
+      <rect x="0" y="0" width="64" height="64" rx="18" fill="#1A1714"/>
+      <g stroke="#FAF7F2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 44 L26 27 L36 37 L50 19"/>
+        <path d="M40 19 L50 19 L50 29"/>
+      </g>
+    </g>
+  </defs>
+
+  <rect width="800" height="560" fill="#FAF7F2"/>
+  <text x="48" y="48" font-family="Georgia, serif" font-size="13" letter-spacing="2" fill="#9C9286">PROPDRIVE · LOGO CONCEPT (rising roofline)</text>
+
+  <!-- Primary lockup on cream -->
+  <g transform="translate(48,78)">
+    <g transform="scale(1.45)"><use href="#badge"/></g>
+    <text x="116" y="62" font-family="Georgia, serif" font-size="44" font-weight="600" letter-spacing="-0.6">
+      <tspan fill="#1A1714">Prop</tspan><tspan fill="#B85C38">Drive</tspan>
+    </text>
+  </g>
+  <text x="48" y="205" font-family="Georgia, serif" font-size="12" letter-spacing="1.5" fill="#9C9286">PRIMARY LOCKUP</text>
+
+  <!-- On ink -->
+  <g transform="translate(48,232)">
+    <rect width="360" height="120" rx="20" fill="#1A1714"/>
+    <g transform="translate(28,28) scale(1.0)"><use href="#badge"/></g>
+    <text x="104" y="74" font-family="Georgia, serif" font-size="32" font-weight="600" letter-spacing="-0.5">
+      <tspan fill="#FAF7F2">Prop</tspan><tspan fill="#B85C38">Drive</tspan>
+    </text>
+  </g>
+  <text x="48" y="372" font-family="Georgia, serif" font-size="12" letter-spacing="1.5" fill="#9C9286">ON DARK</text>
+
+  <!-- Mono ink -->
+  <g transform="translate(440,232)">
+    <rect width="312" height="120" rx="20" fill="#FAF7F2" stroke="#E8E1D6"/>
+    <g transform="translate(28,28)"><use href="#badgeInk"/></g>
+    <text x="104" y="74" font-family="Georgia, serif" font-size="32" font-weight="600" letter-spacing="-0.5" fill="#1A1714">PropDrive</text>
+  </g>
+  <text x="440" y="372" font-family="Georgia, serif" font-size="12" letter-spacing="1.5" fill="#9C9286">MONOCHROME</text>
+
+  <!-- Favicon / app-icon sizes -->
+  <g transform="translate(48,410)">
+    <g transform="scale(1.5)"><use href="#badge"/></g>
+    <g transform="translate(116,14) scale(0.78)"><use href="#badge"/></g>
+    <g transform="translate(208,26) scale(0.5)"><use href="#badge"/></g>
+    <g transform="translate(268,34) scale(0.34)"><use href="#badge"/></g>
+  </g>
+  <text x="48" y="510" font-family="Georgia, serif" font-size="12" letter-spacing="1.5" fill="#9C9286">MARK · 96 / 50 / 32 / 22 px</text>
+</svg>
