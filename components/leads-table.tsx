@@ -2,6 +2,7 @@
  * Leads table for the dashboard. Renders an array of leads; shows an empty
  * state when none are passed. Data fetching is wired in Phase 2.
  */
+import { Inbox } from "lucide-react";
 import type { Lead } from "@/lib/types";
 import LeadStatusSelect from "@/components/lead-status-select";
 
@@ -12,8 +13,14 @@ export interface LeadsTableProps {
 export default function LeadsTable({ leads = [] }: LeadsTableProps) {
   if (leads.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-line bg-white p-10 text-center text-muted">
-        No leads yet. New enquiries from your site will appear here.
+      <div className="flex flex-col items-center rounded-2xl border border-dashed border-line bg-white p-12 text-center">
+        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-accent">
+          <Inbox className="h-6 w-6" />
+        </span>
+        <p className="mt-4 font-medium text-ink">No leads yet</p>
+        <p className="mt-1 text-sm text-muted">
+          New enquiries from your website will appear here.
+        </p>
       </div>
     );
   }

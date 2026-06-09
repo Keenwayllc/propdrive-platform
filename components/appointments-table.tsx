@@ -1,6 +1,7 @@
 /**
  * Appointments table for the dashboard. Data fetching is wired in Phase 2.
  */
+import { CalendarDays } from "lucide-react";
 import type { Appointment } from "@/lib/types";
 import AppointmentStatusSelect from "@/components/appointment-status-select";
 
@@ -13,8 +14,14 @@ export default function AppointmentsTable({
 }: AppointmentsTableProps) {
   if (appointments.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-line bg-white p-10 text-center text-muted">
-        No appointments scheduled yet.
+      <div className="flex flex-col items-center rounded-2xl border border-dashed border-line bg-white p-12 text-center">
+        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-accent">
+          <CalendarDays className="h-6 w-6" />
+        </span>
+        <p className="mt-4 font-medium text-ink">No appointments yet</p>
+        <p className="mt-1 text-sm text-muted">
+          Showing requests from your listings will appear here.
+        </p>
       </div>
     );
   }

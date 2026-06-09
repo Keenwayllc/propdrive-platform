@@ -2,6 +2,8 @@
  * Properties management table for the dashboard with edit / visibility / delete
  * row actions.
  */
+import Link from "next/link";
+import { Building2, Plus } from "lucide-react";
 import type { Property } from "@/lib/types";
 import PropertyRowActions from "@/components/property-row-actions";
 
@@ -18,8 +20,18 @@ const currency = new Intl.NumberFormat("en-US", {
 export default function PropertiesTable({ properties = [] }: PropertiesTableProps) {
   if (properties.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-line bg-white p-10 text-center text-muted">
-        No properties yet. Add your first listing to get started.
+      <div className="flex flex-col items-center rounded-2xl border border-dashed border-line bg-white p-12 text-center">
+        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-accent">
+          <Building2 className="h-6 w-6" />
+        </span>
+        <p className="mt-4 font-medium text-ink">No listings yet</p>
+        <p className="mt-1 text-sm text-muted">Add your first property to get started.</p>
+        <Link
+          href="/dashboard/properties/new"
+          className="mt-5 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white hover:bg-accent"
+        >
+          <Plus className="h-4 w-4" /> Add listing
+        </Link>
       </div>
     );
   }
