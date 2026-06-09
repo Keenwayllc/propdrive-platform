@@ -191,15 +191,29 @@ export default async function HomePage() {
               icon={<MapPin className="h-5 w-5" />}
               title="Block-by-block local"
               text="Twelve years from the Westside to Calabasas. Ask about any street."
+              image="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
+              imageAlt="Los Angeles streets and skyline"
             />
           </StaggerItem>
 
           <StaggerItem>
-            <div className="flex h-full flex-col justify-between rounded-[1.75rem] border border-line bg-accent-soft p-7">
-              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-strong">
+            <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-[1.75rem] border border-line bg-accent-soft p-7">
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 120 60"
+                className="pointer-events-none absolute right-4 top-4 h-16 w-28 text-accent/30"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M2 52 L26 40 L48 46 L72 22 L96 28 L118 6" />
+              </svg>
+              <span className="relative text-xs font-semibold uppercase tracking-[0.18em] text-accent-strong">
                 On market
               </span>
-              <div>
+              <div className="relative">
                 <p className="font-mono text-4xl font-semibold text-ink">11</p>
                 <p className="mt-1 text-sm text-muted">
                   median days before an offer
@@ -213,6 +227,8 @@ export default async function HomePage() {
               icon={<TrendingUp className="h-5 w-5" />}
               title="Priced on real data"
               text="98.2% of list price, on average — not guesswork."
+              image="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80"
+              imageAlt="Bright modern living room interior"
             />
           </StaggerItem>
 
@@ -221,6 +237,8 @@ export default async function HomePage() {
               icon={<Sparkles className="h-5 w-5" />}
               title="Smart, not pushy"
               text="Useful updates when they matter. Silence when they don't."
+              image="https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80"
+              imageAlt="Calm, elegant living space"
             />
           </StaggerItem>
         </Stagger>
@@ -298,16 +316,45 @@ export default async function HomePage() {
   );
 }
 
-/** Small reusable bento tile for the value section. */
+/**
+ * Bento tile for the value section. With `image`, renders a rich photo-backed
+ * tile (ink wash + white text); otherwise a clean light card.
+ */
 function BentoCard({
   icon,
   title,
   text,
+  image,
+  imageAlt,
 }: {
   icon: React.ReactNode;
   title: string;
   text: string;
+  image?: string;
+  imageAlt?: string;
 }) {
+  if (image) {
+    return (
+      <div className="group relative flex h-full min-h-[230px] flex-col justify-end overflow-hidden rounded-[1.75rem] border border-line bg-ink p-7 text-background">
+        <Image
+          src={image}
+          alt={imageAlt ?? title}
+          fill
+          sizes="(max-width: 1024px) 50vw, 30vw"
+          className="object-cover opacity-70 transition-transform duration-700 group-hover:scale-[1.07]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10" />
+        <div className="relative">
+          <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/10 text-white backdrop-blur-sm">
+            {icon}
+          </span>
+          <h3 className="font-semibold tracking-tight text-white">{title}</h3>
+          <p className="mt-1.5 text-sm leading-relaxed text-white/75">{text}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-full flex-col justify-between rounded-[1.75rem] border border-line bg-surface p-7 transition-colors hover:border-accent/40">
       <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-soft text-accent">
