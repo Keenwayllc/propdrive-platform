@@ -2,18 +2,11 @@
  * Appointments table for the dashboard. Data fetching is wired in Phase 2.
  */
 import type { Appointment } from "@/lib/types";
+import AppointmentStatusSelect from "@/components/appointment-status-select";
 
 export interface AppointmentsTableProps {
   appointments?: Appointment[];
 }
-
-const STATUS_STYLES: Record<Appointment["status"], string> = {
-  requested: "bg-amber-100 text-amber-700",
-  confirmed: "bg-accent-soft text-accent",
-  completed: "bg-green-100 text-green-700",
-  cancelled: "bg-line text-muted",
-  no_show: "bg-red-100 text-red-700",
-};
 
 export default function AppointmentsTable({
   appointments = [],
@@ -50,9 +43,7 @@ export default function AppointmentsTable({
                 {appt.appointment_type.replace("_", " ")}
               </td>
               <td className="px-4 py-3">
-                <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_STYLES[appt.status]}`}>
-                  {appt.status.replace("_", " ")}
-                </span>
+                <AppointmentStatusSelect id={appt.id} status={appt.status} />
               </td>
             </tr>
           ))}

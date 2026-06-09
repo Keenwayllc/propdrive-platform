@@ -3,18 +3,11 @@
  * state when none are passed. Data fetching is wired in Phase 2.
  */
 import type { Lead } from "@/lib/types";
+import LeadStatusSelect from "@/components/lead-status-select";
 
 export interface LeadsTableProps {
   leads?: Lead[];
 }
-
-const STATUS_STYLES: Record<Lead["status"], string> = {
-  new: "bg-accent-soft text-accent",
-  contacted: "bg-amber-100 text-amber-700",
-  qualified: "bg-teal-100 text-teal-700",
-  closed: "bg-green-100 text-green-700",
-  lost: "bg-line text-muted",
-};
 
 export default function LeadsTable({ leads = [] }: LeadsTableProps) {
   if (leads.length === 0) {
@@ -47,9 +40,7 @@ export default function LeadsTable({ leads = [] }: LeadsTableProps) {
               </td>
               <td className="px-4 py-3 capitalize text-muted">{lead.lead_type}</td>
               <td className="px-4 py-3">
-                <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_STYLES[lead.status]}`}>
-                  {lead.status}
-                </span>
+                <LeadStatusSelect id={lead.id} status={lead.status} />
               </td>
               <td className="px-4 py-3 text-muted">
                 {new Date(lead.created_at).toLocaleDateString()}

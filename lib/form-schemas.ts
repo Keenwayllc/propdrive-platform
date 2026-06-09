@@ -69,6 +69,52 @@ export const forgotPasswordSchema = z.object({
 });
 export type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
 
+/** Property create/edit (dashboard). Numbers are coerced from form strings. */
+export const propertyInputSchema = z.object({
+  title: z.string().min(2, "Title is required."),
+  address: z.string().optional().default(""),
+  city: z.string().min(1, "City is required."),
+  state: z.string().min(1).default("CA"),
+  zip: z.string().optional().default(""),
+  price: z.coerce.number().min(0, "Price must be 0 or more."),
+  bedrooms: z.coerce.number().int().min(0),
+  bathrooms: z.coerce.number().min(0),
+  square_feet: z.coerce.number().int().min(0),
+  lot_size: z.coerce.number().min(0).nullable().optional(),
+  property_type: z.enum([
+    "single_family",
+    "condo",
+    "townhouse",
+    "multi_family",
+    "land",
+    "commercial",
+  ]),
+  status: z.enum(["active", "pending", "sold", "coming_soon", "off_market"]),
+  description: z.string().optional().default(""),
+  features: z.array(z.string()).default([]),
+  image_urls: z.array(z.string()).default([]),
+  map_address: z.string().optional().default(""),
+  featured: z.boolean().default(false),
+  active: z.boolean().default(true),
+});
+export type PropertyInput = z.infer<typeof propertyInputSchema>;
+
+export const leadStatusSchema = z.enum([
+  "new",
+  "contacted",
+  "qualified",
+  "closed",
+  "lost",
+]);
+
+export const appointmentStatusSchema = z.enum([
+  "requested",
+  "confirmed",
+  "completed",
+  "cancelled",
+  "no_show",
+]);
+
 /** Mortgage calculator inputs (client-side only, no persistence). */
 export const mortgageCalculatorSchema = z.object({
   home_price: z.number().positive(),

@@ -1,8 +1,9 @@
 /**
- * Properties management table for the dashboard. Data fetching + row actions
- * (edit / toggle active / delete) are wired in Phase 2.
+ * Properties management table for the dashboard with edit / visibility / delete
+ * row actions.
  */
 import type { Property } from "@/lib/types";
+import PropertyRowActions from "@/components/property-row-actions";
 
 export interface PropertiesTableProps {
   properties?: Property[];
@@ -33,6 +34,7 @@ export default function PropertiesTable({ properties = [] }: PropertiesTableProp
             <th className="px-4 py-3 font-medium">Price</th>
             <th className="px-4 py-3 font-medium">Status</th>
             <th className="px-4 py-3 font-medium">Visible</th>
+            <th className="px-4 py-3 text-right font-medium">Actions</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-line">
@@ -56,6 +58,9 @@ export default function PropertiesTable({ properties = [] }: PropertiesTableProp
                 >
                   {property.active ? "Active" : "Hidden"}
                 </span>
+              </td>
+              <td className="px-4 py-3">
+                <PropertyRowActions id={property.id} active={property.active} />
               </td>
             </tr>
           ))}
