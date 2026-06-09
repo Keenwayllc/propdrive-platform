@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 600" width="980" height="600" fill="none">
+  <defs>
+    <g id="g1" stroke="#FAF7F2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 44 L26 27 L36 37 L50 19"/>
+      <path d="M40 19 L50 19 L50 29"/>
+    </g>
+    <g id="g2" stroke="#FAF7F2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M24 50 L24 15 L33 15 A9 9 0 0 1 33 33 L24 33"/>
+    </g>
+    <g id="g3" stroke="#FAF7F2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M13 33 L32 16 L51 33"/>
+      <path d="M20 33 L20 49 L44 49 L44 33"/>
+      <path d="M29 49 L29 40 L35 40 L35 49"/>
+    </g>
+    <g id="g4" stroke="#FAF7F2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 50 L20 30 A12 12 0 0 1 44 30 L44 50"/>
+      <path d="M32 50 L32 24"/>
+      <path d="M26 31 L32 24 L38 31"/>
+    </g>
+  </defs>
+
+  <rect width="980" height="600" fill="#FAF7F2"/>
+  <text x="48" y="52" font-family="Georgia, serif" font-size="14" letter-spacing="2" fill="#9C9286">PROPDRIVE · MARK DIRECTIONS</text>
+
+  <!-- Cell 1 -->
+  <g transform="translate(48,90)">
+    <g transform="scale(1.375)"><rect width="64" height="64" rx="18" fill="#B85C38"/><use href="#g1"/></g>
+    <text x="108" y="34" font-family="Georgia, serif" font-size="13" letter-spacing="1.5" fill="#B85C38">1 · RISING ROOFLINE</text>
+    <text x="108" y="68" font-family="Georgia, serif" font-size="26" font-weight="600" letter-spacing="-0.4"><tspan fill="#1A1714">Prop</tspan><tspan fill="#B85C38">Drive</tspan></text>
+    <text x="108" y="92" font-family="Georgia, serif" font-size="12" fill="#75695B">property + upward momentum</text>
+  </g>
+
+  <!-- Cell 2 -->
+  <g transform="translate(520,90)">
+    <g transform="scale(1.375)"><rect width="64" height="64" rx="18" fill="#B85C38"/><use href="#g2"/></g>
+    <text x="108" y="34" font-family="Georgia, serif" font-size="13" letter-spacing="1.5" fill="#B85C38">2 · P MONOGRAM</text>
+    <text x="108" y="68" font-family="Georgia, serif" font-size="26" font-weight="600" letter-spacing="-0.4"><tspan fill="#1A1714">Prop</tspan><tspan fill="#B85C38">Drive</tspan></text>
+    <text x="108" y="92" font-family="Georgia, serif" font-size="12" fill="#75695B">clean letterform, most versatile</text>
+  </g>
+
+  <!-- Cell 3 -->
+  <g transform="translate(48,340)">
+    <g transform="scale(1.375)"><rect width="64" height="64" rx="18" fill="#B85C38"/><use href="#g3"/></g>
+    <text x="108" y="34" font-family="Georgia, serif" font-size="13" letter-spacing="1.5" fill="#B85C38">3 · MINIMAL HOUSE</text>
+    <text x="108" y="68" font-family="Georgia, serif" font-size="26" font-weight="600" letter-spacing="-0.4"><tspan fill="#1A1714">Prop</tspan><tspan fill="#B85C38">Drive</tspan></text>
+    <text x="108" y="92" font-family="Georgia, serif" font-size="12" fill="#75695B">classic, trustworthy, literal</text>
+  </g>
+
+  <!-- Cell 4 -->
+  <g transform="translate(520,340)">
+    <g transform="scale(1.375)"><rect width="64" height="64" rx="18" fill="#B85C38"/><use href="#g4"/></g>
+    <text x="108" y="34" font-family="Georgia, serif" font-size="13" letter-spacing="1.5" fill="#B85C38">4 · GATEWAY / ROUTE</text>
+    <text x="108" y="68" font-family="Georgia, serif" font-size="26" font-weight="600" letter-spacing="-0.4"><tspan fill="#1A1714">Prop</tspan><tspan fill="#B85C38">Drive</tspan></text>
+    <text x="108" y="92" font-family="Georgia, serif" font-size="12" fill="#75695B">doorway + moving up/in</text>
+  </g>
+</svg>
