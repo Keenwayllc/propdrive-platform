@@ -17,7 +17,15 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") ?? "/dashboard";
+  // Only allow same-origin relative paths to prevent open-redirect attacks
+  // (reject absolute URLs, "//evil.com", and "/\evil.com" variants).
+  const rawRedirect = searchParams.get("redirect") ?? "/dashboard";
+  const redirectTo =
+    rawRedirect.startsWith("/") &&
+    !rawRedirect.startsWith("//") &&
+    !rawRedirect.startsWith("/\\")
+      ? rawRedirect
+      : "/dashboard";
 
   const {
     register,
