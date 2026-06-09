@@ -5,11 +5,12 @@
 import type { Metadata } from "next";
 import PropertyFilter from "@/components/property-filter";
 import PropertyCard from "@/components/property-card";
+import { Reveal } from "@/components/motion";
 import type { Property } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "Properties",
-  description: "Browse homes for sale across San Diego County.",
+  description: "Browse homes for sale across Los Angeles County.",
 };
 
 export default function PropertiesPage() {
@@ -17,19 +18,29 @@ export default function PropertiesPage() {
   const properties: Property[] = [];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-      <header className="mb-6">
-        <h1 className="text-3xl font-bold text-slate-900">Properties for Sale</h1>
-        <p className="mt-1 text-slate-500">
-          {properties.length} listings in San Diego County
-        </p>
-      </header>
+    <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
+      <Reveal>
+        <header className="mb-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+            For sale
+          </p>
+          <h1 className="mt-3 font-display text-4xl font-medium tracking-tight text-ink sm:text-5xl">
+            Homes across Los Angeles
+          </h1>
+          <p className="mt-3 text-muted">
+            {properties.length} listings in Los Angeles County
+          </p>
+        </header>
+      </Reveal>
 
-      <PropertyFilter />
+      <Reveal delay={0.08}>
+        <PropertyFilter />
+      </Reveal>
 
       {properties.length === 0 ? (
-        <div className="mt-8 rounded-xl border border-dashed border-slate-300 bg-white p-16 text-center text-slate-500">
-          No listings to show yet. Connect Supabase and seed data to populate this page.
+        <div className="mt-8 rounded-[1.75rem] border border-dashed border-line bg-surface p-16 text-center text-muted">
+          No listings to show yet. Connect Supabase and seed data to populate
+          this page.
         </div>
       ) : (
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

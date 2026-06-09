@@ -4,41 +4,49 @@
 import type { Metadata } from "next";
 import { Mail, MapPin, Phone } from "lucide-react";
 import LeadForm from "@/components/lead-form";
+import { Reveal } from "@/components/motion";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Get in touch with your San Diego real estate advisor.",
+  description: "Get in touch with your Los Angeles real estate advisor.",
 };
 
 const CONTACT_DETAILS = [
-  { icon: Phone, label: "(619) 555-0148" },
+  { icon: Phone, label: "(310) 555-0148" },
   { icon: Mail, label: "sophia@californiarealtygroup.com" },
-  { icon: MapPin, label: "1234 Prospect St, La Jolla, CA 92037" },
+  { icon: MapPin, label: "9601 Wilshire Blvd, Beverly Hills, CA 90210" },
 ];
 
 export default function ContactPage() {
   return (
-    <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2">
-      <div>
-        <h1 className="text-4xl font-bold text-slate-900">Get in touch</h1>
-        <p className="mt-3 text-slate-600">
+    <div className="mx-auto grid max-w-7xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
+      <Reveal>
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+          Let&apos;s talk
+        </p>
+        <h1 className="mt-3 font-display text-4xl font-medium tracking-tight text-ink sm:text-5xl">
+          Get in touch.
+        </h1>
+        <p className="mt-5 max-w-md text-lg leading-relaxed text-muted">
           Have a question about buying, selling, or a specific listing? Send a
           message and we&apos;ll get back to you within one business day.
         </p>
 
-        <ul className="mt-8 space-y-4">
+        <ul className="mt-10 space-y-4">
           {CONTACT_DETAILS.map((detail) => (
-            <li key={detail.label} className="flex items-center gap-3 text-slate-700">
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
+            <li key={detail.label} className="flex items-center gap-3 text-ink">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-soft text-accent">
                 <detail.icon className="h-5 w-5" />
               </span>
               {detail.label}
             </li>
           ))}
         </ul>
-      </div>
+      </Reveal>
 
-      <LeadForm leadType="general" title="Send a message" />
+      <Reveal delay={0.12}>
+        <LeadForm leadType="general" title="Send a message" />
+      </Reveal>
     </div>
   );
 }

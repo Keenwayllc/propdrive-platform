@@ -36,8 +36,8 @@ export default function AiToolsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">AI Tools</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-2xl font-bold text-ink">AI Tools</h1>
+        <p className="mt-1 text-sm text-muted">
           Save time with AI-powered content generation. Requires an OpenAI API key
           (see Integrations).
         </p>
@@ -45,16 +45,16 @@ export default function AiToolsPage() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         {TOOLS.map((tool) => (
-          <div key={tool.title} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
+          <div key={tool.title} className="rounded-xl border border-line bg-white p-6 shadow-sm">
+            <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent-soft text-accent">
               <tool.icon className="h-6 w-6" />
             </span>
-            <h3 className="mt-4 font-semibold text-slate-900">{tool.title}</h3>
-            <p className="mt-1 text-sm text-slate-500">{tool.description}</p>
+            <h3 className="mt-4 font-semibold text-ink">{tool.title}</h3>
+            <p className="mt-1 text-sm text-muted">{tool.description}</p>
             <button
               type="button"
               disabled
-              className="mt-4 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-400"
+              className="mt-4 rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-faint"
             >
               Coming in Phase 2
             </button>

@@ -17,16 +17,16 @@ const currency = new Intl.NumberFormat("en-US", {
 export default function PropertiesTable({ properties = [] }: PropertiesTableProps) {
   if (properties.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-500">
+      <div className="rounded-xl border border-dashed border-line bg-white p-10 text-center text-muted">
         No properties yet. Add your first listing to get started.
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+    <div className="overflow-x-auto rounded-xl border border-line bg-white shadow-sm">
       <table className="w-full text-left text-sm">
-        <thead className="border-b border-slate-200 bg-slate-50 text-slate-500">
+        <thead className="border-b border-line bg-background text-muted">
           <tr>
             <th className="px-4 py-3 font-medium">Title</th>
             <th className="px-4 py-3 font-medium">Location</th>
@@ -35,15 +35,15 @@ export default function PropertiesTable({ properties = [] }: PropertiesTableProp
             <th className="px-4 py-3 font-medium">Visible</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100">
+        <tbody className="divide-y divide-line">
           {properties.map((property) => (
-            <tr key={property.id} className="hover:bg-slate-50">
-              <td className="px-4 py-3 font-medium text-slate-800">{property.title}</td>
-              <td className="px-4 py-3 text-slate-600">
+            <tr key={property.id} className="hover:bg-background">
+              <td className="px-4 py-3 font-medium text-ink">{property.title}</td>
+              <td className="px-4 py-3 text-muted">
                 {property.city}, {property.state}
               </td>
-              <td className="px-4 py-3 text-slate-600">{currency.format(property.price)}</td>
-              <td className="px-4 py-3 capitalize text-slate-600">
+              <td className="px-4 py-3 text-muted">{currency.format(property.price)}</td>
+              <td className="px-4 py-3 capitalize text-muted">
                 {property.status.replace("_", " ")}
               </td>
               <td className="px-4 py-3">
@@ -51,7 +51,7 @@ export default function PropertiesTable({ properties = [] }: PropertiesTableProp
                   className={`rounded-full px-2.5 py-1 text-xs font-medium ${
                     property.active
                       ? "bg-green-100 text-green-700"
-                      : "bg-slate-100 text-slate-600"
+                      : "bg-line text-muted"
                   }`}
                 >
                   {property.active ? "Active" : "Hidden"}

@@ -32,7 +32,7 @@ Alternatives:
 - ✅ Full source code (Next.js + TypeScript + Tailwind)
 - ✅ Public website (12 pages) + agent dashboard (9 sections)
 - ✅ Supabase schema migration (`scripts/supabase-migrations.sql`)
-- ✅ Demo seed data — sample agent + 8 San Diego listings (royalty-free images)
+- ✅ Demo seed data — sample agent + 8 Los Angeles listings (royalty-free images)
 - ✅ Reusable component library (forms, tables, cards, charts, pickers)
 - ✅ Zod-validated forms (lead capture, showings, valuation, auth)
 - ✅ Complete documentation (`/docs`): setup, deployment, transfer, services

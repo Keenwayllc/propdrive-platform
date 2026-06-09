@@ -4,20 +4,24 @@
  */
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 
 export const metadata: Metadata = {
   title: "Neighborhoods",
-  description: "Explore San Diego neighborhoods.",
+  description: "Explore the neighborhoods of Los Angeles County.",
 };
 
 const NEIGHBORHOODS: ReadonlyArray<{ name: string; blurb: string }> = [
-  { name: "La Jolla", blurb: "Coastal luxury with sea-cliff views and top schools." },
-  { name: "North Park", blurb: "Walkable, artsy, and full of cafes and breweries." },
-  { name: "Mission Valley", blurb: "Central, convenient, and growing." },
-  { name: "Del Mar", blurb: "Beachside village living with the racetrack and golf." },
-  { name: "Downtown San Diego", blurb: "High-rise condos, Gaslamp, and waterfront." },
-  { name: "Chula Vista", blurb: "Family-friendly master-planned communities." },
+  { name: "Beverly Hills", blurb: "Iconic estates, flats, and the 90210 address." },
+  { name: "Bel Air", blurb: "Gated privacy and trophy homes above the city." },
+  { name: "Santa Monica", blurb: "Beach-close living, walkable, and bright." },
+  { name: "Malibu", blurb: "27 miles of coastline, canyons, and ocean views." },
+  { name: "Westwood", blurb: "Village energy next to UCLA and the Wilshire corridor." },
+  { name: "Pacific Palisades", blurb: "Village charm, bluffs, and family roots." },
+  { name: "Calabasas", blurb: "Hidden Hills luxury and gated valley estates." },
+  { name: "Brentwood", blurb: "Quiet, leafy, and effortlessly upscale." },
+  { name: "Encino", blurb: "Spacious San Fernando Valley living with great value." },
 ];
 
 function toSlug(name: string): string {
@@ -26,31 +30,39 @@ function toSlug(name: string): string {
 
 export default function NeighborhoodsPage() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900">San Diego Neighborhoods</h1>
-        <p className="mt-1 text-slate-500">
-          Discover the areas that make San Diego County special.
-        </p>
-      </header>
+    <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-24">
+      <Reveal>
+        <header className="mb-10 max-w-2xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+            Los Angeles County
+          </p>
+          <h1 className="mt-3 font-display text-4xl font-medium tracking-tight text-ink sm:text-5xl">
+            Find your corner of the city.
+          </h1>
+          <p className="mt-4 text-lg leading-relaxed text-muted">
+            From the coast to the canyons — the areas that make LA worth calling home.
+          </p>
+        </header>
+      </Reveal>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {NEIGHBORHOODS.map((n) => (
-          <Link
-            key={n.name}
-            href={`/neighborhoods/${toSlug(n.name)}`}
-            className="group rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
-          >
-            <span className="flex items-center gap-2 text-blue-700">
-              <MapPin className="h-5 w-5" />
-              <span className="font-semibold text-slate-900 group-hover:text-blue-700">
-                {n.name}
-              </span>
-            </span>
-            <p className="mt-2 text-sm text-slate-500">{n.blurb}</p>
-          </Link>
+          <StaggerItem key={n.name}>
+            <Link
+              href={`/neighborhoods/${toSlug(n.name)}`}
+              className="group flex h-full flex-col justify-between rounded-[1.5rem] border border-line bg-surface p-7 transition-colors hover:border-accent/40"
+            >
+              <div className="flex items-start justify-between">
+                <span className="font-display text-xl font-medium tracking-tight text-ink">
+                  {n.name}
+                </span>
+                <ArrowUpRight className="h-5 w-5 text-faint transition-all group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </div>
+              <p className="mt-6 text-sm leading-relaxed text-muted">{n.blurb}</p>
+            </Link>
+          </StaggerItem>
         ))}
-      </div>
+      </Stagger>
     </div>
   );
 }

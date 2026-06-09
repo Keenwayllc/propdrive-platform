@@ -42,10 +42,10 @@ export default function DashboardLayout({
   const pathname = usePathname();
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
-      <aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-white lg:block">
-        <div className="flex h-16 items-center gap-2 border-b border-slate-200 px-6 font-semibold text-slate-900">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-700 text-white">
+    <div className="flex min-h-screen bg-background">
+      <aside className="hidden w-64 shrink-0 border-r border-line bg-white lg:block">
+        <div className="flex h-16 items-center gap-2 border-b border-line px-6 font-semibold text-ink">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink text-white">
             <Home className="h-5 w-5" />
           </span>
           PropDrive
@@ -62,8 +62,8 @@ export default function DashboardLayout({
                 href={item.href}
                 className={`mb-1 flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                   active
-                    ? "bg-blue-50 text-blue-700"
-                    : "text-slate-600 hover:bg-slate-100"
+                    ? "bg-accent-soft text-accent"
+                    : "text-muted hover:bg-line"
                 }`}
               >
                 <item.icon className="h-5 w-5" />
@@ -75,9 +75,9 @@ export default function DashboardLayout({
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6">
-          <span className="text-sm text-slate-500">Agent Dashboard</span>
-          <Link href="/" className="text-sm font-medium text-blue-700 hover:underline">
+        <header className="flex h-16 items-center justify-between border-b border-line bg-white px-6">
+          <span className="text-sm text-muted">Agent Dashboard</span>
+          <Link href="/" className="text-sm font-medium text-accent hover:underline">
             View site
           </Link>
         </header>

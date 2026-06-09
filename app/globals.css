@@ -1,29 +1,105 @@
 @import "tailwindcss";
 
 /*
- * PropDrive global styles. Light-mode first, professional real-estate aesthetic.
+ * PropDrive — "Coastal Luxe" design system.
+ * Warm cream canvas, deep charcoal ink, a single muted clay accent.
+ * Geist for UI, Fraunces for editorial marketing headlines.
  */
+
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
+  --background: #faf7f2; /* warm cream */
+  --foreground: #1a1714; /* warm near-black */
 }
 
 @theme inline {
+  /* Palette */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface: #ffffff;
+  --color-ink: #1a1714;
+  --color-muted: #75695b; /* warm stone for body copy */
+  --color-faint: #9c9286;
+  --color-line: #e8e1d6; /* warm hairline */
+  --color-accent: #b85c38; /* muted clay / terracotta */
+  --color-accent-strong: #9e4a2c;
+  --color-accent-soft: #f4e7df;
+
+  /* Fonts */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Shared form control styling used across all forms. */
+/* Reusable form control — warm-tinted, clay focus ring. */
 @layer components {
   .form-input {
-    @apply w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500;
+    @apply w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink
+      placeholder:text-faint transition-colors
+      focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20;
   }
+}
+
+/* ----------------------------------------------------------------------------
+ * Keyframes (used by perpetual micro-interactions / reveals)
+ * ------------------------------------------------------------------------- */
+@keyframes pd-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes pd-shimmer {
+  100% { transform: translateX(100%); }
+}
+@keyframes pd-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.pd-float { animation: pd-float 6s ease-in-out infinite; }
+.pd-marquee { animation: pd-marquee 38s linear infinite; }
+
+/* Shimmer sweep for skeleton loaders. */
+.pd-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-line);
+}
+.pd-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: pd-shimmer 1.6s infinite;
+}
+
+/* Respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .pd-float,
+  .pd-marquee,
+  .pd-skeleton::after {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Selection + scrollbar polish. */
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-strong);
 }

@@ -66,9 +66,13 @@ export default function LeadForm({ leadType = "general", title }: LeadFormProps)
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+      className="space-y-4 rounded-[1.5rem] border border-line bg-surface p-6 shadow-[0_24px_50px_-30px_rgba(26,23,20,0.3)] sm:p-7"
     >
-      {title && <h3 className="text-lg font-semibold text-slate-900">{title}</h3>}
+      {title && (
+        <h3 className="font-display text-xl font-medium tracking-tight text-ink">
+          {title}
+        </h3>
+      )}
 
       <input type="hidden" {...register("lead_type")} />
 
@@ -121,7 +125,7 @@ export default function LeadForm({ leadType = "general", title }: LeadFormProps)
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-lg bg-blue-700 px-4 py-2.5 font-semibold text-white transition-colors hover:bg-blue-800 disabled:opacity-60"
+        className="w-full rounded-full bg-ink px-4 py-3 font-semibold text-background transition-colors hover:bg-accent active:translate-y-px disabled:opacity-60"
       >
         {isSubmitting ? "Sending..." : "Submit"}
       </button>
@@ -141,7 +145,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-medium text-slate-700">{label}</span>
+      <span className="mb-1.5 block text-sm font-medium text-ink">{label}</span>
       {children}
       {error && <span className="mt-1 block text-sm text-red-600">{error}</span>}
     </label>

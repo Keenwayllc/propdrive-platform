@@ -28,10 +28,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
-        <Link href="/" className="mb-6 flex items-center justify-center gap-2 font-semibold text-slate-900">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-700 text-white">
+        <Link href="/" className="mb-6 flex items-center justify-center gap-2 font-semibold text-ink">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-ink text-white">
             <Home className="h-5 w-5" />
           </span>
           PropDrive
@@ -39,18 +39,18 @@ export default function LoginPage() {
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-4 rounded-xl border border-slate-200 bg-white p-8 shadow-sm"
+          className="space-y-4 rounded-xl border border-line bg-white p-8 shadow-sm"
         >
-          <h1 className="text-xl font-bold text-slate-900">Agent Login</h1>
+          <h1 className="text-xl font-bold text-ink">Agent Login</h1>
 
           <label className="block">
-            <span className="mb-1 block text-sm font-medium text-slate-700">Email</span>
+            <span className="mb-1 block text-sm font-medium text-ink">Email</span>
             <input {...register("email")} type="email" className="form-input" />
             {errors.email && <span className="text-sm text-red-600">{errors.email.message}</span>}
           </label>
 
           <label className="block">
-            <span className="mb-1 block text-sm font-medium text-slate-700">Password</span>
+            <span className="mb-1 block text-sm font-medium text-ink">Password</span>
             <input {...register("password")} type="password" className="form-input" />
             {errors.password && <span className="text-sm text-red-600">{errors.password.message}</span>}
           </label>
@@ -60,13 +60,13 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-lg bg-blue-700 px-4 py-2.5 font-semibold text-white hover:bg-blue-800 disabled:opacity-60"
+            className="w-full rounded-lg bg-ink px-4 py-2.5 font-semibold text-white hover:bg-accent disabled:opacity-60"
           >
             {isSubmitting ? "Signing in..." : "Sign in"}
           </button>
 
-          <p className="text-center text-sm text-slate-500">
-            <Link href="/auth/forgot-password" className="text-blue-700 hover:underline">
+          <p className="text-center text-sm text-muted">
+            <Link href="/auth/forgot-password" className="text-accent hover:underline">
               Forgot your password?
             </Link>
           </p>

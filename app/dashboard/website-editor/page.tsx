@@ -15,8 +15,8 @@ interface EditableCopy {
 }
 
 const INITIAL: EditableCopy = {
-  hero_title: "Find Your Next Home in San Diego",
-  hero_subtitle: "Expert guidance for buyers and sellers across San Diego County.",
+  hero_title: "Find the home that feels like arrival.",
+  hero_subtitle: "Expert guidance for buyers and sellers across Los Angeles County.",
   about_title: "About Sophia Carter",
   about_text: "Senior Real Estate Advisor with California Realty Group.",
   footer_text: "The real estate lead platform built for agents.",
@@ -36,12 +36,12 @@ export default function WebsiteEditorPage() {
 
   return (
     <div className="max-w-3xl space-y-6">
-      <h1 className="text-2xl font-bold text-slate-900">Website Editor</h1>
-      <p className="text-sm text-slate-500">
+      <h1 className="text-2xl font-bold text-ink">Website Editor</h1>
+      <p className="text-sm text-muted">
         Edit the copy that appears across your public website.
       </p>
 
-      <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="space-y-4 rounded-xl border border-line bg-white p-6 shadow-sm">
         <Labeled label="Hero title">
           <input
             value={copy.hero_title}
@@ -82,7 +82,7 @@ export default function WebsiteEditorPage() {
         <button
           type="button"
           onClick={handleSave}
-          className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800"
+          className="rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-accent"
         >
           Save changes
         </button>
@@ -94,7 +94,7 @@ export default function WebsiteEditorPage() {
 function Labeled({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-medium text-slate-700">{label}</span>
+      <span className="mb-1 block text-sm font-medium text-ink">{label}</span>
       {children}
     </label>
   );

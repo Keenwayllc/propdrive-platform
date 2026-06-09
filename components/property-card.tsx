@@ -33,48 +33,48 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   return (
     <Link
       href={`/properties/${property.id}`}
-      className="group block overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md"
+      className="group block overflow-hidden rounded-[1.5rem] border border-line bg-surface shadow-[0_18px_40px_-28px_rgba(26,23,20,0.35)] transition-all hover:-translate-y-0.5 hover:border-accent/40"
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-line">
         <Image
           src={cover}
           alt={property.title}
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-800">
+        <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-xs font-semibold text-ink backdrop-blur">
           {STATUS_LABELS[property.status]}
         </span>
         {property.featured && (
-          <span className="absolute right-3 top-3 rounded-full bg-amber-500 px-3 py-1 text-xs font-semibold text-white">
+          <span className="absolute right-3 top-3 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-white">
             Featured
           </span>
         )}
       </div>
 
-      <div className="p-4">
-        <p className="text-lg font-bold text-slate-900">
+      <div className="p-5">
+        <p className="font-mono text-lg font-semibold text-ink">
           {currency.format(property.price)}
         </p>
-        <h3 className="mt-1 line-clamp-1 font-medium text-slate-800">
+        <h3 className="mt-1 line-clamp-1 font-medium text-ink">
           {property.title}
         </h3>
-        <p className="mt-1 flex items-center gap-1 text-sm text-slate-500">
-          <MapPin className="h-4 w-4" />
+        <p className="mt-1 flex items-center gap-1 text-sm text-muted">
+          <MapPin className="h-4 w-4 text-accent" />
           <span className="line-clamp-1">
             {property.address}, {property.city}
           </span>
         </p>
 
-        <div className="mt-3 flex items-center gap-4 border-t border-slate-100 pt-3 text-sm text-slate-600">
-          <span className="flex items-center gap-1">
+        <div className="mt-4 flex items-center gap-4 border-t border-line pt-4 text-sm text-muted">
+          <span className="flex items-center gap-1.5">
             <BedDouble className="h-4 w-4" /> {property.bedrooms} bd
           </span>
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1.5">
             <Bath className="h-4 w-4" /> {property.bathrooms} ba
           </span>
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1.5">
             <Ruler className="h-4 w-4" /> {property.square_feet.toLocaleString()} sqft
           </span>
         </div>

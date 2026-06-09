@@ -38,15 +38,15 @@ export default function ChartExample({
   title = "Leads over time",
 }: ChartExampleProps) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-      <h3 className="text-sm font-semibold text-slate-700">{title}</h3>
+    <div className="rounded-xl border border-line bg-white p-5 shadow-sm">
+      <h3 className="text-sm font-semibold text-ink">{title}</h3>
       <div className="mt-4 h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="leadsGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#1d4ed8" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#1d4ed8" stopOpacity={0} />
+                <stop offset="5%" stopColor="#b85c38" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#b85c38" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -56,7 +56,7 @@ export default function ChartExample({
             <Area
               type="monotone"
               dataKey="leads"
-              stroke="#1d4ed8"
+              stroke="#b85c38"
               strokeWidth={2}
               fill="url(#leadsGradient)"
             />

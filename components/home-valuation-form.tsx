@@ -40,20 +40,20 @@ export default function HomeValuationForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+      className="space-y-4 rounded-[1.5rem] border border-line bg-surface p-6 shadow-[0_24px_50px_-30px_rgba(26,23,20,0.3)] sm:p-7"
     >
-      <h3 className="text-lg font-semibold text-slate-900">
+      <h3 className="font-display text-xl font-medium tracking-tight text-ink">
         What&apos;s your home worth?
       </h3>
 
       <label className="block">
-        <span className="mb-1 block text-sm font-medium text-slate-700">
+        <span className="mb-1.5 block text-sm font-medium text-ink">
           Property address
         </span>
         <input
           {...register("address")}
           className="form-input"
-          placeholder="123 Main St, San Diego, CA"
+          placeholder="123 Ocean Ave, Santa Monica, CA"
         />
         {errors.address && (
           <span className="text-sm text-red-600">{errors.address.message}</span>
@@ -61,7 +61,7 @@ export default function HomeValuationForm() {
       </label>
 
       <label className="block">
-        <span className="mb-1 block text-sm font-medium text-slate-700">Full name</span>
+        <span className="mb-1.5 block text-sm font-medium text-ink">Full name</span>
         <input {...register("full_name")} className="form-input" />
         {errors.full_name && (
           <span className="text-sm text-red-600">{errors.full_name.message}</span>
@@ -70,14 +70,14 @@ export default function HomeValuationForm() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="mb-1 block text-sm font-medium text-slate-700">Email</span>
+          <span className="mb-1.5 block text-sm font-medium text-ink">Email</span>
           <input {...register("email")} type="email" className="form-input" />
           {errors.email && (
             <span className="text-sm text-red-600">{errors.email.message}</span>
           )}
         </label>
         <label className="block">
-          <span className="mb-1 block text-sm font-medium text-slate-700">Phone</span>
+          <span className="mb-1.5 block text-sm font-medium text-ink">Phone</span>
           <input {...register("phone")} type="tel" className="form-input" />
           {errors.phone && (
             <span className="text-sm text-red-600">{errors.phone.message}</span>
@@ -86,7 +86,7 @@ export default function HomeValuationForm() {
       </div>
 
       <label className="block">
-        <span className="mb-1 block text-sm font-medium text-slate-700">
+        <span className="mb-1.5 block text-sm font-medium text-ink">
           Timeline to sell
         </span>
         <select {...register("timeline")} className="form-input">
@@ -101,7 +101,7 @@ export default function HomeValuationForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-lg bg-blue-700 px-4 py-2.5 font-semibold text-white transition-colors hover:bg-blue-800 disabled:opacity-60"
+        className="w-full rounded-full bg-ink px-4 py-3 font-semibold text-background transition-colors hover:bg-accent active:translate-y-px disabled:opacity-60"
       >
         {isSubmitting ? "Submitting..." : "Get My Valuation"}
       </button>

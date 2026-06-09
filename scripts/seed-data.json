@@ -1,7 +1,7 @@
 {
   "_meta": {
     "description": "PropDrive demo seed data. Import into Supabase after running scripts/supabase-migrations.sql. All images are royalty-free (Unsplash). Replace with real branding/listings before going live.",
-    "generated_for": "Phase 1 scaffold — sample San Diego market"
+    "generated_for": "Phase 1 scaffold — sample Los Angeles County market"
   },
   "demo_user": {
     "email": "demo@getpropdrive.com",
@@ -16,227 +16,237 @@
     "brokerage_name": "California Realty Group",
     "license_number": "DRE# 02145789",
     "email": "sophia@californiarealtygroup.com",
-    "phone": "(619) 555-0148",
+    "phone": "(310) 555-0148",
     "agent_photo_url": "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=80"
   },
   "market": {
-    "city": "San Diego",
+    "city": "Los Angeles",
     "state": "California",
     "neighborhoods": [
       {
-        "name": "La Jolla",
-        "blurb": "Coastal luxury with sea-cliff views, upscale dining, and top schools.",
+        "name": "Beverly Hills",
+        "blurb": "Iconic estates, the flats, and the world-famous 90210 address.",
+        "image_url": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "name": "Bel Air",
+        "blurb": "Gated privacy and trophy homes above the city.",
+        "image_url": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "name": "Santa Monica",
+        "blurb": "Beach-close living, walkable, and bright year-round.",
         "image_url": "https://images.unsplash.com/photo-1505842465776-3d90f616310d?auto=format&fit=crop&w=1200&q=80"
       },
       {
-        "name": "North Park",
-        "blurb": "Walkable, artsy, and full of craft breweries, cafes, and bungalows.",
-        "image_url": "https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&w=1200&q=80"
-      },
-      {
-        "name": "Mission Valley",
-        "blurb": "Central, convenient, and growing — condos, shopping, and transit hubs.",
-        "image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80"
-      },
-      {
-        "name": "Del Mar",
-        "blurb": "Beachside village living with the racetrack, golf, and fine dining.",
+        "name": "Malibu",
+        "blurb": "Twenty-seven miles of coastline, canyons, and ocean views.",
         "image_url": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80"
       },
       {
-        "name": "Downtown San Diego",
-        "blurb": "High-rise condos, the Gaslamp Quarter, waterfront, and nightlife.",
-        "image_url": "https://images.unsplash.com/photo-1554034483-04fda0d3507b?auto=format&fit=crop&w=1200&q=80"
+        "name": "Westwood",
+        "blurb": "Village energy next to UCLA and the Wilshire corridor.",
+        "image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80"
       },
       {
-        "name": "Chula Vista",
-        "blurb": "Family-friendly master-planned communities with great value.",
+        "name": "Pacific Palisades",
+        "blurb": "Village charm, ocean bluffs, and deep family roots.",
+        "image_url": "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "name": "Calabasas",
+        "blurb": "Hidden Hills luxury and gated valley estates.",
+        "image_url": "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1200&q=80"
+      },
+      {
+        "name": "Encino",
+        "blurb": "Spacious San Fernando Valley living with great value.",
         "image_url": "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1200&q=80"
       }
     ]
   },
   "properties": [
     {
-      "title": "Modern La Jolla Ocean-View Home",
-      "address": "1428 Coastline Drive",
-      "city": "San Diego",
+      "title": "Beverly Hills Modern Glass Estate",
+      "address": "612 N Crescent Drive",
+      "city": "Beverly Hills",
       "state": "CA",
-      "zip": "92037",
-      "price": 1195000,
-      "bedrooms": 4,
-      "bathrooms": 3,
-      "square_feet": 2850,
-      "lot_size": 0.21,
+      "zip": "90210",
+      "price": 6450000,
+      "bedrooms": 5,
+      "bathrooms": 6,
+      "square_feet": 6200,
+      "lot_size": 0.42,
       "property_type": "single_family",
       "status": "active",
-      "description": "Light-filled contemporary home minutes from La Jolla Cove. Walls of glass frame panoramic ocean views, with a chef's kitchen and a primary suite that opens to a private terrace.",
-      "features": ["Ocean views", "Chef's kitchen", "Solar panels", "2-car garage", "Smart home"],
+      "description": "A sleek glass-and-stone estate in the Beverly Hills flats. Walls of glass open to a resort backyard with an infinity pool, while a chef's kitchen and primary retreat define effortless California luxury.",
+      "features": ["Infinity pool", "Chef's kitchen", "Home theater", "3-car garage", "Smart home"],
       "image_urls": [
         "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
         "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
       ],
-      "map_address": "1428 Coastline Drive, San Diego, CA 92037",
+      "map_address": "612 N Crescent Drive, Beverly Hills, CA 90210",
       "featured": true,
       "active": true
     },
     {
-      "title": "Charming North Park Craftsman Bungalow",
-      "address": "3215 Granada Avenue",
-      "city": "San Diego",
+      "title": "Malibu Oceanfront Contemporary",
+      "address": "20440 Pacific Coast Highway",
+      "city": "Malibu",
       "state": "CA",
-      "zip": "92104",
-      "price": 875000,
-      "bedrooms": 3,
-      "bathrooms": 2,
-      "square_feet": 1650,
-      "lot_size": 0.14,
+      "zip": "90265",
+      "price": 8200000,
+      "bedrooms": 4,
+      "bathrooms": 5,
+      "square_feet": 4100,
+      "lot_size": 0.28,
       "property_type": "single_family",
       "status": "active",
-      "description": "Beautifully restored 1920s Craftsman with original built-ins, hardwood floors, and a wraparound porch. Steps from North Park's best cafes and breweries.",
-      "features": ["Original hardwood", "Front porch", "Updated kitchen", "Detached studio"],
+      "description": "Sited directly on the sand, this contemporary frames whitewater views from nearly every room. Floor-to-ceiling glass, a sea-facing primary suite, and a private deck just steps from the tide.",
+      "features": ["Oceanfront", "Private beach access", "Walls of glass", "Sea-facing primary", "Heated deck"],
       "image_urls": [
-        "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80"
+        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1200&q=80"
       ],
-      "map_address": "3215 Granada Avenue, San Diego, CA 92104",
+      "map_address": "20440 Pacific Coast Highway, Malibu, CA 90265",
       "featured": true,
       "active": true
     },
     {
-      "title": "Mission Valley Modern Condo",
-      "address": "8475 River Run Drive #204",
-      "city": "San Diego",
+      "title": "Santa Monica Beachside Condo",
+      "address": "1755 Ocean Avenue #604",
+      "city": "Santa Monica",
       "state": "CA",
-      "zip": "92108",
-      "price": 549000,
+      "zip": "90401",
+      "price": 1395000,
+      "bedrooms": 2,
+      "bathrooms": 2,
+      "square_feet": 1340,
+      "lot_size": null,
+      "property_type": "condo",
+      "status": "active",
+      "description": "Bright sixth-floor residence two blocks from the beach with ocean-peek views, a full-service building, and a walkable lifestyle near the pier, dining, and Third Street Promenade.",
+      "features": ["Ocean views", "Doorman building", "Pool & gym", "Two parking spaces"],
+      "image_urls": [
+        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "map_address": "1755 Ocean Avenue #604, Santa Monica, CA 90401",
+      "featured": false,
+      "active": true
+    },
+    {
+      "title": "Westwood Village Modern Condo",
+      "address": "10707 Wilshire Boulevard #1402",
+      "city": "Los Angeles",
+      "state": "CA",
+      "zip": "90024",
+      "price": 895000,
       "bedrooms": 2,
       "bathrooms": 2,
       "square_feet": 1180,
       "lot_size": null,
       "property_type": "condo",
       "status": "active",
-      "description": "Turnkey 2-bed condo in a gated Mission Valley community with pool, gym, and quick freeway access. Open floor plan with a private balcony.",
-      "features": ["Gated community", "Pool & spa", "In-unit laundry", "Assigned parking"],
-      "image_urls": [
-        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1200&q=80"
-      ],
-      "map_address": "8475 River Run Drive #204, San Diego, CA 92108",
-      "featured": false,
-      "active": true
-    },
-    {
-      "title": "Del Mar Beachside Townhouse",
-      "address": "210 Stratford Court",
-      "city": "Del Mar",
-      "state": "CA",
-      "zip": "92014",
-      "price": 1150000,
-      "bedrooms": 3,
-      "bathrooms": 3,
-      "square_feet": 1980,
-      "lot_size": 0.05,
-      "property_type": "townhouse",
-      "status": "active",
-      "description": "Coastal townhome a short stroll from Del Mar's beaches and village. Rooftop deck with whitewater views, two-car garage, and designer finishes throughout.",
-      "features": ["Rooftop deck", "Ocean views", "2-car garage", "Walk to beach"],
-      "image_urls": [
-        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1200&q=80"
-      ],
-      "map_address": "210 Stratford Court, Del Mar, CA 92014",
-      "featured": true,
-      "active": true
-    },
-    {
-      "title": "Downtown High-Rise Condo with Skyline Views",
-      "address": "700 W E Street #1802",
-      "city": "San Diego",
-      "state": "CA",
-      "zip": "92101",
-      "price": 729000,
-      "bedrooms": 2,
-      "bathrooms": 2,
-      "square_feet": 1320,
-      "lot_size": null,
-      "property_type": "condo",
-      "status": "pending",
-      "description": "18th-floor corner residence in the heart of downtown with floor-to-ceiling windows, concierge service, and resort-style amenities. Walk to the Gaslamp and waterfront.",
-      "features": ["Concierge", "Floor-to-ceiling windows", "Fitness center", "City views"],
+      "description": "Turnkey high-rise condo on the Wilshire Corridor, minutes from UCLA and Westwood Village. Open plan, floor-to-ceiling windows, and full-service amenities in a prime Westside location.",
+      "features": ["Wilshire Corridor", "Concierge", "City views", "In-unit laundry"],
       "image_urls": [
         "https://images.unsplash.com/photo-1567496898669-ee935f5f647a?auto=format&fit=crop&w=1200&q=80",
         "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=1200&q=80"
       ],
-      "map_address": "700 W E Street #1802, San Diego, CA 92101",
+      "map_address": "10707 Wilshire Boulevard #1402, Los Angeles, CA 90024",
       "featured": false,
       "active": true
     },
     {
-      "title": "Spacious Chula Vista Family Home",
-      "address": "1567 Santa Olivia Road",
-      "city": "Chula Vista",
+      "title": "Bel Air Hillside Contemporary",
+      "address": "1240 Stradella Road",
+      "city": "Los Angeles",
       "state": "CA",
-      "zip": "91913",
-      "price": 765000,
+      "zip": "90077",
+      "price": 5750000,
       "bedrooms": 5,
-      "bathrooms": 3,
-      "square_feet": 2950,
-      "lot_size": 0.18,
+      "bathrooms": 6,
+      "square_feet": 5400,
+      "lot_size": 0.55,
       "property_type": "single_family",
-      "status": "active",
-      "description": "Generous two-story home in the master-planned Otay Ranch community. Open-concept living, large backyard, and access to top-rated schools and parks.",
-      "features": ["5 bedrooms", "Large backyard", "Loft", "Near schools", "3-car garage"],
-      "image_urls": [
-        "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1576941089067-2de3c901e126?auto=format&fit=crop&w=1200&q=80"
-      ],
-      "map_address": "1567 Santa Olivia Road, Chula Vista, CA 91913",
-      "featured": false,
-      "active": true
-    },
-    {
-      "title": "Renovated North Park Duplex",
-      "address": "2940 Upas Street",
-      "city": "San Diego",
-      "state": "CA",
-      "zip": "92104",
-      "price": 985000,
-      "bedrooms": 4,
-      "bathrooms": 2,
-      "square_feet": 2100,
-      "lot_size": 0.12,
-      "property_type": "multi_family",
-      "status": "active",
-      "description": "Excellent income opportunity — fully renovated duplex with two 2-bed units. Live in one and rent the other, or hold as a turnkey investment in a high-demand rental market.",
-      "features": ["Two units", "Separate meters", "New roof", "Off-street parking"],
+      "status": "pending",
+      "description": "Gated Bel Air contemporary perched for canyon-to-city views. Open volumes, a glass-walled great room, and an infinity-edge pool that floats above the lights of Los Angeles.",
+      "features": ["Gated", "City & canyon views", "Infinity pool", "Wine room", "Motor court"],
       "image_urls": [
         "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
         "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?auto=format&fit=crop&w=1200&q=80"
       ],
-      "map_address": "2940 Upas Street, San Diego, CA 92104",
+      "map_address": "1240 Stradella Road, Los Angeles, CA 90077",
+      "featured": true,
+      "active": true
+    },
+    {
+      "title": "Pacific Palisades Family Home",
+      "address": "454 Bellino Drive",
+      "city": "Pacific Palisades",
+      "state": "CA",
+      "zip": "90272",
+      "price": 4200000,
+      "bedrooms": 4,
+      "bathrooms": 4,
+      "square_feet": 3650,
+      "lot_size": 0.24,
+      "property_type": "single_family",
+      "status": "active",
+      "description": "Traditional-meets-modern home in the coveted Palisades, walkable to the village and top schools. Light-filled rooms, a flat grassy yard, and a chef's kitchen built for gatherings.",
+      "features": ["Near the village", "Flat yard", "Top schools", "Chef's kitchen", "2-car garage"],
+      "image_urls": [
+        "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1576941089067-2de3c901e126?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "map_address": "454 Bellino Drive, Pacific Palisades, CA 90272",
       "featured": false,
       "active": true
     },
     {
-      "title": "Cozy Mission Valley Starter Condo",
-      "address": "2330 Fenton Parkway #108",
-      "city": "San Diego",
+      "title": "Calabasas Gated Estate",
+      "address": "25140 Prado De Las Peras",
+      "city": "Calabasas",
       "state": "CA",
-      "zip": "92108",
-      "price": 459000,
-      "bedrooms": 2,
-      "bathrooms": 2,
-      "square_feet": 980,
-      "lot_size": null,
-      "property_type": "condo",
+      "zip": "91302",
+      "price": 3150000,
+      "bedrooms": 5,
+      "bathrooms": 5,
+      "square_feet": 4800,
+      "lot_size": 0.5,
+      "property_type": "single_family",
       "status": "active",
-      "description": "Affordable, move-in-ready first home or investment near Civita Park. Bright living space, modern finishes, and walkable to trails, dining, and the trolley.",
-      "features": ["Near Civita Park", "Modern finishes", "Community pool", "Low HOA"],
+      "description": "Behind the gates of a sought-after Calabasas community, this estate pairs generous living spaces with a private backyard, pool, and built-in BBQ — resort living minutes from The Commons.",
+      "features": ["Guard-gated", "Pool & spa", "Outdoor kitchen", "Loft", "3-car garage"],
       "image_urls": [
-        "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1200&q=80"
+        "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80"
       ],
-      "map_address": "2330 Fenton Parkway #108, San Diego, CA 92108",
+      "map_address": "25140 Prado De Las Peras, Calabasas, CA 91302",
+      "featured": false,
+      "active": true
+    },
+    {
+      "title": "Encino Mid-Century Ranch",
+      "address": "5237 Zelzah Avenue",
+      "city": "Los Angeles",
+      "state": "CA",
+      "zip": "91316",
+      "price": 1650000,
+      "bedrooms": 4,
+      "bathrooms": 3,
+      "square_feet": 2400,
+      "lot_size": 0.2,
+      "property_type": "single_family",
+      "status": "active",
+      "description": "Beautifully updated single-story ranch south of the boulevard in Encino. Open living, a remodeled kitchen, and a large entertainer's yard with a sparkling pool on a quiet tree-lined street.",
+      "features": ["Single story", "Pool", "Remodeled kitchen", "Large lot", "Near schools"],
+      "image_urls": [
+        "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "map_address": "5237 Zelzah Avenue, Los Angeles, CA 91316",
       "featured": false,
       "active": true
     }

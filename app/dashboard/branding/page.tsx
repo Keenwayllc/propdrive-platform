@@ -9,7 +9,7 @@ import ColorPicker from "@/components/color-picker";
 import ImageUpload from "@/components/image-upload";
 
 export default function BrandingPage() {
-  const [primary, setPrimary] = useState("#1d4ed8");
+  const [primary, setPrimary] = useState("#b85c38");
   const [secondary, setSecondary] = useState("#0f172a");
   const [accent, setAccent] = useState("#f59e0b");
 
@@ -20,12 +20,12 @@ export default function BrandingPage() {
 
   return (
     <div className="max-w-3xl space-y-6">
-      <h1 className="text-2xl font-bold text-slate-900">Branding</h1>
-      <p className="text-sm text-slate-500">
+      <h1 className="text-2xl font-bold text-ink">Branding</h1>
+      <p className="text-sm text-muted">
         Customize colors and assets to match your brokerage&apos;s identity.
       </p>
 
-      <div className="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="space-y-6 rounded-xl border border-line bg-white p-6 shadow-sm">
         <div className="grid gap-4 sm:grid-cols-3">
           <ColorPicker label="Primary" value={primary} onChange={setPrimary} />
           <ColorPicker label="Secondary" value={secondary} onChange={setSecondary} />
@@ -38,7 +38,7 @@ export default function BrandingPage() {
         <button
           type="button"
           onClick={handleSave}
-          className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800"
+          className="rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-accent"
         >
           Save branding
         </button>

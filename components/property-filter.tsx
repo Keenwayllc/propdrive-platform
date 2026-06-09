@@ -52,25 +52,27 @@ export default function PropertyFilter({ onChange }: PropertyFilterProps) {
   }
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="rounded-[1.5rem] border border-line bg-surface p-4 shadow-[0_18px_40px_-30px_rgba(26,23,20,0.3)]">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <div className="relative lg:col-span-2">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-faint" />
           <input
             type="search"
+            aria-label="Search by city, address, or ZIP"
             value={filters.query}
             onChange={(e) => update("query", e.target.value)}
             placeholder="City, address, or ZIP"
-            className="w-full rounded-lg border border-slate-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-lg border border-line py-2 pl-9 pr-3 text-sm text-ink focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
           />
         </div>
 
         <select
+          aria-label="Property type"
           value={filters.property_type}
           onChange={(e) =>
             update("property_type", e.target.value as PropertyType | "any")
           }
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="rounded-lg border border-line px-3 py-2 text-sm text-ink focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
         >
           {PROPERTY_TYPE_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>
@@ -87,7 +89,7 @@ export default function PropertyFilter({ onChange }: PropertyFilterProps) {
             update("min_price", e.target.value ? Number(e.target.value) : null)
           }
           placeholder="Min price"
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="rounded-lg border border-line px-3 py-2 text-sm text-ink focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
         />
 
         <input
@@ -98,7 +100,7 @@ export default function PropertyFilter({ onChange }: PropertyFilterProps) {
             update("max_price", e.target.value ? Number(e.target.value) : null)
           }
           placeholder="Max price"
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="rounded-lg border border-line px-3 py-2 text-sm text-ink focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
         />
       </div>
     </div>

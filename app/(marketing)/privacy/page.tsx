@@ -12,10 +12,10 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-      <h1 className="text-3xl font-bold text-slate-900">Privacy Policy</h1>
-      <p className="mt-2 text-sm text-slate-400">Last updated: placeholder</p>
+      <h1 className="text-3xl font-bold text-ink">Privacy Policy</h1>
+      <p className="mt-2 text-sm text-faint">Last updated: placeholder</p>
 
-      <div className="prose mt-8 max-w-none text-slate-600">
+      <div className="prose mt-8 max-w-none text-muted">
         <p>
           <strong>Template notice:</strong> This is placeholder legal text. Replace
           it with a policy reviewed by qualified counsel before launch.

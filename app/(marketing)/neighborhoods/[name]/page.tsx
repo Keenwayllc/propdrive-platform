@@ -4,6 +4,7 @@
  */
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { Reveal } from "@/components/motion";
 
 function fromSlug(slug: string): string {
   return slug
@@ -21,25 +22,32 @@ export default async function NeighborhoodDetailPage({
   const displayName = fromSlug(name);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+    <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-24">
       <Link
         href="/neighborhoods"
-        className="inline-flex items-center gap-1 text-sm font-medium text-blue-700 hover:underline"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
       >
         <ArrowLeft className="h-4 w-4" /> All neighborhoods
       </Link>
 
-      <h1 className="mt-6 text-4xl font-bold text-slate-900">{displayName}</h1>
-      <p className="mt-3 max-w-2xl text-slate-600">
-        Neighborhood overview, market statistics, available listings, and a map
-        for {displayName} will appear here once connected to the database.
-      </p>
+      <Reveal>
+        <h1 className="mt-8 font-display text-5xl font-medium tracking-tight text-ink sm:text-6xl">
+          {displayName}
+        </h1>
+        <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted">
+          A full overview of {displayName} — market statistics, available
+          listings, and a map — will appear here once connected to the database.
+        </p>
+      </Reveal>
 
-      <div className="mt-8 grid gap-6 sm:grid-cols-3">
+      <div className="mt-12 grid gap-4 sm:grid-cols-3">
         {["Median price", "Active listings", "Avg. days on market"].map((stat) => (
-          <div key={stat} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <p className="text-sm text-slate-500">{stat}</p>
-            <p className="mt-2 text-2xl font-bold text-slate-400">—</p>
+          <div
+            key={stat}
+            className="rounded-[1.5rem] border border-line bg-surface p-7"
+          >
+            <p className="text-sm text-muted">{stat}</p>
+            <p className="mt-2 font-mono text-3xl font-semibold text-faint">—</p>
           </div>
         ))}
       </div>

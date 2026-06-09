@@ -17,7 +17,7 @@ export default function ColorPicker({ label, value, onChange }: ColorPickerProps
 
   return (
     <div>
-      <label htmlFor={id} className="mb-1 block text-sm font-medium text-slate-700">
+      <label htmlFor={id} className="mb-1 block text-sm font-medium text-ink">
         {label}
       </label>
       <div className="flex items-center gap-2">
@@ -26,14 +26,14 @@ export default function ColorPicker({ label, value, onChange }: ColorPickerProps
           type="color"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="h-10 w-12 cursor-pointer rounded-lg border border-slate-300 bg-white p-1"
+          className="h-10 w-12 cursor-pointer rounded-lg border border-line bg-white p-1"
           aria-label={`${label} color swatch`}
         />
         <input
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-32 rounded-lg border border-slate-300 px-3 py-2 text-sm uppercase focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-32 rounded-lg border border-line px-3 py-2 text-sm uppercase focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent/30"
           aria-label={`${label} hex value`}
         />
       </div>

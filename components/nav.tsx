@@ -2,11 +2,20 @@
 
 /**
  * Site header / primary navigation.
- * Includes the PropDrive wordmark, desktop links, and a mobile menu toggle.
+ * Scroll-aware backdrop, animated link underlines, a magnetic CTA, and an
+ * animated mobile sheet. Uses framer-motion's scroll hooks (no scroll listeners).
  */
 import { useState } from "react";
 import Link from "next/link";
-import { Home, Menu, X } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useMotionValueEvent,
+} from "framer-motion";
+import { Magnetic } from "@/components/motion";
 
 const NAV_LINKS: ReadonlyArray<{ href: string; label: string }> = [
   { href: "/properties", label: "Properties" },
@@ -20,37 +29,60 @@ const NAV_LINKS: ReadonlyArray<{ href: string; label: string }> = [
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 24));
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
-        <Link href="/" className="flex items-center gap-2 font-semibold text-slate-900">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-700 text-white">
-            <Home className="h-5 w-5" />
+    <header
+      className={`sticky top-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "border-b border-line bg-background/80 backdrop-blur-xl"
+          : "border-b border-transparent bg-transparent"
+      }`}
+    >
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
+        <Link href="/" className="group flex items-center gap-2.5">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-ink text-background transition-transform duration-300 group-hover:-rotate-6">
+            <span className="font-display text-lg leading-none">P</span>
           </span>
-          <span className="text-lg tracking-tight">PropDrive</span>
+          <span className="text-lg font-semibold tracking-tight text-ink">
+            PropDrive
+          </span>
         </Link>
 
-        <ul className="hidden items-center gap-6 lg:flex">
-          {NAV_LINKS.map((link) => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-700"
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
+        <ul className="hidden items-center gap-7 lg:flex">
+          {NAV_LINKS.map((link) => {
+            const active = pathname.startsWith(link.href);
+            return (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="group relative text-sm font-medium text-muted transition-colors hover:text-ink"
+                >
+                  {link.label}
+                  <span
+                    className={`absolute -bottom-1.5 left-0 h-px bg-accent transition-all duration-300 ${
+                      active ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
+                  />
+                </Link>
+              </li>
+            );
+          })}
         </ul>
 
         <div className="hidden lg:block">
-          <Link
-            href="/auth/login"
-            className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-800"
-          >
-            Agent Login
-          </Link>
+          <Magnetic strength={0.5}>
+            <Link
+              href="/auth/login"
+              className="inline-flex items-center rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-background transition-colors hover:bg-accent active:translate-y-px"
+            >
+              Agent Login
+            </Link>
+          </Magnetic>
         </div>
 
         <button
@@ -58,38 +90,46 @@ export default function Nav() {
           aria-label="Toggle navigation menu"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className="rounded-lg p-2 text-slate-700 lg:hidden"
+          className="rounded-xl p-2 text-ink lg:hidden"
         >
           {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </nav>
 
-      {open && (
-        <div className="border-t border-slate-200 bg-white lg:hidden">
-          <ul className="flex flex-col px-4 py-2">
-            {NAV_LINKS.map((link) => (
-              <li key={link.href}>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden border-t border-line bg-background lg:hidden"
+          >
+            <ul className="flex flex-col px-4 py-3">
+              {NAV_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                    className="block py-2.5 text-sm font-medium text-muted hover:text-ink"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
                 <Link
-                  href={link.href}
+                  href="/auth/login"
                   onClick={() => setOpen(false)}
-                  className="block py-2 text-sm font-medium text-slate-700"
+                  className="mt-2 block rounded-full bg-ink px-4 py-2.5 text-center text-sm font-semibold text-background"
                 >
-                  {link.label}
+                  Agent Login
                 </Link>
               </li>
-            ))}
-            <li>
-              <Link
-                href="/auth/login"
-                onClick={() => setOpen(false)}
-                className="mt-2 block rounded-lg bg-blue-700 px-4 py-2 text-center text-sm font-semibold text-white"
-              >
-                Agent Login
-              </Link>
-            </li>
-          </ul>
-        </div>
-      )}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

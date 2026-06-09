@@ -9,9 +9,9 @@ export interface AppointmentsTableProps {
 
 const STATUS_STYLES: Record<Appointment["status"], string> = {
   requested: "bg-amber-100 text-amber-700",
-  confirmed: "bg-blue-100 text-blue-700",
+  confirmed: "bg-accent-soft text-accent",
   completed: "bg-green-100 text-green-700",
-  cancelled: "bg-slate-100 text-slate-600",
+  cancelled: "bg-line text-muted",
   no_show: "bg-red-100 text-red-700",
 };
 
@@ -20,16 +20,16 @@ export default function AppointmentsTable({
 }: AppointmentsTableProps) {
   if (appointments.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-500">
+      <div className="rounded-xl border border-dashed border-line bg-white p-10 text-center text-muted">
         No appointments scheduled yet.
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+    <div className="overflow-x-auto rounded-xl border border-line bg-white shadow-sm">
       <table className="w-full text-left text-sm">
-        <thead className="border-b border-slate-200 bg-slate-50 text-slate-500">
+        <thead className="border-b border-line bg-background text-muted">
           <tr>
             <th className="px-4 py-3 font-medium">Client</th>
             <th className="px-4 py-3 font-medium">Property</th>
@@ -38,15 +38,15 @@ export default function AppointmentsTable({
             <th className="px-4 py-3 font-medium">Status</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100">
+        <tbody className="divide-y divide-line">
           {appointments.map((appt) => (
-            <tr key={appt.id} className="hover:bg-slate-50">
-              <td className="px-4 py-3 font-medium text-slate-800">{appt.lead_name}</td>
-              <td className="px-4 py-3 text-slate-600">{appt.property ?? "—"}</td>
-              <td className="px-4 py-3 text-slate-600">
+            <tr key={appt.id} className="hover:bg-background">
+              <td className="px-4 py-3 font-medium text-ink">{appt.lead_name}</td>
+              <td className="px-4 py-3 text-muted">{appt.property ?? "—"}</td>
+              <td className="px-4 py-3 text-muted">
                 {appt.appointment_date} · {appt.appointment_time}
               </td>
-              <td className="px-4 py-3 capitalize text-slate-600">
+              <td className="px-4 py-3 capitalize text-muted">
                 {appt.appointment_type.replace("_", " ")}
               </td>
               <td className="px-4 py-3">

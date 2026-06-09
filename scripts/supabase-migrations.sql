@@ -265,8 +265,8 @@ create policy "auth manage appointments" on public.appointments
 -- =============================================================================
 insert into public.site_settings (company_name, hero_title, hero_subtitle)
 select 'California Realty Group',
-       'Find Your Next Home in San Diego',
-       'Expert guidance for buyers and sellers across San Diego County.'
+       'Find the home that feels like arrival.',
+       'Expert guidance for buyers and sellers across Los Angeles County.'
 where not exists (select 1 from public.site_settings);
 
 insert into public.brand_settings (company_name, agent_name, brokerage_name)

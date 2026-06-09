@@ -50,7 +50,7 @@ Row-Level-Security policies, and seeds one row each into the settings tables.
 ## 4. Seed demo data (optional)
 
 [`scripts/seed-data.json`](../scripts/seed-data.json) contains a sample agent,
-neighborhoods, and 8 San Diego properties. In Phase 1 there is no automated
+neighborhoods, and 8 Los Angeles properties. In Phase 1 there is no automated
 import script; load it however you prefer:
 
 - **Manual:** copy property rows into the Supabase Table Editor, or

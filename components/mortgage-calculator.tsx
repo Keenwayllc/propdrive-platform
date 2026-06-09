@@ -60,7 +60,7 @@ export default function MortgageCalculator() {
   }
 
   return (
-    <div className="grid gap-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm lg:grid-cols-2">
+    <div className="grid gap-6 rounded-xl border border-line bg-white p-6 shadow-sm lg:grid-cols-2">
       <div className="space-y-4">
         <NumberField label="Home price" value={state.homePrice} onChange={(v) => set("homePrice", v)} prefix="$" />
         <NumberField label="Down payment" value={state.downPayment} onChange={(v) => set("downPayment", v)} prefix="$" />
@@ -70,9 +70,9 @@ export default function MortgageCalculator() {
         <NumberField label="Annual insurance" value={state.insurance} onChange={(v) => set("insurance", v)} prefix="$" />
       </div>
 
-      <div className="flex flex-col justify-center rounded-xl bg-slate-50 p-6">
-        <p className="text-sm font-medium text-slate-500">Estimated monthly payment</p>
-        <p className="mt-1 text-4xl font-bold text-blue-700">
+      <div className="flex flex-col justify-center rounded-xl bg-background p-6">
+        <p className="text-sm font-medium text-muted">Estimated monthly payment</p>
+        <p className="mt-1 text-4xl font-bold text-accent">
           {currency.format(monthly.total)}
         </p>
         <dl className="mt-6 space-y-2 text-sm">
@@ -80,7 +80,7 @@ export default function MortgageCalculator() {
           <Row label="Property tax" value={currency.format(monthly.monthlyTax)} />
           <Row label="Home insurance" value={currency.format(monthly.monthlyInsurance)} />
         </dl>
-        <p className="mt-4 text-xs text-slate-400">
+        <p className="mt-4 text-xs text-faint">
           Estimates only. Excludes HOA, PMI, and closing costs. Not a loan offer.
         </p>
       </div>
@@ -105,9 +105,9 @@ function NumberField({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-medium text-slate-700">{label}</span>
-      <div className="flex items-center rounded-lg border border-slate-300 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
-        {prefix && <span className="pl-3 text-slate-400">{prefix}</span>}
+      <span className="mb-1 block text-sm font-medium text-ink">{label}</span>
+      <div className="flex items-center rounded-lg border border-line focus-within:border-accent focus-within:ring-1 focus-within:ring-accent/30">
+        {prefix && <span className="pl-3 text-faint">{prefix}</span>}
         <input
           type="number"
           step={step}
@@ -115,7 +115,7 @@ function NumberField({
           onChange={(e) => onChange(Number(e.target.value))}
           className="w-full bg-transparent px-3 py-2 text-sm focus:outline-none"
         />
-        {suffix && <span className="pr-3 text-slate-400">{suffix}</span>}
+        {suffix && <span className="pr-3 text-faint">{suffix}</span>}
       </div>
     </label>
   );
@@ -124,8 +124,8 @@ function NumberField({
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between">
-      <dt className="text-slate-500">{label}</dt>
-      <dd className="font-medium text-slate-800">{value}</dd>
+      <dt className="text-muted">{label}</dt>
+      <dd className="font-medium text-ink">{value}</dd>
     </div>
   );
 }

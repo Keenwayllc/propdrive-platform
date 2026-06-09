@@ -39,7 +39,7 @@ export default function ImageUpload({
 
   return (
     <div>
-      <span className="mb-1 block text-sm font-medium text-slate-700">{label}</span>
+      <span className="mb-1 block text-sm font-medium text-ink">{label}</span>
 
       <button
         type="button"
@@ -49,11 +49,11 @@ export default function ImageUpload({
           e.preventDefault();
           handleFiles(e.dataTransfer.files);
         }}
-        className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-slate-500 transition-colors hover:border-blue-400 hover:bg-blue-50"
+        className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-line bg-background px-6 py-10 text-muted transition-colors hover:border-accent hover:bg-accent-soft"
       >
         <ImagePlus className="h-8 w-8" />
         <span className="text-sm font-medium">Click or drag images here</span>
-        <span className="text-xs text-slate-400">PNG, JPG up to 10MB each</span>
+        <span className="text-xs text-faint">PNG, JPG up to 10MB each</span>
       </button>
 
       <input
@@ -68,7 +68,7 @@ export default function ImageUpload({
       {previews.length > 0 && (
         <ul className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-4">
           {previews.map((p, i) => (
-            <li key={p.url} className="relative overflow-hidden rounded-lg border border-slate-200">
+            <li key={p.url} className="relative overflow-hidden rounded-lg border border-line">
               {/* eslint-disable-next-line @next/next/no-img-element -- local blob preview, not a remote asset */}
               <img src={p.url} alt={p.name} className="aspect-square w-full object-cover" />
               <button

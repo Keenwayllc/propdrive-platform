@@ -24,8 +24,8 @@ export default function IntegrationsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Integrations</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-2xl font-bold text-ink">Integrations</h1>
+        <p className="mt-1 text-sm text-muted">
           Configure these services via environment variables. See
           docs/THIRD_PARTY_SERVICES.md for setup instructions.
         </p>
@@ -33,21 +33,21 @@ export default function IntegrationsPage() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         {INTEGRATIONS.map((svc) => (
-          <div key={svc.name} className="flex items-start gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
+          <div key={svc.name} className="flex items-start gap-4 rounded-xl border border-line bg-white p-5 shadow-sm">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-line text-ink">
               <svc.icon className="h-6 w-6" />
             </span>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-slate-900">{svc.name}</h3>
+                <h3 className="font-semibold text-ink">{svc.name}</h3>
                 {svc.required && (
-                  <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">
+                  <span className="rounded-full bg-accent-soft px-2 py-0.5 text-xs font-medium text-accent">
                     Required
                   </span>
                 )}
               </div>
-              <p className="text-sm text-slate-500">{svc.purpose}</p>
-              <code className="mt-1 block truncate text-xs text-slate-400">{svc.envVar}</code>
+              <p className="text-sm text-muted">{svc.purpose}</p>
+              <code className="mt-1 block truncate text-xs text-faint">{svc.envVar}</code>
             </div>
           </div>
         ))}

@@ -8,10 +8,10 @@ export default function DashboardPropertiesPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900">Properties</h1>
+        <h1 className="text-2xl font-bold text-ink">Properties</h1>
         <button
           type="button"
-          className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800"
+          className="inline-flex items-center gap-2 rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-accent"
         >
           <Plus className="h-4 w-4" /> Add listing
         </button>
