@@ -5,7 +5,7 @@
 import type { Metadata } from "next";
 import PropertyFilter from "@/components/property-filter";
 import PropertyCard from "@/components/property-card";
-import { Reveal } from "@/components/motion";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { getActiveProperties } from "@/lib/queries";
 
 export const metadata: Metadata = {
@@ -32,9 +32,9 @@ export default async function PropertiesPage() {
         </header>
       </Reveal>
 
-      <Reveal delay={0.08}>
+      <div className="sticky top-20 z-30">
         <PropertyFilter />
-      </Reveal>
+      </div>
 
       {properties.length === 0 ? (
         <div className="mt-8 rounded-[1.75rem] border border-dashed border-line bg-surface p-16 text-center text-muted">
@@ -45,11 +45,13 @@ export default async function PropertiesPage() {
           .
         </div>
       ) : (
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <Stagger className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {properties.map((property) => (
-            <PropertyCard key={property.id} property={property} />
+            <StaggerItem key={property.id}>
+              <PropertyCard property={property} />
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       )}
     </div>
   );
