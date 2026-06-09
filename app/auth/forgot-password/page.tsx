@@ -13,6 +13,7 @@ import {
   forgotPasswordSchema,
   type ForgotPasswordValues,
 } from "@/lib/form-schemas";
+import { requestPasswordReset } from "@/lib/auth";
 
 export default function ForgotPasswordPage() {
   const [sent, setSent] = useState(false);
@@ -26,8 +27,14 @@ export default function ForgotPasswordPage() {
   });
 
   async function onSubmit(values: ForgotPasswordValues) {
-    // TODO(phase-2): call requestPasswordReset(values.email).
-    console.info("[forgot-password] submit", values.email);
+    // Always show the same confirmation regardless of whether the account
+    // exists (avoids leaking which emails are registered).
+    await requestPasswordReset(
+      values.email,
+      typeof window !== "undefined"
+        ? `${window.location.origin}/auth/login`
+        : undefined
+    );
     setSent(true);
   }
 

@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { leadFormSchema, type LeadFormValues } from "@/lib/form-schemas";
+import { submitLead } from "@/lib/actions";
 import type { LeadType } from "@/lib/types";
 
 export interface LeadFormProps {
@@ -35,14 +36,13 @@ export default function LeadForm({ leadType = "general", title }: LeadFormProps)
 
   async function onSubmit(values: LeadFormValues) {
     setServerError(null);
-    try {
-      // TODO(phase-2): insert into Supabase `leads` and trigger notifications.
-      console.info("[lead-form] submit", values);
-      setSubmitted(true);
-      reset({ lead_type: leadType, preferred_contact: "email" });
-    } catch {
-      setServerError("Something went wrong. Please try again.");
+    const result = await submitLead(values);
+    if (!result.ok) {
+      setServerError(result.error ?? "Something went wrong. Please try again.");
+      return;
     }
+    setSubmitted(true);
+    reset({ lead_type: leadType, preferred_contact: "email" });
   }
 
   if (submitted) {

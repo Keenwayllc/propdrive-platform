@@ -3,8 +3,11 @@
  */
 import { Plus } from "lucide-react";
 import PropertiesTable from "@/components/properties-table";
+import { getAllProperties } from "@/lib/queries";
 
-export default function DashboardPropertiesPage() {
+export default async function DashboardPropertiesPage() {
+  const properties = await getAllProperties();
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -16,8 +19,7 @@ export default function DashboardPropertiesPage() {
           <Plus className="h-4 w-4" /> Add listing
         </button>
       </div>
-      {/* TODO(phase-2): fetch properties from Supabase and pass to the table. */}
-      <PropertiesTable />
+      <PropertiesTable properties={properties} />
     </div>
   );
 }

@@ -3,11 +3,12 @@
 /**
  * Dashboard shell — sidebar navigation + content area.
  *
- * Phase 1 is unauthenticated. Route protection (redirect to /auth/login for
- * signed-out users) is added in Phase 2 via middleware + the auth helpers.
+ * Route protection is enforced by proxy.ts (redirects signed-out users to
+ * /auth/login). This client shell adds the signed-in email + sign-out control.
  */
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Home,
   LayoutDashboard,
@@ -19,8 +20,11 @@ import {
   Sparkles,
   Plug,
   Settings,
+  LogOut,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { supabase } from "@/lib/supabase-client";
+import { signOut } from "@/lib/auth";
 
 const NAV: ReadonlyArray<{ href: string; label: string; icon: LucideIcon }> = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -40,6 +44,18 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [email, setEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
+  }, []);
+
+  async function handleSignOut() {
+    await signOut();
+    router.refresh();
+    router.push("/auth/login");
+  }
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -76,10 +92,21 @@ export default function DashboardLayout({
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-16 items-center justify-between border-b border-line bg-white px-6">
-          <span className="text-sm text-muted">Agent Dashboard</span>
-          <Link href="/" className="text-sm font-medium text-accent hover:underline">
-            View site
-          </Link>
+          <span className="text-sm text-muted">
+            {email ? `Signed in as ${email}` : "Agent Dashboard"}
+          </span>
+          <div className="flex items-center gap-4">
+            <Link href="/" className="text-sm font-medium text-accent hover:underline">
+              View site
+            </Link>
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:bg-background"
+            >
+              <LogOut className="h-4 w-4" /> Sign out
+            </button>
+          </div>
         </header>
         <main className="flex-1 p-6">{children}</main>
       </div>

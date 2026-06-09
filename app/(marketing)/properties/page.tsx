@@ -6,16 +6,15 @@ import type { Metadata } from "next";
 import PropertyFilter from "@/components/property-filter";
 import PropertyCard from "@/components/property-card";
 import { Reveal } from "@/components/motion";
-import type { Property } from "@/lib/types";
+import { getActiveProperties } from "@/lib/queries";
 
 export const metadata: Metadata = {
   title: "Properties",
   description: "Browse homes for sale across Los Angeles County.",
 };
 
-export default function PropertiesPage() {
-  // TODO(phase-2): fetch active properties from Supabase.
-  const properties: Property[] = [];
+export default async function PropertiesPage() {
+  const properties = await getActiveProperties();
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
@@ -39,8 +38,11 @@ export default function PropertiesPage() {
 
       {properties.length === 0 ? (
         <div className="mt-8 rounded-[1.75rem] border border-dashed border-line bg-surface p-16 text-center text-muted">
-          No listings to show yet. Connect Supabase and seed data to populate
-          this page.
+          No listings match right now. Check back soon or{" "}
+          <a href="/contact" className="text-accent hover:underline">
+            tell us what you&apos;re looking for
+          </a>
+          .
         </div>
       ) : (
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

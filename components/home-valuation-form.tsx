@@ -8,9 +8,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { homeValuationSchema, type HomeValuationValues } from "@/lib/form-schemas";
+import { submitValuation } from "@/lib/actions";
 
 export default function HomeValuationForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
@@ -21,8 +23,12 @@ export default function HomeValuationForm() {
   });
 
   async function onSubmit(values: HomeValuationValues) {
-    // TODO(phase-2): insert seller lead + request automated valuation estimate.
-    console.info("[home-valuation] submit", values);
+    setServerError(null);
+    const result = await submitValuation(values);
+    if (!result.ok) {
+      setServerError(result.error ?? "Something went wrong. Please try again.");
+      return;
+    }
     setSubmitted(true);
   }
 
@@ -97,6 +103,8 @@ export default function HomeValuationForm() {
           <option value="just curious">Just curious</option>
         </select>
       </label>
+
+      {serverError && <p className="text-sm text-red-600">{serverError}</p>}
 
       <button
         type="submit"

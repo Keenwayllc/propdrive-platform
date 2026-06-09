@@ -11,6 +11,7 @@ import {
   scheduleShowingSchema,
   type ScheduleShowingValues,
 } from "@/lib/form-schemas";
+import { submitShowing } from "@/lib/actions";
 
 export interface ScheduleShowingFormProps {
   /** Property title/address pre-filled when launched from a listing page. */
@@ -21,6 +22,7 @@ export default function ScheduleShowingForm({
   propertyLabel = "",
 }: ScheduleShowingFormProps) {
   const [submitted, setSubmitted] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
@@ -32,8 +34,12 @@ export default function ScheduleShowingForm({
   });
 
   async function onSubmit(values: ScheduleShowingValues) {
-    // TODO(phase-2): insert into Supabase `appointments` + notify the agent.
-    console.info("[schedule-showing] submit", values);
+    setServerError(null);
+    const result = await submitShowing(values);
+    if (!result.ok) {
+      setServerError(result.error ?? "Something went wrong. Please try again.");
+      return;
+    }
     setSubmitted(true);
   }
 
@@ -111,6 +117,8 @@ export default function ScheduleShowingForm({
         <span className="mb-1 block text-sm font-medium text-ink">Notes</span>
         <textarea {...register("notes")} rows={3} className="form-input" />
       </label>
+
+      {serverError && <p className="text-sm text-red-600">{serverError}</p>}
 
       <button
         type="submit"

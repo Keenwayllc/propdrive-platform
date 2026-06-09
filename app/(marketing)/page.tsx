@@ -8,7 +8,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, MapPin, TrendingUp, Sparkles } from "lucide-react";
 import LeadForm from "@/components/lead-form";
+import PropertyCard from "@/components/property-card";
 import { Reveal, Stagger, StaggerItem, Magnetic } from "@/components/motion";
+import { getFeaturedProperties } from "@/lib/queries";
 
 const NEIGHBORHOODS = [
   "Beverly Hills",
@@ -29,7 +31,9 @@ const STATS: ReadonlyArray<{ value: string; label: string }> = [
   { value: "98.2%", label: "Of list price" },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const featured = await getFeaturedProperties(3);
+
   return (
     <>
       {/* ----------------------------------------------------- Hero banner */}
@@ -216,6 +220,41 @@ export default function HomePage() {
           </StaggerItem>
         </Stagger>
       </section>
+
+      {/* ----------------------------------------------------- Featured listings */}
+      {featured.length > 0 && (
+        <section className="border-t border-line bg-surface/40">
+          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28">
+            <Reveal>
+              <div className="flex items-end justify-between gap-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+                    Featured
+                  </p>
+                  <h2 className="mt-3 font-display text-3xl font-medium tracking-tight text-ink sm:text-4xl">
+                    This week&apos;s standouts
+                  </h2>
+                </div>
+                <Link
+                  href="/properties"
+                  className="hidden shrink-0 items-center gap-1.5 text-sm font-semibold text-accent hover:underline sm:inline-flex"
+                >
+                  View all listings
+                  <ArrowUpRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </Reveal>
+
+            <Stagger className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {featured.map((property) => (
+                <StaggerItem key={property.id}>
+                  <PropertyCard property={property} />
+                </StaggerItem>
+              ))}
+            </Stagger>
+          </div>
+        </section>
+      )}
 
       {/* ------------------------------------------------------- Lead capture */}
       <section className="border-t border-line bg-surface/50">

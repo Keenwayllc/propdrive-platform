@@ -4,15 +4,20 @@
  * Agent login. Phase 1 validates input and simulates sign-in. Phase 2 calls
  * the Supabase auth helper and redirects to the dashboard.
  */
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Home } from "lucide-react";
 import { loginSchema, type LoginValues } from "@/lib/form-schemas";
+import { signIn } from "@/lib/auth";
 
-export default function LoginPage() {
+function LoginForm() {
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") ?? "/dashboard";
 
   const {
     register,
@@ -22,9 +27,13 @@ export default function LoginPage() {
 
   async function onSubmit(values: LoginValues) {
     setError(null);
-    // TODO(phase-2): call signIn() and redirect to /dashboard on success.
-    console.info("[login] submit", values.email);
-    setError("Authentication is wired up in Phase 2.");
+    const result = await signIn(values.email, values.password);
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
+    router.refresh();
+    router.push(redirectTo);
   }
 
   return (
@@ -73,5 +82,13 @@ export default function LoginPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }
