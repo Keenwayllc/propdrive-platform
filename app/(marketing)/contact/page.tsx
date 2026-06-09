@@ -5,19 +5,21 @@ import type { Metadata } from "next";
 import { Mail, MapPin, Phone } from "lucide-react";
 import LeadForm from "@/components/lead-form";
 import { Reveal } from "@/components/motion";
+import { getSiteSettings } from "@/lib/queries";
 
 export const metadata: Metadata = {
   title: "Contact",
   description: "Get in touch with your Los Angeles real estate advisor.",
 };
 
-const CONTACT_DETAILS = [
-  { icon: Phone, label: "(310) 555-0148" },
-  { icon: Mail, label: "sophia@californiarealtygroup.com" },
-  { icon: MapPin, label: "9601 Wilshire Blvd, Beverly Hills, CA 90210" },
-];
+export default async function ContactPage() {
+  const site = await getSiteSettings();
+  const CONTACT_DETAILS = [
+    { icon: Phone, label: site?.contact_phone || "(310) 555-0148" },
+    { icon: Mail, label: site?.contact_email || "sophia@californiarealtygroup.com" },
+    { icon: MapPin, label: site?.office_address || "9601 Wilshire Blvd, Beverly Hills, CA 90210" },
+  ].filter((d) => d.label.trim() !== "");
 
-export default function ContactPage() {
   return (
     <div className="mx-auto grid max-w-7xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
       <Reveal>

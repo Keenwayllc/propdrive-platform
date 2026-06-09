@@ -99,6 +99,47 @@ export const propertyInputSchema = z.object({
 });
 export type PropertyInput = z.infer<typeof propertyInputSchema>;
 
+/** Editable marketing copy (site_settings). */
+export const siteSettingsSchema = z.object({
+  company_name: z.string().min(1, "Company name is required."),
+  hero_title: z.string().default(""),
+  hero_subtitle: z.string().default(""),
+  about_title: z.string().default(""),
+  about_text: z.string().default(""),
+  footer_text: z.string().default(""),
+  contact_phone: z.string().default(""),
+  contact_email: z.string().default(""),
+  office_address: z.string().default(""),
+  social_links: z
+    .object({
+      facebook: z.string().optional().default(""),
+      instagram: z.string().optional().default(""),
+      linkedin: z.string().optional().default(""),
+    })
+    .default({ facebook: "", instagram: "", linkedin: "" }),
+});
+export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;
+
+/** Editable visual identity (brand_settings). */
+export const brandSettingsSchema = z.object({
+  primary_color: z.string().default("#b85c38"),
+  secondary_color: z.string().default("#1a1714"),
+  accent_color: z.string().default("#b85c38"),
+  company_name: z.string().default(""),
+  agent_name: z.string().default(""),
+  license_number: z.string().default(""),
+  brokerage_name: z.string().default(""),
+  logo_url: z.string().nullable().default(null),
+  agent_photo_url: z.string().nullable().default(null),
+});
+export type BrandSettingsInput = z.infer<typeof brandSettingsSchema>;
+
+/** Agent profile update. */
+export const profileUpdateSchema = z.object({
+  full_name: z.string().min(1, "Name is required."),
+});
+export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema>;
+
 export const leadStatusSchema = z.enum([
   "new",
   "contacted",

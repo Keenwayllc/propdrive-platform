@@ -9,6 +9,7 @@ import "server-only";
 import { createServerSupabase } from "@/lib/supabase-server";
 import type {
   Appointment,
+  BrandSettings,
   Lead,
   Property,
   SiteSettings,
@@ -83,8 +84,44 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
   return (data as SiteSettings | null) ?? null;
 }
 
+/** The single brand_settings row (visual identity). */
+export async function getBrandSettings(): Promise<BrandSettings | null> {
+  const supabase = await createServerSupabase();
+  const { data, error } = await supabase
+    .from("brand_settings")
+    .select("*")
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.error("[queries] getBrandSettings", error.message);
+    return null;
+  }
+  return (data as BrandSettings | null) ?? null;
+}
+
 /* ----------------------------------------------------------- Dashboard reads */
 /* These require an authenticated session (RLS: authenticated full access).    */
+
+/** The signed-in agent's profile name + auth email, or null if signed out. */
+export async function getMyProfile(): Promise<{
+  full_name: string;
+  email: string;
+} | null> {
+  const supabase = await createServerSupabase();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  return { full_name: data?.full_name ?? "", email: user.email ?? "" };
+}
 
 export async function getAllProperties(): Promise<Property[]> {
   const supabase = await createServerSupabase();

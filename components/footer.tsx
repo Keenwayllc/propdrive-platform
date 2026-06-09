@@ -1,9 +1,10 @@
 /**
- * Site footer — large editorial wordmark, link columns, and a CTA strip.
- * Content is placeholder; in production it reads from `site_settings`.
+ * Site footer — large editorial CTA, link columns, and identity/contact info,
+ * fed by the editable site_settings / brand_settings.
  */
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import type { SiteSettings, BrandSettings } from "@/lib/types";
 
 const FOOTER_COLUMNS: ReadonlyArray<{
   title: string;
@@ -35,12 +36,28 @@ const FOOTER_COLUMNS: ReadonlyArray<{
   },
 ];
 
-export default function Footer() {
+export interface FooterProps {
+  site?: SiteSettings | null;
+  brand?: BrandSettings | null;
+}
+
+export default function Footer({ site, brand }: FooterProps) {
   const year = new Date().getFullYear();
+  const company = site?.company_name || brand?.company_name || "PropDrive";
+  const initial = company.trim().charAt(0).toUpperCase() || "P";
+  const tagline =
+    site?.footer_text || "The real estate lead platform built for agents.";
+  const license = brand?.license_number || "DRE License #00000000";
+  const social = site?.social_links ?? {};
+
+  const socialLinks = [
+    { href: social.facebook, label: "Facebook" },
+    { href: social.instagram, label: "Instagram" },
+    { href: social.linkedin, label: "LinkedIn" },
+  ].filter((s) => s.href && s.href.trim() !== "");
 
   return (
     <footer className="bg-ink text-background">
-      {/* CTA strip */}
       <div className="mx-auto max-w-7xl px-4 pt-16 sm:px-6">
         <div className="flex flex-col items-start justify-between gap-6 border-b border-white/10 pb-12 md:flex-row md:items-end">
           <h2 className="max-w-xl font-display text-3xl font-medium leading-tight tracking-tight sm:text-4xl">
@@ -61,14 +78,29 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-background text-ink">
-                <span className="font-display text-lg leading-none">P</span>
+                <span className="font-display text-lg leading-none">{initial}</span>
               </span>
-              <span className="text-lg font-semibold tracking-tight">PropDrive</span>
+              <span className="text-lg font-semibold tracking-tight">{company}</span>
             </div>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/55">
-              The real estate lead platform built for agents — listings, a lead
-              CRM, and a brand-ready public site.
+              {tagline}
             </p>
+
+            {socialLinks.length > 0 && (
+              <div className="mt-5 flex flex-wrap gap-2">
+                {socialLinks.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full border border-white/15 px-3 py-1.5 text-xs font-medium text-white/70 transition-colors hover:border-white/40 hover:text-white"
+                  >
+                    {s.label}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
           {FOOTER_COLUMNS.map((col) => (
@@ -93,8 +125,10 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/45 sm:flex-row sm:items-center">
-          <p>&copy; {year} PropDrive. All rights reserved.</p>
-          <p>Equal Housing Opportunity &middot; DRE License #00000000</p>
+          <p>
+            &copy; {year} {company}. All rights reserved.
+          </p>
+          <p>Equal Housing Opportunity &middot; {license}</p>
         </div>
       </div>
     </footer>

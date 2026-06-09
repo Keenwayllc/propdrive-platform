@@ -10,7 +10,7 @@ import { ArrowUpRight, MapPin, TrendingUp, Sparkles } from "lucide-react";
 import LeadForm from "@/components/lead-form";
 import PropertyCard from "@/components/property-card";
 import { Reveal, Stagger, StaggerItem, Magnetic } from "@/components/motion";
-import { getFeaturedProperties } from "@/lib/queries";
+import { getFeaturedProperties, getSiteSettings } from "@/lib/queries";
 
 const NEIGHBORHOODS = [
   "Beverly Hills",
@@ -32,7 +32,14 @@ const STATS: ReadonlyArray<{ value: string; label: string }> = [
 ];
 
 export default async function HomePage() {
-  const featured = await getFeaturedProperties(3);
+  const [featured, site] = await Promise.all([
+    getFeaturedProperties(3),
+    getSiteSettings(),
+  ]);
+  const heroTitle = site?.hero_title || "Find the home that feels like arrival.";
+  const heroSubtitle =
+    site?.hero_subtitle ||
+    "Hand-picked listings and local guidance from an advisor who knows every street from the Palisades to the Valley.";
 
   return (
     <>
@@ -63,15 +70,13 @@ export default async function HomePage() {
 
             <Reveal delay={0.08}>
               <h1 className="mt-6 font-display text-5xl font-medium leading-[0.98] tracking-tight text-ink sm:text-6xl lg:text-[4.75rem]">
-                Find the home that feels like{" "}
-                <span className="italic text-accent">arrival.</span>
+                {heroTitle}
               </h1>
             </Reveal>
 
             <Reveal delay={0.16}>
               <p className="mt-6 max-w-md text-lg leading-relaxed text-muted">
-                Hand-picked listings and local guidance from an advisor who knows
-                every street from the Palisades to the Valley.
+                {heroSubtitle}
               </p>
             </Reveal>
 

@@ -13,7 +13,13 @@ import {
   propertyInputSchema,
   leadStatusSchema,
   appointmentStatusSchema,
+  siteSettingsSchema,
+  brandSettingsSchema,
+  profileUpdateSchema,
   type PropertyInput,
+  type SiteSettingsInput,
+  type BrandSettingsInput,
+  type ProfileUpdateInput,
 } from "@/lib/form-schemas";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -137,6 +143,94 @@ export async function setLeadStatus(
   if (error) return { ok: false, error: "Could not update the lead." };
   revalidatePath("/dashboard/leads");
   revalidatePath("/dashboard");
+  return { ok: true };
+}
+
+/* --------------------------------------------------------------- Settings */
+
+/** Update the single site_settings row (marketing copy). */
+export async function updateSiteSettings(
+  input: SiteSettingsInput
+): Promise<MutationResult> {
+  const parsed = siteSettingsSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Please check the fields." };
+
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { data: existing } = await supabase
+    .from("site_settings")
+    .select("id")
+    .limit(1)
+    .maybeSingle();
+
+  const { error } = existing
+    ? await supabase.from("site_settings").update(parsed.data).eq("id", existing.id)
+    : await supabase.from("site_settings").insert(parsed.data);
+
+  if (error) {
+    console.error("[admin] updateSiteSettings", error.message);
+    return { ok: false, error: "Could not save settings." };
+  }
+  revalidatePath("/", "layout");
+  revalidatePath("/dashboard/website-editor");
+  return { ok: true };
+}
+
+/** Update the single brand_settings row (visual identity). */
+export async function updateBrandSettings(
+  input: BrandSettingsInput
+): Promise<MutationResult> {
+  const parsed = brandSettingsSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Please check the fields." };
+
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { data: existing } = await supabase
+    .from("brand_settings")
+    .select("id")
+    .limit(1)
+    .maybeSingle();
+
+  const { error } = existing
+    ? await supabase.from("brand_settings").update(parsed.data).eq("id", existing.id)
+    : await supabase.from("brand_settings").insert(parsed.data);
+
+  if (error) {
+    console.error("[admin] updateBrandSettings", error.message);
+    return { ok: false, error: "Could not save branding." };
+  }
+  revalidatePath("/", "layout");
+  revalidatePath("/dashboard/branding");
+  return { ok: true };
+}
+
+/** Update the signed-in agent's profile. */
+export async function updateProfile(
+  input: ProfileUpdateInput
+): Promise<MutationResult> {
+  const parsed = profileUpdateSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Please check the fields." };
+
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: NOT_AUTHED };
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ full_name: parsed.data.full_name })
+    .eq("id", user.id);
+
+  if (error) {
+    console.error("[admin] updateProfile", error.message);
+    return { ok: false, error: "Could not save your profile." };
+  }
+  revalidatePath("/dashboard/settings");
   return { ok: true };
 }
 
