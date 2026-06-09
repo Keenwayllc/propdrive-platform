@@ -19,7 +19,7 @@ import {
 const NEIGHBORHOOD_TILES = [
   { name: "Beverly Hills", slug: "beverly-hills", image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80" },
   { name: "Malibu", slug: "malibu", image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80" },
-  { name: "Santa Monica", slug: "santa-monica", image: "https://images.unsplash.com/photo-1505842465776-3d90f616310d?auto=format&fit=crop&w=800&q=80" },
+  { name: "Santa Monica", slug: "santa-monica", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" },
   { name: "Bel Air", slug: "bel-air", image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80" },
   { name: "Pacific Palisades", slug: "pacific-palisades", image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80" },
   { name: "Calabasas", slug: "calabasas", image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80" },
@@ -241,19 +241,16 @@ export default async function HomePage() {
           </StaggerItem>
 
           <StaggerItem>
-            <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-[1.75rem] border border-line bg-accent-soft p-7">
-              <svg
+            <div className="relative flex h-full min-h-[230px] flex-col justify-between overflow-hidden rounded-[1.75rem] border border-line bg-accent-soft p-7">
+              <Image
+                src="/hero/market-trend.png"
+                alt=""
                 aria-hidden="true"
-                viewBox="0 0 120 60"
-                className="pointer-events-none absolute right-4 top-4 h-16 w-28 text-accent/30"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M2 52 L26 40 L48 46 L72 22 L96 28 L118 6" />
-              </svg>
+                fill
+                sizes="(max-width: 1024px) 50vw, 30vw"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-tr from-accent-soft via-accent-soft/75 to-transparent" />
               <span className="relative text-xs font-semibold uppercase tracking-[0.18em] text-accent-strong">
                 On market
               </span>

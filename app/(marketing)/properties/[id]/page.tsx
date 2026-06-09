@@ -1,13 +1,14 @@
 /**
  * Property details page. Dynamic route — `params` is async in this Next version.
- * Fetches the listing from Supabase and renders gallery, specs, and a showing form.
+ * Fetches the listing from Supabase and renders a gallery, facts, and a showing
+ * request sidebar.
  */
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Bath, BedDouble, MapPin, Ruler, Check } from "lucide-react";
 import ScheduleShowingForm from "@/components/schedule-showing-form";
+import PropertyGallery from "@/components/property-gallery";
 import { Reveal } from "@/components/motion";
 import { getPropertyById } from "@/lib/queries";
 
@@ -48,10 +49,21 @@ export default async function PropertyDetailsPage({
   const property = await getPropertyById(id);
   if (!property) notFound();
 
-  const [cover, ...rest] = property.image_urls;
+  const statusLabel = STATUS_LABELS[property.status] ?? property.status;
+  const facts: Array<{ label: string; value: string }> = [
+    { label: "Type", value: property.property_type.replace("_", " ") },
+    { label: "Status", value: statusLabel },
+    { label: "Bedrooms", value: String(property.bedrooms) },
+    { label: "Bathrooms", value: String(property.bathrooms) },
+    { label: "Interior", value: `${property.square_feet.toLocaleString()} sqft` },
+    {
+      label: "Lot size",
+      value: property.lot_size ? `${property.lot_size} acres` : "—",
+    },
+  ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16">
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-14">
       <Link
         href="/properties"
         className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
@@ -59,90 +71,87 @@ export default async function PropertyDetailsPage({
         <ArrowLeft className="h-4 w-4" /> Back to listings
       </Link>
 
-      <div className="mt-8 grid gap-10 lg:grid-cols-3">
-        <Reveal className="lg:col-span-2">
-          {/* Gallery */}
-          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[1.75rem] border border-line bg-line">
-            {cover ? (
-              <Image
-                src={cover}
-                alt={property.title}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 66vw"
-                className="object-cover"
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center text-faint">
-                No photos yet
-              </div>
-            )}
-            <span className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-xs font-semibold text-ink backdrop-blur">
-              {STATUS_LABELS[property.status] ?? property.status}
-            </span>
+      <Reveal>
+        <div className="mt-6">
+          <PropertyGallery
+            images={property.image_urls}
+            title={property.title}
+            statusLabel={statusLabel}
+          />
+        </div>
+      </Reveal>
+
+      <div className="mt-10 grid gap-12 lg:grid-cols-[1.7fr_1fr]">
+        {/* Details */}
+        <div>
+          <p className="font-mono text-3xl font-semibold text-ink sm:text-4xl">
+            {currency.format(property.price)}
+          </p>
+          <h1 className="mt-2 font-display text-3xl font-medium tracking-tight text-ink sm:text-4xl">
+            {property.title}
+          </h1>
+          <p className="mt-2 flex items-center gap-1.5 text-muted">
+            <MapPin className="h-4 w-4 text-accent" />
+            {property.address ? `${property.address}, ` : ""}
+            {property.city}, {property.state} {property.zip}
+          </p>
+
+          <div className="mt-7 flex flex-wrap gap-x-8 gap-y-3 border-y border-line py-5">
+            <Stat icon={<BedDouble className="h-5 w-5" />} value={`${property.bedrooms} beds`} />
+            <Stat icon={<Bath className="h-5 w-5" />} value={`${property.bathrooms} baths`} />
+            <Stat icon={<Ruler className="h-5 w-5" />} value={`${property.square_feet.toLocaleString()} sqft`} />
           </div>
-          {rest.length > 0 && (
-            <div className="mt-3 grid grid-cols-3 gap-3">
-              {rest.slice(0, 3).map((url, i) => (
-                <div
-                  key={url}
-                  className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-line bg-line"
-                >
-                  <Image
-                    src={url}
-                    alt={`${property.title} photo ${i + 2}`}
-                    fill
-                    sizes="(max-width: 1024px) 33vw, 22vw"
-                    className="object-cover"
-                  />
-                </div>
-              ))}
+
+          <p className="mt-7 max-w-prose text-lg leading-relaxed text-muted">
+            {property.description}
+          </p>
+
+          {/* Facts */}
+          <dl className="mt-8 grid grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-3">
+            {facts.map((f) => (
+              <div key={f.label} className="border-t border-line pt-3">
+                <dt className="text-xs uppercase tracking-[0.12em] text-faint">
+                  {f.label}
+                </dt>
+                <dd className="mt-1 font-medium capitalize text-ink">{f.value}</dd>
+              </div>
+            ))}
+          </dl>
+
+          {property.features.length > 0 && (
+            <div className="mt-10">
+              <h2 className="font-display text-xl font-medium tracking-tight text-ink">
+                Features
+              </h2>
+              <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
+                {property.features.map((feature) => (
+                  <li key={feature} className="flex items-center gap-2.5 text-muted">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-soft text-accent">
+                      <Check className="h-3 w-3" />
+                    </span>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
+        </div>
 
-          {/* Header + specs */}
-          <div className="mt-8">
-            <p className="font-mono text-3xl font-semibold text-ink">
-              {currency.format(property.price)}
-            </p>
-            <h1 className="mt-2 font-display text-3xl font-medium tracking-tight text-ink sm:text-4xl">
-              {property.title}
-            </h1>
-            <p className="mt-2 flex items-center gap-1.5 text-muted">
-              <MapPin className="h-4 w-4 text-accent" />
-              {property.address}, {property.city}, {property.state} {property.zip}
-            </p>
-
-            <div className="mt-6 flex flex-wrap gap-6 border-y border-line py-5 text-ink">
-              <Spec icon={<BedDouble className="h-5 w-5" />} label={`${property.bedrooms} beds`} />
-              <Spec icon={<Bath className="h-5 w-5" />} label={`${property.bathrooms} baths`} />
-              <Spec icon={<Ruler className="h-5 w-5" />} label={`${property.square_feet.toLocaleString()} sqft`} />
-            </div>
-
-            <p className="mt-6 text-lg leading-relaxed text-muted">
-              {property.description}
-            </p>
-
-            {property.features.length > 0 && (
-              <div className="mt-8">
-                <h2 className="font-display text-xl font-medium tracking-tight text-ink">
-                  Features
-                </h2>
-                <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-                  {property.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2 text-muted">
-                      <Check className="h-4 w-4 text-accent" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </Reveal>
-
-        <aside className="lg:col-span-1">
+        {/* Booking sidebar */}
+        <aside>
           <div className="lg:sticky lg:top-24">
+            <div className="mb-4 rounded-[1.5rem] border border-line bg-surface p-6">
+              <p className="text-xs uppercase tracking-[0.14em] text-faint">
+                Asking price
+              </p>
+              <p className="mt-1 font-mono text-3xl font-semibold text-ink">
+                {currency.format(property.price)}
+              </p>
+              <p className="mt-1 text-sm text-muted">
+                {property.bedrooms} bd · {property.bathrooms} ba ·{" "}
+                {property.square_feet.toLocaleString()} sqft
+              </p>
+            </div>
             <ScheduleShowingForm propertyLabel={property.map_address || property.title} />
           </div>
         </aside>
@@ -151,11 +160,11 @@ export default async function PropertyDetailsPage({
   );
 }
 
-function Spec({ icon, label }: { icon: React.ReactNode; label: string }) {
+function Stat({ icon, value }: { icon: React.ReactNode; value: string }) {
   return (
-    <span className="flex items-center gap-2 font-medium">
+    <span className="flex items-center gap-2 font-medium text-ink">
       <span className="text-accent">{icon}</span>
-      {label}
+      {value}
     </span>
   );
 }

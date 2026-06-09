@@ -34,6 +34,25 @@ export async function getActiveProperties(): Promise<Property[]> {
   return (data ?? []) as Property[];
 }
 
+/** Active listings matching an area name (city / address / title contains). */
+export async function getPropertiesByArea(area: string): Promise<Property[]> {
+  const supabase = await createServerSupabase();
+  const like = `*${area}*`;
+  const { data, error } = await supabase
+    .from("properties")
+    .select("*")
+    .eq("active", true)
+    .or(`city.ilike.${like},address.ilike.${like},title.ilike.${like}`)
+    .order("featured", { ascending: false })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("[queries] getPropertiesByArea", error.message);
+    return [];
+  }
+  return (data ?? []) as Property[];
+}
+
 /** Featured active listings for the home page. */
 export async function getFeaturedProperties(limit = 3): Promise<Property[]> {
   const supabase = await createServerSupabase();

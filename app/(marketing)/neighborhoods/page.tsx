@@ -1,34 +1,21 @@
 /**
- * Neighborhoods index. Links to individual neighborhood pages.
- * Phase 1 uses a static list; Phase 2 can drive this from the database.
+ * Neighborhoods index — an editorial grid of image-led neighborhood tiles.
  */
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
+import { NEIGHBORHOODS } from "@/lib/neighborhoods";
 
 export const metadata: Metadata = {
   title: "Neighborhoods",
   description: "Explore the neighborhoods of Los Angeles County.",
 };
 
-const NEIGHBORHOODS: ReadonlyArray<{ name: string; blurb: string }> = [
-  { name: "Beverly Hills", blurb: "Iconic estates, flats, and the 90210 address." },
-  { name: "Bel Air", blurb: "Gated privacy and trophy homes above the city." },
-  { name: "Santa Monica", blurb: "Beach-close living, walkable, and bright." },
-  { name: "Malibu", blurb: "27 miles of coastline, canyons, and ocean views." },
-  { name: "Westwood", blurb: "Village energy next to UCLA and the Wilshire corridor." },
-  { name: "Pacific Palisades", blurb: "Village charm, bluffs, and family roots." },
-  { name: "Calabasas", blurb: "Hidden Hills luxury and gated valley estates." },
-  { name: "Brentwood", blurb: "Quiet, leafy, and effortlessly upscale." },
-  { name: "Encino", blurb: "Spacious San Fernando Valley living with great value." },
-];
-
-function toSlug(name: string): string {
-  return name.toLowerCase().replace(/\s+/g, "-");
-}
-
 export default function NeighborhoodsPage() {
+  const [featured, ...rest] = NEIGHBORHOODS;
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-24">
       <Reveal>
@@ -40,25 +27,65 @@ export default function NeighborhoodsPage() {
             Find your corner of the city.
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-muted">
-            From the coast to the canyons — the areas that make LA worth calling home.
+            From the coast to the canyons, the areas that make LA worth calling home.
           </p>
         </header>
       </Reveal>
 
-      <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {NEIGHBORHOODS.map((n) => (
-          <StaggerItem key={n.name}>
+      {/* Featured neighborhood */}
+      <Reveal>
+        <Link
+          href={`/neighborhoods/${featured.slug}`}
+          className="group relative block aspect-[16/10] w-full overflow-hidden rounded-[2rem] border border-line bg-ink sm:aspect-[21/9]"
+        >
+          <Image
+            src={featured.image}
+            alt={featured.name}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover opacity-85 transition-transform duration-[700ms] ease-out group-hover:scale-[1.04]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-transparent" />
+          <div className="absolute inset-x-6 bottom-6 sm:inset-x-10 sm:bottom-10">
+            <h2 className="font-display text-3xl font-medium tracking-tight text-white sm:text-4xl">
+              {featured.name}
+            </h2>
+            <p className="mt-2 max-w-md text-sm leading-relaxed text-white/75">
+              {featured.blurb}
+            </p>
+            <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-white">
+              View homes
+              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </span>
+          </div>
+        </Link>
+      </Reveal>
+
+      {/* The rest */}
+      <Stagger className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        {rest.map((n) => (
+          <StaggerItem key={n.slug}>
             <Link
-              href={`/neighborhoods/${toSlug(n.name)}`}
-              className="group flex h-full flex-col justify-between rounded-[1.5rem] border border-line bg-surface p-7 transition-colors hover:border-accent/40"
+              href={`/neighborhoods/${n.slug}`}
+              className="group relative block aspect-[4/5] overflow-hidden rounded-2xl border border-line bg-ink"
             >
-              <div className="flex items-start justify-between">
-                <span className="font-display text-xl font-medium tracking-tight text-ink">
+              <Image
+                src={n.image}
+                alt={n.name}
+                fill
+                sizes="(max-width: 768px) 50vw, 25vw"
+                className="object-cover opacity-80 transition-transform duration-[600ms] ease-out group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/20 to-transparent" />
+              <div className="absolute inset-x-4 bottom-4">
+                <h3 className="font-display text-lg font-medium leading-tight text-white">
                   {n.name}
-                </span>
-                <ArrowUpRight className="h-5 w-5 text-faint transition-all group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </h3>
+                <p className="mt-1 line-clamp-2 text-xs leading-snug text-white/70">
+                  {n.blurb}
+                </p>
               </div>
-              <p className="mt-6 text-sm leading-relaxed text-muted">{n.blurb}</p>
             </Link>
           </StaggerItem>
         ))}
