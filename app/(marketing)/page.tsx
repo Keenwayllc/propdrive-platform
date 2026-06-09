@@ -6,11 +6,45 @@
  */
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, MapPin, TrendingUp, Sparkles } from "lucide-react";
+import { ArrowUpRight, MapPin, TrendingUp, Sparkles, Star, Quote } from "lucide-react";
 import LeadForm from "@/components/lead-form";
 import PropertyCard from "@/components/property-card";
 import { Reveal, Stagger, StaggerItem, Magnetic } from "@/components/motion";
-import { getFeaturedProperties, getSiteSettings } from "@/lib/queries";
+import {
+  getFeaturedProperties,
+  getSiteSettings,
+  getBrandSettings,
+} from "@/lib/queries";
+
+const NEIGHBORHOOD_TILES = [
+  { name: "Beverly Hills", slug: "beverly-hills", image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80" },
+  { name: "Malibu", slug: "malibu", image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80" },
+  { name: "Santa Monica", slug: "santa-monica", image: "https://images.unsplash.com/photo-1505842465776-3d90f616310d?auto=format&fit=crop&w=800&q=80" },
+  { name: "Bel Air", slug: "bel-air", image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80" },
+  { name: "Pacific Palisades", slug: "pacific-palisades", image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80" },
+  { name: "Calabasas", slug: "calabasas", image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80" },
+];
+
+const TESTIMONIALS = [
+  {
+    quote:
+      "Priya found us a Westwood condo before it ever hit the market. Calm, sharp, and three steps ahead the whole way.",
+    name: "Priya Raghunathan",
+    detail: "Bought in Westwood",
+  },
+  {
+    quote:
+      "Sold our Bel Air home in nine days, over ask. The staging advice and pricing were exactly right.",
+    name: "Marcus Delacroix",
+    detail: "Sold in Bel Air",
+  },
+  {
+    quote:
+      "First-time buyers and totally overwhelmed — until we had someone who actually knew Santa Monica block by block.",
+    name: "Elena Vásquez-Moreau",
+    detail: "Bought in Santa Monica",
+  },
+];
 
 const NEIGHBORHOODS = [
   "Beverly Hills",
@@ -32,14 +66,24 @@ const STATS: ReadonlyArray<{ value: string; label: string }> = [
 ];
 
 export default async function HomePage() {
-  const [featured, site] = await Promise.all([
+  const [featured, site, brand] = await Promise.all([
     getFeaturedProperties(3),
     getSiteSettings(),
+    getBrandSettings(),
   ]);
   const heroTitle = site?.hero_title || "Find the home that feels like arrival.";
   const heroSubtitle =
     site?.hero_subtitle ||
     "Hand-picked listings and local guidance from an advisor who knows every street from the Palisades to the Valley.";
+
+  const agentName = brand?.agent_name || "Sophia Carter";
+  const brokerage = brand?.brokerage_name || site?.company_name || "California Realty Group";
+  const agentPhoto =
+    brand?.agent_photo_url ||
+    "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=800&q=80";
+  const agentBio =
+    (site?.about_text && site.about_text.split(/\n{2,}/)[0]) ||
+    "With deep roots across Los Angeles, I help buyers and sellers move with confidence — from first showings to closing day.";
 
   return (
     <>
@@ -244,6 +288,54 @@ export default async function HomePage() {
         </Stagger>
       </section>
 
+      {/* ------------------------------------------------------- Neighborhoods */}
+      <section className="border-t border-line bg-background">
+        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28">
+          <Reveal>
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+                  Where you&apos;ll live
+                </p>
+                <h2 className="mt-3 font-display text-3xl font-medium tracking-tight text-ink sm:text-4xl">
+                  Explore LA by neighborhood
+                </h2>
+              </div>
+              <Link
+                href="/neighborhoods"
+                className="hidden shrink-0 items-center gap-1.5 text-sm font-semibold text-accent hover:underline sm:inline-flex"
+              >
+                All neighborhoods
+                <ArrowUpRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </Reveal>
+
+          <Stagger className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+            {NEIGHBORHOOD_TILES.map((n) => (
+              <StaggerItem key={n.slug}>
+                <Link
+                  href={`/neighborhoods/${n.slug}`}
+                  className="group relative block aspect-[3/4] overflow-hidden rounded-2xl border border-line bg-ink"
+                >
+                  <Image
+                    src={n.image}
+                    alt={n.name}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 16vw"
+                    className="object-cover opacity-80 transition-transform duration-[600ms] ease-out group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/20 to-transparent" />
+                  <span className="absolute inset-x-3 bottom-3 font-display text-sm font-medium leading-tight text-white">
+                    {n.name}
+                  </span>
+                </Link>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </section>
+
       {/* ----------------------------------------------------- Featured listings */}
       {featured.length > 0 && (
         <section className="border-t border-line bg-surface/40">
@@ -278,6 +370,92 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* ----------------------------------------------------------- Agent intro */}
+      <section className="border-t border-line bg-background">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[0.8fr_1fr] lg:gap-16 lg:py-28">
+          <Reveal className="relative">
+            <div className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-[2rem] border border-line bg-line">
+              <Image
+                src={agentPhoto}
+                alt={agentName}
+                fill
+                sizes="(max-width: 1024px) 100vw, 35vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="pd-float absolute -bottom-5 right-4 rounded-2xl border border-line bg-surface/95 px-5 py-3 shadow-[0_20px_40px_-20px_rgba(26,23,20,0.35)] backdrop-blur sm:right-0 lg:right-8">
+              <p className="font-mono text-2xl font-semibold text-ink">127</p>
+              <p className="text-xs text-muted">homes closed</p>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+              Your advisor · {brokerage}
+            </p>
+            <h2 className="mt-3 font-display text-4xl font-medium tracking-tight text-ink sm:text-5xl">
+              Meet {agentName}.
+            </h2>
+            <p className="mt-5 max-w-md text-lg leading-relaxed text-muted">
+              {agentBio}
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="/about"
+                className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-background transition-colors hover:bg-accent active:translate-y-px"
+              >
+                More about me
+                <ArrowUpRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/contact"
+                className="inline-flex items-center rounded-full border border-line px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-surface active:translate-y-px"
+              >
+                Get in touch
+              </Link>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------- Testimonials */}
+      <section className="bg-ink text-background">
+        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28">
+          <Reveal>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+              Client stories
+            </p>
+            <h2 className="mt-3 max-w-2xl font-display text-3xl font-medium tracking-tight text-white sm:text-4xl">
+              Loved by buyers and sellers across LA.
+            </h2>
+          </Reveal>
+
+          <Stagger className="mt-12 grid gap-5 md:grid-cols-3">
+            {TESTIMONIALS.map((t) => (
+              <StaggerItem key={t.name}>
+                <figure className="flex h-full flex-col justify-between rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-7 backdrop-blur">
+                  <div>
+                    <Quote className="h-7 w-7 text-accent" />
+                    <blockquote className="mt-4 text-lg leading-relaxed text-white/85">
+                      {t.quote}
+                    </blockquote>
+                  </div>
+                  <figcaption className="mt-6 border-t border-white/10 pt-5">
+                    <div className="mb-2 flex gap-0.5 text-accent">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star key={i} className="h-3.5 w-3.5 fill-current" />
+                      ))}
+                    </div>
+                    <p className="font-medium text-white">{t.name}</p>
+                    <p className="text-sm text-white/55">{t.detail}</p>
+                  </figcaption>
+                </figure>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </section>
 
       {/* ------------------------------------------------------- Lead capture */}
       <section className="border-t border-line bg-surface/50">
