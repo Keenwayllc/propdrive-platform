@@ -35,6 +35,21 @@ export const metadata: Metadata = {
     url: "https://getpropdrive.com",
     siteName: "PropDrive",
     type: "website",
+    images: [
+      {
+        url: "/hero/hero-banner.png",
+        width: 2048,
+        height: 1152,
+        alt: "PropDrive — luxury Los Angeles real estate",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PropDrive — The real estate lead platform built for agents",
+    description:
+      "Property listings, lead CRM, branding editor, and AI tools for modern real estate agents.",
+    images: ["/hero/hero-banner.png"],
   },
 };
 
