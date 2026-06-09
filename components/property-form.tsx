@@ -8,6 +8,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import ImageUpload from "@/components/image-upload";
 import { createProperty, updateProperty } from "@/lib/admin-actions";
 import type { PropertyInput } from "@/lib/form-schemas";
 import type { Property, PropertyStatus, PropertyType } from "@/lib/types";
@@ -27,7 +28,6 @@ interface PropertyFormValues {
   status: PropertyStatus;
   description: string;
   features: string;
-  image_urls: string;
   map_address: string;
   featured: boolean;
   active: boolean;
@@ -65,7 +65,6 @@ function toDefaults(property?: Property): PropertyFormValues {
     status: property?.status ?? "active",
     description: property?.description ?? "",
     features: (property?.features ?? []).join("\n"),
-    image_urls: (property?.image_urls ?? []).join("\n"),
     map_address: property?.map_address ?? "",
     featured: property?.featured ?? false,
     active: property?.active ?? true,
@@ -87,6 +86,7 @@ export default function PropertyForm({ property }: PropertyFormProps) {
   const router = useRouter();
   const isEdit = Boolean(property);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [imageUrls, setImageUrls] = useState<string[]>(property?.image_urls ?? []);
 
   const {
     register,
@@ -111,7 +111,7 @@ export default function PropertyForm({ property }: PropertyFormProps) {
       status: values.status,
       description: values.description,
       features: splitLines(values.features),
-      image_urls: splitLines(values.image_urls),
+      image_urls: imageUrls,
       map_address: values.map_address,
       featured: values.featured,
       active: values.active,
@@ -196,14 +196,11 @@ export default function PropertyForm({ property }: PropertyFormProps) {
         <textarea rows={4} {...register("description")} className="form-input" />
       </Field>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Features (one per line)">
-          <textarea rows={5} {...register("features")} className="form-input" placeholder={"Infinity pool\nChef's kitchen"} />
-        </Field>
-        <Field label="Image URLs (one per line)">
-          <textarea rows={5} {...register("image_urls")} className="form-input" placeholder={"https://...\nhttps://..."} />
-        </Field>
-      </div>
+      <Field label="Features (one per line)">
+        <textarea rows={5} {...register("features")} className="form-input" placeholder={"Infinity pool\nChef's kitchen"} />
+      </Field>
+
+      <ImageUpload label="Photos" value={imageUrls} onChange={setImageUrls} />
 
       <div className="flex flex-wrap gap-6">
         <label className="flex items-center gap-2 text-sm font-medium text-ink">

@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "images.pexels.com" },
+      // Supabase Storage (uploaded listing photos). Wildcard keeps it portable
+      // for the buyer's own project after transfer.
+      { protocol: "https", hostname: "**.supabase.co" },
     ],
   },
 };

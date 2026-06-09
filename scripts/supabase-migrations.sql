@@ -274,5 +274,29 @@ select 'California Realty Group', 'Sophia Carter', 'California Realty Group'
 where not exists (select 1 from public.brand_settings);
 
 -- =============================================================================
+-- Storage — public bucket for listing photos
+-- =============================================================================
+-- Anyone can read (public site); only authenticated agents can upload/manage.
+insert into storage.buckets (id, name, public)
+values ('property-images', 'property-images', true)
+on conflict (id) do nothing;
+
+drop policy if exists "public read property images" on storage.objects;
+create policy "public read property images" on storage.objects
+  for select using (bucket_id = 'property-images');
+
+drop policy if exists "auth upload property images" on storage.objects;
+create policy "auth upload property images" on storage.objects
+  for insert to authenticated with check (bucket_id = 'property-images');
+
+drop policy if exists "auth update property images" on storage.objects;
+create policy "auth update property images" on storage.objects
+  for update to authenticated using (bucket_id = 'property-images');
+
+drop policy if exists "auth delete property images" on storage.objects;
+create policy "auth delete property images" on storage.objects
+  for delete to authenticated using (bucket_id = 'property-images');
+
+-- =============================================================================
 -- Done.
 -- =============================================================================
