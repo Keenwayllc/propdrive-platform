@@ -4,8 +4,29 @@
 import Link from "next/link";
 import { Users, CalendarCheck, Building2, TrendingUp, Inbox } from "lucide-react";
 import DashboardCard from "@/components/dashboard-card";
-import ChartExample from "@/components/chart-example";
+import LeadsChart, { type ChartPoint } from "@/components/leads-chart";
 import { getDashboardStats, getLeads } from "@/lib/queries";
+import type { Lead } from "@/lib/types";
+
+/** Real monthly lead counts for the last `months` calendar months. */
+function buildLeadsSeries(leads: Lead[], months = 6): ChartPoint[] {
+  const now = new Date();
+  const buckets = Array.from({ length: months }, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - (months - 1 - i), 1);
+    return {
+      key: `${d.getFullYear()}-${d.getMonth()}`,
+      month: d.toLocaleString("en-US", { month: "short" }),
+      leads: 0,
+    };
+  });
+  const index = new Map(buckets.map((b, i) => [b.key, i]));
+  for (const lead of leads) {
+    const d = new Date(lead.created_at);
+    const i = index.get(`${d.getFullYear()}-${d.getMonth()}`);
+    if (i !== undefined) buckets[i].leads += 1;
+  }
+  return buckets.map(({ month, leads }) => ({ month, leads }));
+}
 
 const TYPE_STYLES: Record<string, string> = {
   buyer: "bg-accent-soft text-accent",
@@ -17,6 +38,7 @@ const TYPE_STYLES: Record<string, string> = {
 export default async function DashboardOverviewPage() {
   const [stats, leads] = await Promise.all([getDashboardStats(), getLeads()]);
   const recent = leads.slice(0, 5);
+  const leadsSeries = buildLeadsSeries(leads);
 
   return (
     <div className="space-y-6">
@@ -35,7 +57,7 @@ export default async function DashboardOverviewPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <ChartExample />
+        <LeadsChart data={leadsSeries} />
 
         <div className="rounded-2xl border border-line bg-white p-5 shadow-[0_12px_30px_-22px_rgba(26,23,20,0.4)]">
           <div className="flex items-center justify-between">
