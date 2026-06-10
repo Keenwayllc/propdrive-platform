@@ -75,6 +75,7 @@ create trigger trg_site_settings_updated_at
 create table if not exists public.brand_settings (
   id               uuid primary key default gen_random_uuid(),
   logo_url         text,
+  logo_light_url   text,
   favicon_url      text,
   primary_color    text not null default '#1d4ed8',
   secondary_color  text not null default '#0f172a',

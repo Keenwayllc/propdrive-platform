@@ -46,6 +46,7 @@ export default function Footer({ site, brand }: FooterProps) {
   const company = site?.company_name || brand?.company_name || "PropDrive";
   const initial = company.trim().charAt(0).toUpperCase() || "P";
   const logoUrl = brand?.logo_url ?? null;
+  const logoLightUrl = brand?.logo_light_url ?? null;
   const tagline =
     site?.footer_text || "The real estate lead platform built for agents.";
   const license = brand?.license_number || "DRE License #00000000";
@@ -78,9 +79,17 @@ export default function Footer({ site, brand }: FooterProps) {
         <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
             <div className="flex items-center gap-2.5">
-              {logoUrl ? (
-                // Light chip guarantees contrast for any uploaded logo on the
-                // dark footer. eslint-disable-next-line @next/next/no-img-element
+              {logoLightUrl ? (
+                // Brand-provided light logo — sits directly on the dark footer.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={logoLightUrl}
+                  alt={company}
+                  className="h-8 w-auto max-w-[190px] object-contain"
+                />
+              ) : logoUrl ? (
+                // No light version: place the main logo on a light chip so any
+                // logo stays legible on the dark background.
                 <span className="inline-flex items-center rounded-lg bg-background px-2.5 py-1.5">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img

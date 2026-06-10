@@ -130,6 +130,7 @@ export const brandSettingsSchema = z.object({
   license_number: z.string().default(""),
   brokerage_name: z.string().default(""),
   logo_url: z.string().nullable().default(null),
+  logo_light_url: z.string().nullable().default(null),
   agent_photo_url: z.string().nullable().default(null),
 });
 export type BrandSettingsInput = z.infer<typeof brandSettingsSchema>;

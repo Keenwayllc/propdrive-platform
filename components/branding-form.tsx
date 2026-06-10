@@ -21,6 +21,7 @@ function toInput(b: BrandSettings | null): BrandSettingsInput {
     license_number: b?.license_number ?? "",
     brokerage_name: b?.brokerage_name ?? "",
     logo_url: b?.logo_url ?? null,
+    logo_light_url: b?.logo_light_url ?? null,
     agent_photo_url: b?.agent_photo_url ?? null,
   };
 }
@@ -93,6 +94,19 @@ export default function BrandingForm({
           value={form.logo_url ? [form.logo_url] : []}
           onChange={(urls) => set("logo_url", urls[urls.length - 1] ?? null)}
         />
+        <div>
+          <ImageUpload
+            label="Logo — light version (for dark backgrounds)"
+            multiple={false}
+            value={form.logo_light_url ? [form.logo_light_url] : []}
+            onChange={(urls) => set("logo_light_url", urls[urls.length - 1] ?? null)}
+          />
+          <p className="mt-2 text-xs leading-relaxed text-faint">
+            Optional. A white or light version of your logo, shown on dark
+            sections like the footer. If you skip this, we automatically place
+            your main logo on a light background so it stays legible.
+          </p>
+        </div>
         <ImageUpload
           label="Agent photo"
           multiple={false}

@@ -51,6 +51,7 @@ export interface SocialLinks {
 export interface BrandSettings {
   id: string;
   logo_url: string | null;
+  logo_light_url: string | null;
   favicon_url: string | null;
   primary_color: string;
   secondary_color: string;
