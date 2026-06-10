@@ -112,13 +112,13 @@ export default async function NeighborhoodDetailPage({
 
       {/* Stats */}
       <section className="border-b border-line bg-surface">
-        <dl className="mx-auto grid max-w-7xl grid-cols-3 divide-x divide-line px-4 sm:px-6">
+        <dl className="mx-auto grid max-w-7xl grid-cols-1 divide-y divide-line px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6">
           {stats.map((s) => (
-            <div key={s.label} className="px-2 py-7 text-center sm:py-9">
+            <div key={s.label} className="px-2 py-6 text-center sm:py-9">
               <dt className="text-xs uppercase tracking-[0.14em] text-faint">
                 {s.label}
               </dt>
-              <dd className="mt-2 font-mono text-2xl font-semibold text-ink sm:text-3xl">
+              <dd className="mt-1.5 font-mono text-2xl font-semibold tabular-nums text-ink sm:mt-2 sm:text-3xl">
                 {s.value}
               </dd>
             </div>
