@@ -6,6 +6,7 @@
 import type { CSSProperties } from "react";
 import Nav from "@/components/nav";
 import Footer from "@/components/footer";
+import ScrollToTop from "@/components/scroll-to-top";
 import { getSiteSettings, getBrandSettings } from "@/lib/queries";
 
 export default async function MarketingLayout({
@@ -30,6 +31,7 @@ export default async function MarketingLayout({
       <Nav companyName={companyName} />
       <main className="flex-1">{children}</main>
       <Footer site={site} brand={brand} />
+      <ScrollToTop />
     </div>
   );
 }

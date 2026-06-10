@@ -30,11 +30,44 @@
   --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
 }
 
+html {
+  /* Keep type stable on iOS rotate; smooth in-page anchor scrolling. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  /* Kill the grey tap-flash on touch, and any stray sideways scroll.
+   * `clip` guards overflow without creating a scroll container (sticky-safe). */
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: clip;
+  overscroll-behavior-y: none;
+}
+
+/* Media elements never blow out their container (belt-and-suspenders over the
+ * framework reset, for older Safari/Firefox). */
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* iOS Safari zooms the page when focusing a control whose text is < 16px.
+ * Force 16px on form fields at phone widths to prevent the jarring zoom. */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea,
+  .form-input {
+    font-size: 16px;
+  }
 }
 
 /* Fraunces is variable across optical size — unlock the high-opsz display cut

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -24,6 +24,16 @@ const fraunces = localFont({
     { path: "./fonts/Fraunces-Italic-Variable.ttf", style: "italic", weight: "100 900" },
   ],
 });
+
+// Explicit viewport: device-width, pinch-zoom preserved for a11y (no
+// maximum-scale lock), `cover` so content can use iPhone safe-area insets,
+// and a cream theme-color to tint the mobile browser chrome.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#faf7f2",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://getpropdrive.com"),

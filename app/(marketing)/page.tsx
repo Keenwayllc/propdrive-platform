@@ -104,7 +104,7 @@ export default async function HomePage() {
         </div>
 
         <div className="mx-auto flex min-h-[88svh] max-w-7xl items-center px-4 sm:px-6">
-          <div className="max-w-xl py-24">
+          <div className="w-full min-w-0 max-w-xl py-24">
             <Reveal>
               <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/80 px-3.5 py-1.5 text-xs font-medium text-muted backdrop-blur">
                 <MapPin className="h-3.5 w-3.5 text-accent" />
