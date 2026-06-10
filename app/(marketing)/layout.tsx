@@ -28,7 +28,7 @@ export default async function MarketingLayout({
 
   return (
     <div style={brandStyle} className="flex min-h-screen flex-col">
-      <Nav companyName={companyName} />
+      <Nav companyName={companyName} logoUrl={brand?.logo_url} />
       <main className="flex-1">{children}</main>
       <Footer site={site} brand={brand} />
       <ScrollToTop />

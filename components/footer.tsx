@@ -45,6 +45,7 @@ export default function Footer({ site, brand }: FooterProps) {
   const year = new Date().getFullYear();
   const company = site?.company_name || brand?.company_name || "PropDrive";
   const initial = company.trim().charAt(0).toUpperCase() || "P";
+  const logoUrl = brand?.logo_url ?? null;
   const tagline =
     site?.footer_text || "The real estate lead platform built for agents.";
   const license = brand?.license_number || "DRE License #00000000";
@@ -77,10 +78,25 @@ export default function Footer({ site, brand }: FooterProps) {
         <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
             <div className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-background text-ink">
-                <span className="font-display text-lg leading-none">{initial}</span>
-              </span>
-              <span className="text-lg font-semibold tracking-tight">{company}</span>
+              {logoUrl ? (
+                // Light chip guarantees contrast for any uploaded logo on the
+                // dark footer. eslint-disable-next-line @next/next/no-img-element
+                <span className="inline-flex items-center rounded-lg bg-background px-2.5 py-1.5">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={logoUrl}
+                    alt={company}
+                    className="h-7 w-auto max-w-[170px] object-contain"
+                  />
+                </span>
+              ) : (
+                <>
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-background text-ink">
+                    <span className="font-display text-lg leading-none">{initial}</span>
+                  </span>
+                  <span className="text-lg font-semibold tracking-tight">{company}</span>
+                </>
+              )}
             </div>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/55">
               {tagline}

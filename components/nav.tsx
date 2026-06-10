@@ -27,7 +27,13 @@ const NAV_LINKS: ReadonlyArray<{ href: string; label: string }> = [
   { href: "/contact", label: "Contact" },
 ];
 
-export default function Nav({ companyName = "PropDrive" }: { companyName?: string }) {
+export default function Nav({
+  companyName = "PropDrive",
+  logoUrl = null,
+}: {
+  companyName?: string;
+  logoUrl?: string | null;
+}) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
@@ -46,12 +52,25 @@ export default function Nav({ companyName = "PropDrive" }: { companyName?: strin
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
         <Link href="/" className="group flex items-center gap-2.5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-ink text-background transition-transform duration-300 group-hover:-rotate-6">
-            <span className="font-display text-lg leading-none">{initial}</span>
-          </span>
-          <span className="text-lg font-semibold tracking-tight text-ink">
-            {companyName}
-          </span>
+          {logoUrl ? (
+            // User-uploaded brand logo (arbitrary aspect) — plain img avoids
+            // next/image fixed-dimension constraints for white-label logos.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={logoUrl}
+              alt={companyName}
+              className="h-9 w-auto max-w-[200px] object-contain"
+            />
+          ) : (
+            <>
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-ink text-background transition-transform duration-300 group-hover:-rotate-6">
+                <span className="font-display text-lg leading-none">{initial}</span>
+              </span>
+              <span className="text-lg font-semibold tracking-tight text-ink">
+                {companyName}
+              </span>
+            </>
+          )}
         </Link>
 
         <ul className="hidden items-center gap-7 lg:flex">
