@@ -6,7 +6,7 @@
  */
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, MapPin, TrendingUp, Sparkles, Star, Quote } from "lucide-react";
+import { ArrowUpRight, MapPin, TrendingUp, Sparkles, Star, Quote, Handshake } from "lucide-react";
 import LeadForm from "@/components/lead-form";
 import PropertyCard from "@/components/property-card";
 import { Reveal, Stagger, StaggerItem, Magnetic } from "@/components/motion";
@@ -280,6 +280,16 @@ export default async function HomePage() {
               text="Useful updates when they matter. Silence when they don't."
               image="https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80"
               imageAlt="Calm, elegant living space"
+            />
+          </StaggerItem>
+
+          {/* Full-width on the 2-col tablet grid, single cell on the 3-col
+              desktop grid — keeps both layouts gap-free. */}
+          <StaggerItem className="sm:col-span-2 lg:col-span-1">
+            <BentoCard
+              icon={<Handshake className="h-5 w-5" />}
+              title="Concierge, start to close"
+              text="Staging, photography, paperwork, and negotiation, handled for you."
             />
           </StaggerItem>
         </Stagger>
