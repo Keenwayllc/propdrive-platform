@@ -60,9 +60,9 @@ export default function DashboardLayout({
   return (
     <div className="flex min-h-screen bg-background">
       <aside className="hidden w-64 shrink-0 border-r border-line bg-white lg:block">
-        <div className="flex h-16 items-center gap-2 border-b border-line px-6 font-semibold text-ink">
+        <div className="flex h-16 items-center gap-2 border-b border-line px-6 text-ink">
           <LogoBadge size={32} />
-          PropDrive
+          <span className="font-display text-xl tracking-tight">PropDrive</span>
         </div>
         <nav className="p-3">
           {NAV.map((item) => {

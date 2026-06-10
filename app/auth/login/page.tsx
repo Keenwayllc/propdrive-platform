@@ -47,9 +47,9 @@ function LoginForm() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
-        <Link href="/" className="mb-6 flex items-center justify-center gap-2 font-semibold text-ink">
+        <Link href="/" className="mb-6 flex items-center justify-center gap-2 text-ink">
           <LogoBadge size={36} />
-          PropDrive
+          <span className="font-display text-2xl tracking-tight">PropDrive</span>
         </Link>
 
         <form
