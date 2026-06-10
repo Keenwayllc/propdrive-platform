@@ -153,7 +153,9 @@ export async function updateSiteSettings(
   input: SiteSettingsInput
 ): Promise<MutationResult> {
   const parsed = siteSettingsSchema.safeParse(input);
-  if (!parsed.success) return { ok: false, error: "Please check the fields." };
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Please check the fields." };
+  }
 
   const supabase = await getAuthedClient();
   if (!supabase) return { ok: false, error: NOT_AUTHED };
@@ -182,7 +184,9 @@ export async function updateBrandSettings(
   input: BrandSettingsInput
 ): Promise<MutationResult> {
   const parsed = brandSettingsSchema.safeParse(input);
-  if (!parsed.success) return { ok: false, error: "Please check the fields." };
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Please check the fields." };
+  }
 
   const supabase = await getAuthedClient();
   if (!supabase) return { ok: false, error: NOT_AUTHED };

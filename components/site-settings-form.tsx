@@ -63,54 +63,82 @@ export default function SiteSettingsForm({
 
   return (
     <div className="space-y-6">
-      <Section title="Brand & hero">
-        <Field label="Company name">
-          <input value={form.company_name} onChange={(e) => set("company_name", e.target.value)} className="form-input" />
+      <Section
+        title="Brand & hero"
+        description="Your business name and the first thing visitors see at the top of your homepage."
+      >
+        <Field
+          label="Company name"
+          required
+          hint="Shown in your site header, footer, and the browser tab. This one is required."
+        >
+          <input value={form.company_name} onChange={(e) => set("company_name", e.target.value)} className="form-input" placeholder="e.g. California Realty Group" />
         </Field>
-        <Field label="Hero title">
-          <input value={form.hero_title} onChange={(e) => set("hero_title", e.target.value)} className="form-input" />
+        <Field
+          label="Hero title"
+          hint="The big headline on your homepage. Leave blank to use the default."
+        >
+          <input value={form.hero_title} onChange={(e) => set("hero_title", e.target.value)} className="form-input" placeholder="e.g. Find the home that feels like arrival." />
         </Field>
-        <Field label="Hero subtitle">
+        <Field
+          label="Hero subtitle"
+          hint="The supporting sentence right under the homepage headline."
+        >
           <textarea rows={2} value={form.hero_subtitle} onChange={(e) => set("hero_subtitle", e.target.value)} className="form-input" />
         </Field>
       </Section>
 
-      <Section title="About">
-        <Field label="About title">
-          <input value={form.about_title} onChange={(e) => set("about_title", e.target.value)} className="form-input" />
+      <Section
+        title="About"
+        description="The 'About' block on your homepage and About page."
+      >
+        <Field label="About title" hint="Heading for your About section.">
+          <input value={form.about_title} onChange={(e) => set("about_title", e.target.value)} className="form-input" placeholder="e.g. Meet your agent" />
         </Field>
-        <Field label="About text">
+        <Field
+          label="About text"
+          hint="A short bio or company description. A couple of short paragraphs works best."
+        >
           <textarea rows={4} value={form.about_text} onChange={(e) => set("about_text", e.target.value)} className="form-input" />
         </Field>
       </Section>
 
-      <Section title="Contact & footer">
+      <Section
+        title="Contact & footer"
+        description="How clients reach you. These appear on your contact page and in the footer."
+      >
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Phone">
-            <input value={form.contact_phone} onChange={(e) => set("contact_phone", e.target.value)} className="form-input" />
+          <Field label="Phone" hint="Shown on the contact page and footer.">
+            <input value={form.contact_phone} onChange={(e) => set("contact_phone", e.target.value)} className="form-input" placeholder="(310) 555-0148" />
           </Field>
-          <Field label="Email">
-            <input value={form.contact_email} onChange={(e) => set("contact_email", e.target.value)} className="form-input" />
+          <Field label="Email" hint="Where client inquiries should reach you.">
+            <input value={form.contact_email} onChange={(e) => set("contact_email", e.target.value)} className="form-input" placeholder="you@yourbrokerage.com" />
           </Field>
         </div>
-        <Field label="Office address">
+        <Field label="Office address" hint="Displayed on your contact page.">
           <input value={form.office_address} onChange={(e) => set("office_address", e.target.value)} className="form-input" />
         </Field>
-        <Field label="Footer tagline">
+        <Field
+          label="Footer tagline"
+          hint="The small line of text under your logo at the bottom of every page."
+        >
           <input value={form.footer_text} onChange={(e) => set("footer_text", e.target.value)} className="form-input" />
         </Field>
       </Section>
 
-      <Section title="Social links">
+      <Section
+        title="Social links"
+        description="Links to your profiles. Paste the full address, or leave a field blank to hide that icon."
+      >
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label="Facebook">
-            <input value={form.social_links.facebook} onChange={(e) => setSocial("facebook", e.target.value)} className="form-input" placeholder="https://" />
+            <input value={form.social_links.facebook} onChange={(e) => setSocial("facebook", e.target.value)} className="form-input" placeholder="https://facebook.com/yourpage" />
           </Field>
           <Field label="Instagram">
-            <input value={form.social_links.instagram} onChange={(e) => setSocial("instagram", e.target.value)} className="form-input" placeholder="https://" />
+            <input value={form.social_links.instagram} onChange={(e) => setSocial("instagram", e.target.value)} className="form-input" placeholder="https://instagram.com/yourhandle" />
           </Field>
           <Field label="LinkedIn">
-            <input value={form.social_links.linkedin} onChange={(e) => setSocial("linkedin", e.target.value)} className="form-input" placeholder="https://" />
+            <input value={form.social_links.linkedin} onChange={(e) => setSocial("linkedin", e.target.value)} className="form-input" placeholder="https://linkedin.com/in/you" />
           </Field>
         </div>
       </Section>
@@ -131,19 +159,44 @@ export default function SiteSettingsForm({
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description?: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="space-y-4 rounded-[1.5rem] border border-line bg-white p-6 shadow-sm">
-      <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-faint">{title}</h2>
+      <div>
+        <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-faint">{title}</h2>
+        {description && <p className="mt-1.5 text-xs leading-relaxed text-muted">{description}</p>}
+      </div>
       {children}
     </div>
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  hint,
+  required,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-ink">{label}</span>
+      <span className="mb-1 block text-sm font-medium text-ink">
+        {label}
+        {required && <span className="ml-1 text-accent">*</span>}
+      </span>
+      {hint && <span className="mb-1.5 block text-xs leading-relaxed text-faint">{hint}</span>}
       {children}
     </label>
   );
