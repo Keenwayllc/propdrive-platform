@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Fraunces } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,12 +13,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Editorial display serif — used only for marketing headlines (never dashboard).
-const fraunces = Fraunces({
+// Editorial display serif — self-hosted Fraunces (undercasetype/Fraunces).
+// Variable across weight + optical size; high opsz is unlocked for headlines
+// via the .font-display utility in globals.css.
+const fraunces = localFont({
   variable: "--font-fraunces",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
+  display: "swap",
+  src: [
+    { path: "./fonts/Fraunces-Variable.ttf", style: "normal", weight: "100 900" },
+    { path: "./fonts/Fraunces-Italic-Variable.ttf", style: "italic", weight: "100 900" },
+  ],
 });
 
 export const metadata: Metadata = {

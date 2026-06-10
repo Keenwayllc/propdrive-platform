@@ -37,6 +37,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Fraunces is variable across optical size — unlock the high-opsz display cut
+ * (dramatic, high-contrast serifs) wherever the display face is used. */
+.font-display {
+  font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+}
+
 /* Reusable form control — warm-tinted, clay focus ring. */
 @layer components {
   .form-input {

@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  Home,
   LayoutDashboard,
   Users,
   CalendarCheck,
@@ -23,6 +22,7 @@ import {
   LogOut,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { LogoBadge } from "@/components/logo";
 import { supabase } from "@/lib/supabase-client";
 import { signOut } from "@/lib/auth";
 
@@ -61,9 +61,7 @@ export default function DashboardLayout({
     <div className="flex min-h-screen bg-background">
       <aside className="hidden w-64 shrink-0 border-r border-line bg-white lg:block">
         <div className="flex h-16 items-center gap-2 border-b border-line px-6 font-semibold text-ink">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink text-white">
-            <Home className="h-5 w-5" />
-          </span>
+          <LogoBadge size={32} />
           PropDrive
         </div>
         <nav className="p-3">

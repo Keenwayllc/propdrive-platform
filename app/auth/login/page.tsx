@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Home } from "lucide-react";
+import { LogoBadge } from "@/components/logo";
 import { loginSchema, type LoginValues } from "@/lib/form-schemas";
 import { signIn } from "@/lib/auth";
 
@@ -48,9 +48,7 @@ function LoginForm() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         <Link href="/" className="mb-6 flex items-center justify-center gap-2 font-semibold text-ink">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-ink text-white">
-            <Home className="h-5 w-5" />
-          </span>
+          <LogoBadge size={36} />
           PropDrive
         </Link>
 

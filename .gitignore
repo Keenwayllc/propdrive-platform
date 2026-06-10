@@ -40,3 +40,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# brand working files (heavy binaries + scratch; canonical SVGs are tracked,
+# the build only consumes app/fonts + public/brand)
+/brand/Fraunces/static/
+/brand/logo.ai
+/brand/exports/
+/brand/*.png
+/brand/_*.js
+/brand/ChatGPT*.png
