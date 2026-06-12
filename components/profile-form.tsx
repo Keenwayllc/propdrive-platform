@@ -1,18 +1,16 @@
 "use client";
 
 /**
- * Account settings — edits the signed-in agent's profile name. Email is shown
- * read-only (managed by Supabase Auth).
+ * Account settings — edits the signed-in agent's display name. Email and
+ * password live in their own cards (see account-security-forms).
  */
 import { useState } from "react";
 import { updateProfile } from "@/lib/admin-actions";
 
 export default function ProfileForm({
   initialName,
-  email,
 }: {
   initialName: string;
-  email: string;
 }) {
   const [fullName, setFullName] = useState(initialName);
   const [saving, setSaving] = useState(false);
@@ -46,13 +44,8 @@ export default function ProfileForm({
           }}
           className="form-input"
         />
-      </label>
-
-      <label className="block">
-        <span className="mb-1.5 block text-sm font-medium text-ink">Email</span>
-        <input value={email} readOnly disabled className="form-input opacity-70" />
         <span className="mt-1 block text-xs text-faint">
-          Email is managed in Supabase Auth.
+          Shown on your public site and in client emails.
         </span>
       </label>
 

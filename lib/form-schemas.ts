@@ -141,6 +141,25 @@ export const profileUpdateSchema = z.object({
 });
 export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema>;
 
+/** Change the signed-in agent's login email. */
+export const emailUpdateSchema = z.object({
+  email: z.string().email("Enter a valid email address."),
+});
+export type EmailUpdateInput = z.infer<typeof emailUpdateSchema>;
+
+/** Change the signed-in agent's password (re-verifies the current one). */
+export const passwordUpdateSchema = z
+  .object({
+    current_password: z.string().min(1, "Enter your current password."),
+    new_password: z.string().min(8, "Use at least 8 characters."),
+    confirm_password: z.string().min(1, "Re-enter the new password."),
+  })
+  .refine((d) => d.new_password === d.confirm_password, {
+    message: "The new passwords don't match.",
+    path: ["confirm_password"],
+  });
+export type PasswordUpdateInput = z.infer<typeof passwordUpdateSchema>;
+
 export const leadStatusSchema = z.enum([
   "new",
   "contacted",

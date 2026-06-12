@@ -16,12 +16,16 @@ import {
   siteSettingsSchema,
   brandSettingsSchema,
   profileUpdateSchema,
+  emailUpdateSchema,
+  passwordUpdateSchema,
   type PropertyInput,
   type SiteSettingsInput,
   type BrandSettingsInput,
   type ProfileUpdateInput,
+  type EmailUpdateInput,
+  type PasswordUpdateInput,
 } from "@/lib/form-schemas";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 export interface MutationResult {
   ok: boolean;
@@ -235,6 +239,95 @@ export async function updateProfile(
     return { ok: false, error: "Could not save your profile." };
   }
   revalidatePath("/dashboard/settings");
+  return { ok: true };
+}
+
+/**
+ * Change the signed-in agent's login email. Supabase sends a confirmation
+ * link to the NEW address; the change only takes effect once they click it.
+ */
+export async function updateEmail(
+  input: EmailUpdateInput
+): Promise<MutationResult> {
+  const parsed = emailUpdateSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Enter a valid email." };
+  }
+
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: NOT_AUTHED };
+  if (user.email?.toLowerCase() === parsed.data.email.toLowerCase()) {
+    return { ok: false, error: "That's already your email address." };
+  }
+
+  const { error } = await supabase.auth.updateUser({ email: parsed.data.email });
+  if (error) {
+    console.error("[admin] updateEmail", error.message);
+    return { ok: false, error: error.message };
+  }
+  return { ok: true };
+}
+
+/**
+ * Change the signed-in agent's password. Verifies the current password first
+ * (via a throwaway stateless client so the live session cookies are untouched),
+ * then sets the new one.
+ */
+export async function updatePassword(
+  input: PasswordUpdateInput
+): Promise<MutationResult> {
+  const parsed = passwordUpdateSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Please check the fields." };
+  }
+
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user?.email) return { ok: false, error: NOT_AUTHED };
+
+  // Verify the current password without disturbing the cookie session.
+  const verifier = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
+    { auth: { persistSession: false, autoRefreshToken: false } }
+  );
+  const { error: verifyError } = await verifier.auth.signInWithPassword({
+    email: user.email,
+    password: parsed.data.current_password,
+  });
+  if (verifyError) {
+    return { ok: false, error: "Your current password is incorrect." };
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password: parsed.data.new_password,
+  });
+  if (error) {
+    console.error("[admin] updatePassword", error.message);
+    return { ok: false, error: error.message };
+  }
+  return { ok: true };
+}
+
+/** Sign the agent out of every device/session (global scope). */
+export async function signOutEverywhere(): Promise<MutationResult> {
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { error } = await supabase.auth.signOut({ scope: "global" });
+  if (error) {
+    console.error("[admin] signOutEverywhere", error.message);
+    return { ok: false, error: "Could not sign out other sessions." };
+  }
   return { ok: true };
 }
 
