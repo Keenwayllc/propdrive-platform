@@ -76,7 +76,7 @@ export default async function HomePage() {
     site?.hero_subtitle ||
     "Hand-picked listings and local guidance from an advisor who knows every street from the Palisades to the Valley.";
 
-  const agentName = brand?.agent_name || "Sophia Carter";
+  const agentName = brand?.agent_name || "Marcus Rivera";
   const brokerage = brand?.brokerage_name || site?.company_name || "California Realty Group";
   const agentPhoto =
     brand?.agent_photo_url ||
@@ -477,7 +477,7 @@ export default async function HomePage() {
               Tell us what you&apos;re looking for.
             </h2>
             <p className="mt-5 max-w-md text-lg leading-relaxed text-muted">
-              Share a few details and Sophia will follow up with homes that
+              Share a few details and Marcus will follow up with homes that
               actually fit — no spam, no obligation.
             </p>
             <ul className="mt-8 space-y-3 text-sm text-muted">

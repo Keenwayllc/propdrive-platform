@@ -89,7 +89,7 @@ export default function BrandingForm({
             <input value={form.company_name} onChange={(e) => set("company_name", e.target.value)} className="form-input" placeholder="e.g. California Realty Group" />
           </Field>
           <Field label="Agent name" hint="Shown in the homepage agent section and on listings.">
-            <input value={form.agent_name} onChange={(e) => set("agent_name", e.target.value)} className="form-input" placeholder="e.g. Sophia Carter" />
+            <input value={form.agent_name} onChange={(e) => set("agent_name", e.target.value)} className="form-input" placeholder="e.g. Marcus Rivera" />
           </Field>
           <Field label="Brokerage name" hint="Your brokerage, shown alongside your license.">
             <input value={form.brokerage_name} onChange={(e) => set("brokerage_name", e.target.value)} className="form-input" />

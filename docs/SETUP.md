@@ -92,7 +92,7 @@ Phase 1 — see [THIRD_PARTY_SERVICES.md](./THIRD_PARTY_SERVICES.md).
 
 ```sql
 insert into public.profiles (id, email, full_name, role)
-values ('<paste-user-uuid>', 'demo@getpropdrive.com', 'Sophia Carter', 'admin');
+values ('<paste-user-uuid>', 'demo@getpropdrive.com', 'Marcus Rivera', 'admin');
 ```
 
 > Authentication is fully wired in **Phase 2**. In Phase 1 the login form

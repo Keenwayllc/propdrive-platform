@@ -17,8 +17,8 @@ const STATS = [
 ];
 
 const DEFAULT_BIO = [
-  "With deep roots across Los Angeles, Sophia helps buyers and sellers navigate every step of their move. This is placeholder biography copy that the agent edits from the dashboard website editor.",
-  "From first-time buyers in Westwood to luxury sellers in Beverly Hills and Malibu, Sophia brings local market expertise, sharp negotiation, and white-glove service to every transaction.",
+  "With deep roots across Los Angeles, Marcus helps buyers and sellers navigate every step of their move. This is placeholder biography copy that the agent edits from the dashboard website editor.",
+  "From first-time buyers in Westwood to luxury sellers in Beverly Hills and Malibu, Marcus brings local market expertise, sharp negotiation, and white-glove service to every transaction.",
 ];
 
 export default async function AboutPage() {
@@ -27,7 +27,7 @@ export default async function AboutPage() {
     getBrandSettings(),
   ]);
 
-  const agentName = brand?.agent_name || "Sophia Carter";
+  const agentName = brand?.agent_name || "Marcus Rivera";
   const brokerage =
     brand?.brokerage_name || site?.company_name || "California Realty Group";
   const bioParagraphs =

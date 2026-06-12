@@ -6,12 +6,12 @@
   "demo_user": {
     "email": "demo@getpropdrive.com",
     "password": "<choose-a-strong-password-when-you-create-this-user>",
-    "full_name": "Sophia Carter",
+    "full_name": "Marcus Rivera",
     "role": "admin",
     "note": "Do NOT commit a real password. Create this user in Supabase Auth (Authentication > Users > Add user) with a password you choose, then insert a matching row into public.profiles using the same id."
   },
   "agent": {
-    "full_name": "Sophia Carter",
+    "full_name": "Marcus Rivera",
     "title": "Senior Real Estate Advisor",
     "brokerage_name": "California Realty Group",
     "license_number": "DRE# 02145789",

@@ -271,7 +271,7 @@ select 'California Realty Group',
 where not exists (select 1 from public.site_settings);
 
 insert into public.brand_settings (company_name, agent_name, brokerage_name)
-select 'California Realty Group', 'Sophia Carter', 'California Realty Group'
+select 'California Realty Group', 'Marcus Rivera', 'California Realty Group'
 where not exists (select 1 from public.brand_settings);
 
 -- =============================================================================
