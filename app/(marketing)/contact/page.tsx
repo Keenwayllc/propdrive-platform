@@ -16,7 +16,7 @@ export default async function ContactPage() {
   const site = await getSiteSettings();
   const CONTACT_DETAILS = [
     { icon: Phone, label: site?.contact_phone || "(310) 555-0148" },
-    { icon: Mail, label: site?.contact_email || "sophia@californiarealtygroup.com" },
+    { icon: Mail, label: site?.contact_email || "marcus@californiarealtygroup.com" },
     { icon: MapPin, label: site?.office_address || "9601 Wilshire Blvd, Beverly Hills, CA 90210" },
   ].filter((d) => d.label.trim() !== "");
 
