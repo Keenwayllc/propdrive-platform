@@ -290,6 +290,8 @@ export default async function HomePage() {
               icon={<Handshake className="h-5 w-5" />}
               title="Concierge, start to close"
               text="Staging, photography, paperwork, and negotiation, handled for you."
+              image="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=800&q=80"
+              imageAlt="Luxury home exterior at dusk"
             />
           </StaggerItem>
         </Stagger>
