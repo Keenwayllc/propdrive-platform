@@ -5,20 +5,38 @@
  * and the result with a copy button. Disabled until OpenAI is connected.
  */
 import { useState } from "react";
-import { ChevronDown, Loader2, Copy, Check, RotateCcw } from "lucide-react";
+import {
+  ChevronDown,
+  Loader2,
+  Copy,
+  Check,
+  RotateCcw,
+  FileText,
+  Megaphone,
+  Mail,
+  Sparkles,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { AiToolConfig } from "@/lib/ai-tools-config";
 import { runAiTool } from "@/lib/ai-actions";
 
+// Resolved here (client side) — a function/component can't be passed as a prop
+// from the server page across the RSC boundary.
+const TOOL_ICONS: Record<string, LucideIcon> = {
+  "listing-description": FileText,
+  "social-post": Megaphone,
+  "follow-up-email": Mail,
+  "neighborhood-highlights": Sparkles,
+};
+
 export default function AiToolCard({
   tool,
-  icon: Icon,
   connected,
 }: {
   tool: AiToolConfig;
-  icon: LucideIcon;
   connected: boolean;
 }) {
+  const Icon = TOOL_ICONS[tool.id] ?? Sparkles;
   const [values, setValues] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<string | null>(null);
