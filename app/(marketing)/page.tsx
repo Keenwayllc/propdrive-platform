@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, MapPin, TrendingUp, Sparkles, Star, Quote, Handshake } from "lucide-react";
 import HomeHero from "@/components/home-hero";
+import HomeHighlights from "@/components/home-highlights";
 import LeadForm from "@/components/lead-form";
 import PropertyCard from "@/components/property-card";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
@@ -209,6 +210,29 @@ export default async function HomePage() {
             />
           </StaggerItem>
         </Stagger>
+      </section>
+
+      {/* --------------------------------------------------- On the market band */}
+      <section className="border-t border-line bg-surface/40">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:py-28">
+          <Reveal>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+              On the market
+            </p>
+            <h2 className="mt-3 max-w-md font-display text-3xl font-medium tracking-tight text-ink sm:text-4xl">
+              Momentum you can feel.
+            </h2>
+            <p className="mt-5 max-w-md text-lg leading-relaxed text-muted">
+              New listings, fresh escrows, and over-ask closings — a steady
+              cadence across LA&apos;s best neighborhoods. Hover to see the
+              latest.
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.12} className="flex min-h-[22rem] items-center justify-center lg:justify-start">
+            <HomeHighlights />
+          </Reveal>
+        </div>
       </section>
 
       {/* ------------------------------------------------------- Neighborhoods */}
