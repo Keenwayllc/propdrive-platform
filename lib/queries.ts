@@ -7,6 +7,7 @@
  */
 import "server-only";
 import { createServerSupabase } from "@/lib/supabase-server";
+import { createServiceClient } from "@/lib/supabase-admin";
 import type {
   Appointment,
   BrandSettings,
@@ -153,10 +154,24 @@ export async function getOpenAiKeyStatus(): Promise<{
 }
 
 /**
- * The full OpenAI key for server-side use (future AI tools). Dashboard-stored
- * key wins; falls back to the Vercel env var. SERVER ONLY — never expose.
+ * The full OpenAI key for server-side use by the AI tools. Dashboard-stored key
+ * wins; falls back to the Vercel env var. SERVER ONLY — never expose.
+ *
+ * Reads via the service-role client so any signed-in user can run a tool even
+ * though integration_settings is admin-locked (the secret stays server-side).
+ * Falls back to the user session read when no service key is configured.
  */
 export async function getOpenAiKey(): Promise<string | null> {
+  const admin = createServiceClient();
+  if (admin) {
+    const { data } = await admin
+      .from("integration_settings")
+      .select("openai_api_key")
+      .eq("id", 1)
+      .maybeSingle();
+    return (data?.openai_api_key as string | null) ?? process.env.OPENAI_API_KEY ?? null;
+  }
+
   const supabase = await createServerSupabase();
   const { data } = await supabase
     .from("integration_settings")
