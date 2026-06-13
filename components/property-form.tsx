@@ -8,8 +8,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { Sparkles, Loader2 } from "lucide-react";
 import ImageUpload from "@/components/image-upload";
 import { createProperty, updateProperty } from "@/lib/admin-actions";
+import { runAiTool } from "@/lib/ai-actions";
 import type { PropertyInput } from "@/lib/form-schemas";
 import type { Property, PropertyStatus, PropertyType } from "@/lib/types";
 
@@ -87,12 +89,43 @@ export default function PropertyForm({ property }: PropertyFormProps) {
   const isEdit = Boolean(property);
   const [serverError, setServerError] = useState<string | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>(property?.image_urls ?? []);
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
+    getValues,
+    setValue,
     formState: { isSubmitting },
   } = useForm<PropertyFormValues>({ defaultValues: toDefaults(property) });
+
+  // Generate the description from the details already typed into the form,
+  // using the same listing-description tool from the AI Tools page.
+  async function generateDescription() {
+    setAiError(null);
+    const v = getValues();
+    const address = [v.title, v.address, v.city].filter(Boolean).join(", ");
+    if (!address.trim() || !v.features.trim()) {
+      setAiError("Add a title/address and at least one feature first.");
+      return;
+    }
+    setAiBusy(true);
+    const res = await runAiTool("listing-description", {
+      address,
+      beds: v.bedrooms,
+      baths: v.bathrooms,
+      sqft: v.square_feet,
+      price: v.price,
+      features: v.features,
+    });
+    setAiBusy(false);
+    if (!res.ok) {
+      setAiError(res.error);
+      return;
+    }
+    setValue("description", res.text, { shouldDirty: true });
+  }
 
   async function onSubmit(values: PropertyFormValues) {
     setServerError(null);
@@ -192,9 +225,30 @@ export default function PropertyForm({ property }: PropertyFormProps) {
         </Field>
       </div>
 
-      <Field label="Description">
+      <div>
+        <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
+          <span className="text-sm font-medium text-ink">Description</span>
+          <button
+            type="button"
+            onClick={generateDescription}
+            disabled={aiBusy}
+            className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent-soft px-3 py-1 text-xs font-semibold text-accent-strong transition-colors hover:bg-accent-soft/70 active:translate-y-px disabled:opacity-60"
+          >
+            {aiBusy ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Sparkles className="h-3.5 w-3.5" />
+            )}
+            {aiBusy ? "Writing…" : "Generate with AI"}
+          </button>
+        </div>
         <textarea rows={4} {...register("description")} className="form-input" />
-      </Field>
+        {aiError && <p className="mt-1.5 text-sm text-red-600">{aiError}</p>}
+        <p className="mt-1.5 text-xs text-faint">
+          Fill in the title, details, and features above, then let AI draft the
+          description — you can edit it after.
+        </p>
+      </div>
 
       <Field label="Features (one per line)">
         <textarea rows={5} {...register("features")} className="form-input" placeholder={"Infinity pool\nChef's kitchen"} />
