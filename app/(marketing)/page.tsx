@@ -7,9 +7,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, MapPin, TrendingUp, Sparkles, Star, Quote, Handshake } from "lucide-react";
+import HomeHero from "@/components/home-hero";
 import LeadForm from "@/components/lead-form";
 import PropertyCard from "@/components/property-card";
-import { Reveal, Stagger, StaggerItem, Magnetic } from "@/components/motion";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import {
   getFeaturedProperties,
   getSiteSettings,
@@ -59,12 +60,6 @@ const NEIGHBORHOODS = [
   "Sherman Oaks",
 ];
 
-const STATS: ReadonlyArray<{ value: string; label: string }> = [
-  { value: "127", label: "Homes closed" },
-  { value: "11", label: "Avg. days on market" },
-  { value: "98.2%", label: "Of list price" },
-];
-
 export default async function HomePage() {
   const [featured, site, brand] = await Promise.all([
     getFeaturedProperties(3),
@@ -88,88 +83,7 @@ export default async function HomePage() {
   return (
     <>
       {/* ----------------------------------------------------- Hero banner */}
-      <section className="relative isolate overflow-hidden">
-        {/* Generated banner + warm legibility gradients */}
-        <div className="absolute inset-0 -z-10">
-          <Image
-            src="/hero/hero-banner.png"
-            alt="Modern luxury estate overlooking Los Angeles at golden hour"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-[60%_center]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/75 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
-        </div>
-
-        <div className="mx-auto flex min-h-[88svh] max-w-7xl items-center px-4 sm:px-6">
-          <div className="w-full min-w-0 max-w-xl py-24">
-            <Reveal>
-              <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/80 px-3.5 py-1.5 text-xs font-medium text-muted backdrop-blur">
-                <MapPin className="h-3.5 w-3.5 text-accent" />
-                Los Angeles County, California
-              </span>
-            </Reveal>
-
-            <Reveal delay={0.08}>
-              <h1 className="mt-6 font-display text-5xl font-medium leading-[0.98] tracking-tight text-ink sm:text-6xl lg:text-[4.75rem]">
-                {heroTitle}
-              </h1>
-            </Reveal>
-
-            <Reveal delay={0.16}>
-              <p className="mt-6 max-w-md text-lg leading-relaxed text-muted">
-                {heroSubtitle}
-              </p>
-            </Reveal>
-
-            <Reveal delay={0.24}>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <Magnetic strength={0.4}>
-                  <Link
-                    href="/properties"
-                    className="group inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-semibold text-background transition-colors hover:bg-accent active:translate-y-px"
-                  >
-                    Browse listings
-                    <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </Link>
-                </Magnetic>
-                <Link
-                  href="/home-valuation"
-                  className="inline-flex items-center rounded-full border border-line bg-surface/70 px-6 py-3.5 text-sm font-semibold text-ink backdrop-blur transition-colors hover:bg-surface active:translate-y-px"
-                >
-                  What&apos;s my home worth?
-                </Link>
-              </div>
-            </Reveal>
-
-            <Reveal delay={0.32}>
-              <dl className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-line/80 pt-6">
-                {STATS.map((s) => (
-                  <div key={s.label}>
-                    <dt className="font-mono text-2xl font-semibold text-ink">
-                      {s.value}
-                    </dt>
-                    <dd className="mt-1 text-xs leading-snug text-muted">
-                      {s.label}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </Reveal>
-          </div>
-        </div>
-
-        {/* Floating listing badge over the architecture (large screens) */}
-        <div className="pd-float absolute bottom-10 right-8 hidden rounded-2xl border border-line bg-surface/90 p-4 shadow-[0_20px_40px_-20px_rgba(26,23,20,0.45)] backdrop-blur xl:block">
-          <p className="text-xs font-medium text-faint">Featured · Beverly Hills</p>
-          <p className="mt-0.5 font-mono text-lg font-semibold text-ink">
-            $6,450,000
-          </p>
-          <p className="text-xs text-muted">5 bd · 6 ba · canyon view</p>
-        </div>
-      </section>
+      <HomeHero title={heroTitle} subtitle={heroSubtitle} />
 
       {/* Kinetic neighborhood marquee */}
       <div className="border-y border-line bg-surface/60 py-4">
