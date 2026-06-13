@@ -5,6 +5,19 @@
 import { Inbox } from "lucide-react";
 import type { Lead } from "@/lib/types";
 import LeadStatusSelect from "@/components/lead-status-select";
+import LeadAiDraft from "@/components/lead-ai-draft";
+
+/** Compact context string for the AI follow-up from a lead's stored fields. */
+function leadContext(lead: Lead): string {
+  return [
+    lead.message ? `They wrote: ${lead.message}` : "",
+    lead.timeline ? `Timeline: ${lead.timeline}` : "",
+    lead.budget ? `Budget: ${lead.budget}` : "",
+    lead.preferred_contact ? `Prefers contact by ${lead.preferred_contact}` : "",
+  ]
+    .filter(Boolean)
+    .join(". ");
+}
 
 export interface LeadsTableProps {
   leads?: Lead[];
@@ -35,6 +48,7 @@ export default function LeadsTable({ leads = [] }: LeadsTableProps) {
             <th className="px-4 py-3 font-medium">Type</th>
             <th className="px-4 py-3 font-medium">Status</th>
             <th className="px-4 py-3 font-medium">Received</th>
+            <th className="px-4 py-3 font-medium">Follow-up</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-line">
@@ -51,6 +65,14 @@ export default function LeadsTable({ leads = [] }: LeadsTableProps) {
               </td>
               <td className="px-4 py-3 text-muted">
                 {new Date(lead.created_at).toLocaleDateString()}
+              </td>
+              <td className="px-4 py-3">
+                <LeadAiDraft
+                  name={lead.full_name}
+                  interest={lead.property_interest ?? lead.lead_type}
+                  context={leadContext(lead)}
+                  email={lead.email}
+                />
               </td>
             </tr>
           ))}
