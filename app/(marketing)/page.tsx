@@ -212,29 +212,6 @@ export default async function HomePage() {
         </Stagger>
       </section>
 
-      {/* --------------------------------------------------- On the market band */}
-      <section className="border-t border-line bg-surface/40">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:py-28">
-          <Reveal>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-              On the market
-            </p>
-            <h2 className="mt-3 max-w-md font-display text-3xl font-medium tracking-tight text-ink sm:text-4xl">
-              Momentum you can feel.
-            </h2>
-            <p className="mt-5 max-w-md text-lg leading-relaxed text-muted">
-              New listings, fresh escrows, and over-ask closings — a steady
-              cadence across LA&apos;s best neighborhoods. Hover to see the
-              latest.
-            </p>
-          </Reveal>
-
-          <Reveal delay={0.12} className="flex min-h-[22rem] items-center justify-center lg:justify-start">
-            <HomeHighlights />
-          </Reveal>
-        </div>
-      </section>
-
       {/* ------------------------------------------------------- Neighborhoods */}
       <section className="border-t border-line bg-background">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28">
@@ -366,9 +343,35 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* --------------------------------------------------- Recent results */}
+      <section className="bg-ink text-background">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:py-28">
+          <Reveal>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+              Recent results
+            </p>
+            <h2 className="mt-3 max-w-md font-display text-3xl font-medium tracking-tight text-white sm:text-4xl">
+              Momentum you can feel.
+            </h2>
+            <p className="mt-5 max-w-md text-lg leading-relaxed text-white/70">
+              New listings, fresh escrows, and over-ask closings — a steady
+              cadence across LA&apos;s best neighborhoods. Hover to bring the
+              latest into focus.
+            </p>
+          </Reveal>
+
+          <Reveal
+            delay={0.12}
+            className="flex min-h-[22rem] items-center justify-center lg:justify-start"
+          >
+            <HomeHighlights />
+          </Reveal>
+        </div>
+      </section>
+
       {/* ------------------------------------------------------- Testimonials */}
       <section className="bg-ink text-background">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28">
+        <div className="mx-auto max-w-7xl px-4 pb-20 pt-4 sm:px-6 lg:pb-28">
           <Reveal>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
               Client stories
