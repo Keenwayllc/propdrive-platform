@@ -301,9 +301,9 @@ create policy "auth delete property images" on storage.objects
 -- =============================================================================
 -- Integration settings — self-serve API keys entered from the dashboard
 -- (e.g. OpenAI) so a non-technical owner can connect a service without editing
--- Vercel env vars. Single row. RLS restricts to authenticated; no anon access,
--- so the secret never reaches the public API. Server code reads it; the client
--- only ever sees a masked preview.
+-- Vercel env vars. Single row. Because this holds a billable secret, RLS is
+-- tighter than the data tables: admin-only (no anon, no non-admin), and the
+-- client only ever receives a masked preview from server code.
 -- =============================================================================
 create table if not exists public.integration_settings (
   id smallint primary key default 1,
@@ -314,17 +314,33 @@ create table if not exists public.integration_settings (
 
 alter table public.integration_settings enable row level security;
 
-drop policy if exists "authed read integration settings" on public.integration_settings;
-create policy "authed read integration settings" on public.integration_settings
-  for select to authenticated using (true);
+-- Admin check helper (SECURITY DEFINER avoids RLS recursion on profiles).
+create or replace function public.is_admin()
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid() and role = 'admin'
+  );
+$$;
 
-drop policy if exists "authed insert integration settings" on public.integration_settings;
-create policy "authed insert integration settings" on public.integration_settings
-  for insert to authenticated with check (true);
+revoke all on function public.is_admin() from anon;
 
-drop policy if exists "authed update integration settings" on public.integration_settings;
-create policy "authed update integration settings" on public.integration_settings
-  for update to authenticated using (true);
+drop policy if exists "admin read integration settings" on public.integration_settings;
+create policy "admin read integration settings" on public.integration_settings
+  for select to authenticated using (public.is_admin());
+
+drop policy if exists "admin insert integration settings" on public.integration_settings;
+create policy "admin insert integration settings" on public.integration_settings
+  for insert to authenticated with check (public.is_admin());
+
+drop policy if exists "admin update integration settings" on public.integration_settings;
+create policy "admin update integration settings" on public.integration_settings
+  for update to authenticated using (public.is_admin()) with check (public.is_admin());
 
 -- =============================================================================
 -- Done.

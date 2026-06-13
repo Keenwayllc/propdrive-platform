@@ -83,8 +83,12 @@ anything for content edits.
 These add features. Each is optional and pay-as-you-go with the provider.
 
 - **OpenAI** (AI writing tools): the easiest one — go to **Dashboard → AI Tools**
-  and paste your key right there. No technical setup. Get a key at
-  https://platform.openai.com/api-keys
+  and paste your key right there. No technical setup. To get the key: sign in at
+  **platform.openai.com** (the developer site — *not* chatgpt.com, and separate
+  from a ChatGPT Plus subscription), add a payment method + a few dollars of
+  credit under **Settings → Billing**, then create a key under **API keys**.
+  Copy it immediately — it's shown only once. The "How do I find my key?" help
+  on the AI Tools page walks through this too.
 - **Resend** (sends email), **Twilio** (sends SMS), **Google Maps** (maps on
   listings), **Stripe** (payments): these are set in **Vercel → Settings →
   Environment Variables**. The **Integrations** page in your dashboard lists the

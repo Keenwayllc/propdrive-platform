@@ -8,7 +8,13 @@
  */
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, ExternalLink, Sparkles } from "lucide-react";
+import {
+  CheckCircle2,
+  ExternalLink,
+  Sparkles,
+  ChevronDown,
+  AlertTriangle,
+} from "lucide-react";
 import { saveOpenAiKey, clearOpenAiKey } from "@/lib/admin-actions";
 
 export default function OpenAiKeyForm({
@@ -111,15 +117,66 @@ export default function OpenAiKeyForm({
               />
             </label>
 
-            <a
-              href="https://platform.openai.com/api-keys"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-accent hover:underline"
-            >
-              Get a key from OpenAI
-              <ExternalLink className="h-3.5 w-3.5" />
-            </a>
+            <details className="group rounded-lg border border-line bg-surface/50 p-3">
+              <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-medium text-ink [&::-webkit-details-marker]:hidden">
+                Where do I find my OpenAI key?
+                <ChevronDown className="h-4 w-4 text-faint transition-transform group-open:rotate-180" />
+              </summary>
+              <div className="mt-3 space-y-2.5 text-sm text-muted">
+                <div className="flex items-start gap-2 rounded-md bg-amber-50 p-2.5 text-amber-800">
+                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                  <p>
+                    The API key is <strong>not</strong> on chatgpt.com, and it&apos;s
+                    separate from a ChatGPT Plus subscription. You add a little
+                    credit and pay only for what you use.
+                  </p>
+                </div>
+                <ol className="ml-4 list-decimal space-y-1.5">
+                  <li>
+                    Go to{" "}
+                    <a
+                      href="https://platform.openai.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-accent hover:underline"
+                    >
+                      platform.openai.com
+                    </a>{" "}
+                    (the developer platform) and sign in.
+                  </li>
+                  <li>
+                    Open{" "}
+                    <a
+                      href="https://platform.openai.com/settings/organization/billing/overview"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-accent hover:underline"
+                    >
+                      Settings → Billing
+                    </a>{" "}
+                    and add a payment method + a few dollars of credit (this step
+                    is easy to miss).
+                  </li>
+                  <li>
+                    Open{" "}
+                    <a
+                      href="https://platform.openai.com/api-keys"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 font-medium text-accent hover:underline"
+                    >
+                      API keys
+                      <ExternalLink className="h-3 w-3" />
+                    </a>{" "}
+                    and click <strong>Create new secret key</strong>.
+                  </li>
+                  <li>
+                    Copy it right away — it starts with <code>sk-</code> and is
+                    shown <strong>only once</strong> — then paste it above.
+                  </li>
+                </ol>
+              </div>
+            </details>
 
             <div className="flex flex-wrap items-center gap-4 pt-1">
               <button

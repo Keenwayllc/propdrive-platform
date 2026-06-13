@@ -42,7 +42,28 @@ async function getAuthedClient(): Promise<SupabaseClient | null> {
   return user ? supabase : null;
 }
 
+/**
+ * Returns an authenticated server client only if the signed-in user is an
+ * admin, else null. Use for privileged mutations (e.g. storing API secrets)
+ * where role matters, not just session presence. RLS enforces the same rule
+ * server-side; this gives a clean early error.
+ */
+async function getAdminClient(): Promise<SupabaseClient | null> {
+  const supabase = await getAuthedClient();
+  if (!supabase) return null;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { data } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user!.id)
+    .maybeSingle();
+  return data?.role === "admin" ? supabase : null;
+}
+
 const NOT_AUTHED = "You must be signed in to do that.";
+const NOT_ADMIN = "Only an admin can change integration keys.";
 
 function revalidateProperty(id?: string) {
   revalidatePath("/");
@@ -332,8 +353,8 @@ export async function saveOpenAiKey(key: string): Promise<MutationResult> {
     return { ok: false, error: "That doesn't look like an OpenAI key (starts with “sk-”)." };
   }
 
-  const supabase = await getAuthedClient();
-  if (!supabase) return { ok: false, error: NOT_AUTHED };
+  const supabase = await getAdminClient();
+  if (!supabase) return { ok: false, error: NOT_ADMIN };
 
   const { error } = await supabase
     .from("integration_settings")
@@ -350,8 +371,8 @@ export async function saveOpenAiKey(key: string): Promise<MutationResult> {
 
 /** Remove the stored OpenAI key (revert to the Vercel env var, if any). */
 export async function clearOpenAiKey(): Promise<MutationResult> {
-  const supabase = await getAuthedClient();
-  if (!supabase) return { ok: false, error: NOT_AUTHED };
+  const supabase = await getAdminClient();
+  if (!supabase) return { ok: false, error: NOT_ADMIN };
 
   const { error } = await supabase
     .from("integration_settings")
