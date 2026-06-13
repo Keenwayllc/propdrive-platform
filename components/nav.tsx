@@ -2,7 +2,7 @@
 
 /**
  * Site header / primary navigation.
- * Scroll-aware backdrop, animated link underlines, a magnetic CTA, and an
+ * Scroll-aware backdrop, animated link underlines, a sheen-sweep CTA, and an
  * animated mobile sheet. Uses framer-motion's scroll hooks (no scroll listeners).
  */
 import { useState } from "react";
@@ -15,7 +15,6 @@ import {
   useScroll,
   useMotionValueEvent,
 } from "framer-motion";
-import { Magnetic } from "@/components/motion";
 
 const NAV_LINKS: ReadonlyArray<{ href: string; label: string }> = [
   { href: "/properties", label: "Properties" },
@@ -95,14 +94,17 @@ export default function Nav({
         </ul>
 
         <div className="hidden lg:block">
-          <Magnetic strength={0.5}>
-            <Link
-              href="/auth/login"
-              className="inline-flex items-center rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-background transition-colors hover:bg-accent active:translate-y-px"
-            >
-              Agent Login
-            </Link>
-          </Magnetic>
+          <Link
+            href="/auth/login"
+            className="group relative inline-flex items-center overflow-hidden rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-background transition-colors duration-300 hover:bg-accent active:translate-y-px"
+          >
+            <span className="relative z-10">Agent Login</span>
+            {/* Elegant sheen — a soft light glides across on hover (button stays put) */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 -translate-x-[120%] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[120%] motion-reduce:hidden"
+            />
+          </Link>
         </div>
 
         <button
