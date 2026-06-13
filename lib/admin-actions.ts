@@ -318,6 +318,54 @@ export async function updatePassword(
   return { ok: true };
 }
 
+/* ----------------------------------------------------- Integration keys */
+
+/**
+ * Save the OpenAI API key into integration_settings (single row). Lets a
+ * non-technical owner connect OpenAI from the dashboard instead of editing
+ * Vercel env vars. Stored server-side under RLS; never returned to the client
+ * in full. Basic shape check only — OpenAI keys start with "sk-".
+ */
+export async function saveOpenAiKey(key: string): Promise<MutationResult> {
+  const trimmed = key.trim();
+  if (!trimmed.startsWith("sk-") || trimmed.length < 20) {
+    return { ok: false, error: "That doesn't look like an OpenAI key (starts with “sk-”)." };
+  }
+
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { error } = await supabase
+    .from("integration_settings")
+    .upsert({ id: 1, openai_api_key: trimmed, updated_at: new Date().toISOString() });
+
+  if (error) {
+    console.error("[admin] saveOpenAiKey", error.message);
+    return { ok: false, error: "Could not save the key." };
+  }
+  revalidatePath("/dashboard/integrations");
+  revalidatePath("/dashboard/ai-tools");
+  return { ok: true };
+}
+
+/** Remove the stored OpenAI key (revert to the Vercel env var, if any). */
+export async function clearOpenAiKey(): Promise<MutationResult> {
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { error } = await supabase
+    .from("integration_settings")
+    .upsert({ id: 1, openai_api_key: null, updated_at: new Date().toISOString() });
+
+  if (error) {
+    console.error("[admin] clearOpenAiKey", error.message);
+    return { ok: false, error: "Could not remove the key." };
+  }
+  revalidatePath("/dashboard/integrations");
+  revalidatePath("/dashboard/ai-tools");
+  return { ok: true };
+}
+
 /** Sign the agent out of every device/session (global scope). */
 export async function signOutEverywhere(): Promise<MutationResult> {
   const supabase = await getAuthedClient();

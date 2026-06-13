@@ -16,10 +16,14 @@ Flippa (or private) sale. Work top to bottom.
 - [ ] Remove the seller's collaborator access after handover.
 
 ## 3. Supabase
-- [ ] Buyer creates their **own** Supabase project (do not transfer the seller's).
-- [ ] Run `scripts/supabase-migrations.sql` on the new project.
-- [ ] (Optional) Import `scripts/seed-data.json` demo content, or start clean.
-- [ ] Create the buyer's admin user in Supabase Auth + a matching `profiles` row.
+Two options — pick one:
+- **Easiest (non-technical buyer):** transfer the existing Supabase project to
+  the buyer's organization (Project → Settings → General → Transfer project).
+  Data comes with it; then wipe demo content and reset the admin login.
+- **Clean slate:** buyer creates their **own** Supabase project, runs
+  `scripts/supabase-migrations.sql`, optionally imports `scripts/seed-data.json`,
+  and creates an admin user in Supabase Auth + a matching `profiles` row.
+- [ ] Either way: confirm **no seller data or credentials remain**.
 
 ## 4. Vercel
 - [ ] Buyer imports the repo into their own Vercel account.

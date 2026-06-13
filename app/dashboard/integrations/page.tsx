@@ -18,9 +18,11 @@ import {
   ChevronDown,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import Link from "next/link";
 import CopyButton from "@/components/copy-button";
+import { getOpenAiKeyStatus } from "@/lib/queries";
 
-const INTEGRATIONS: ReadonlyArray<{
+type Integration = {
   icon: LucideIcon;
   name: string;
   purpose: string;
@@ -31,7 +33,12 @@ const INTEGRATIONS: ReadonlyArray<{
   docsLabel: string;
   /** All env vars this service needs (first is used for the status check). */
   envVars: string[];
-}> = [
+  /** OpenAI can also be connected from the dashboard (no Vercel needed). */
+  dashboardConnect?: string;
+};
+
+function buildIntegrations(openaiConfigured: boolean): Integration[] {
+  return [
   {
     icon: Database,
     name: "Supabase",
@@ -67,10 +74,11 @@ const INTEGRATIONS: ReadonlyArray<{
     name: "OpenAI",
     purpose: "AI content tools",
     required: false,
-    configured: Boolean(process.env.OPENAI_API_KEY),
+    configured: openaiConfigured,
     docsUrl: "https://platform.openai.com/api-keys",
     docsLabel: "OpenAI API keys",
     envVars: ["OPENAI_API_KEY"],
+    dashboardConnect: "/dashboard/ai-tools",
   },
   {
     icon: MapPin,
@@ -92,9 +100,12 @@ const INTEGRATIONS: ReadonlyArray<{
     docsLabel: "Stripe API keys",
     envVars: ["STRIPE_SECRET_KEY"],
   },
-];
+  ];
+}
 
-export default function IntegrationsPage() {
+export default async function IntegrationsPage() {
+  const openai = await getOpenAiKeyStatus();
+  const INTEGRATIONS = buildIntegrations(openai.source !== null);
   const connectedCount = INTEGRATIONS.filter((s) => s.configured).length;
 
   return (
@@ -181,8 +192,27 @@ export default function IntegrationsPage() {
               </summary>
 
               <div className="mt-3 space-y-3 text-sm">
+                {svc.dashboardConnect && (
+                  <div className="rounded-lg border border-accent/30 bg-accent-soft/50 p-3">
+                    <p className="font-medium text-ink">
+                      Easier — no Vercel needed
+                    </p>
+                    <p className="mt-0.5 text-muted">
+                      You can paste this key right in the dashboard instead.{" "}
+                      <Link
+                        href={svc.dashboardConnect}
+                        className="font-medium text-accent hover:underline"
+                      >
+                        Connect on the AI Tools page →
+                      </Link>
+                    </p>
+                  </div>
+                )}
                 <div>
-                  <p className="font-medium text-ink">1. Get your key</p>
+                  <p className="font-medium text-ink">
+                    {svc.dashboardConnect ? "Or, set a Vercel env var — " : ""}1.
+                    Get your key
+                  </p>
                   <a
                     href={svc.docsUrl}
                     target="_blank"

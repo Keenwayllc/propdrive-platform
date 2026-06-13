@@ -1,9 +1,12 @@
 /**
- * AI tools hub. Phase 1 lists the planned tools as cards; Phase 2 wires the
- * OpenAI-backed generators.
+ * AI tools hub. A self-serve "Connect OpenAI" card lets the owner add their key
+ * from here (no Vercel needed); Phase 1 lists the planned tools as cards;
+ * Phase 2 wires the OpenAI-backed generators.
  */
 import { FileText, Megaphone, Mail, Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import OpenAiKeyForm from "@/components/openai-key-form";
+import { getOpenAiKeyStatus } from "@/lib/queries";
 
 const TOOLS: ReadonlyArray<{
   icon: LucideIcon;
@@ -32,16 +35,20 @@ const TOOLS: ReadonlyArray<{
   },
 ];
 
-export default function AiToolsPage() {
+export default async function AiToolsPage() {
+  const { source, masked } = await getOpenAiKeyStatus();
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-ink">AI Tools</h1>
         <p className="mt-1 text-sm text-muted">
-          Save time with AI-powered content generation. Requires an OpenAI API key
-          (see Integrations).
+          Save time with AI-powered content generation. Connect your OpenAI key
+          below to enable them.
         </p>
       </div>
+
+      <OpenAiKeyForm source={source} masked={masked} />
 
       <div className="grid gap-4 sm:grid-cols-2">
         {TOOLS.map((tool) => (

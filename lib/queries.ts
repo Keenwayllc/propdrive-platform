@@ -119,6 +119,53 @@ export async function getBrandSettings(): Promise<BrandSettings | null> {
   return (data as BrandSettings | null) ?? null;
 }
 
+/* ------------------------------------------------------ Integration keys */
+
+/** Mask a secret for display: keep the first 5 and last 4 chars. */
+function maskKey(key: string): string {
+  if (key.length <= 12) return "•".repeat(key.length);
+  return `${key.slice(0, 5)}…${key.slice(-4)}`;
+}
+
+/**
+ * Status of the OpenAI key for the dashboard UI: where it comes from (a key
+ * pasted in the dashboard takes precedence over a Vercel env var) and a masked
+ * preview. Never returns the full key to the client.
+ */
+export async function getOpenAiKeyStatus(): Promise<{
+  source: "dashboard" | "env" | null;
+  masked: string | null;
+}> {
+  const supabase = await createServerSupabase();
+  const { data } = await supabase
+    .from("integration_settings")
+    .select("openai_api_key")
+    .eq("id", 1)
+    .maybeSingle();
+
+  const dbKey = (data?.openai_api_key as string | null) ?? null;
+  if (dbKey) return { source: "dashboard", masked: maskKey(dbKey) };
+
+  const envKey = process.env.OPENAI_API_KEY;
+  if (envKey) return { source: "env", masked: maskKey(envKey) };
+
+  return { source: null, masked: null };
+}
+
+/**
+ * The full OpenAI key for server-side use (future AI tools). Dashboard-stored
+ * key wins; falls back to the Vercel env var. SERVER ONLY — never expose.
+ */
+export async function getOpenAiKey(): Promise<string | null> {
+  const supabase = await createServerSupabase();
+  const { data } = await supabase
+    .from("integration_settings")
+    .select("openai_api_key")
+    .eq("id", 1)
+    .maybeSingle();
+  return (data?.openai_api_key as string | null) ?? process.env.OPENAI_API_KEY ?? null;
+}
+
 /* ----------------------------------------------------------- Dashboard reads */
 /* These require an authenticated session (RLS: authenticated full access).    */
 

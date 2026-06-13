@@ -299,5 +299,33 @@ create policy "auth delete property images" on storage.objects
   for delete to authenticated using (bucket_id = 'property-images');
 
 -- =============================================================================
+-- Integration settings — self-serve API keys entered from the dashboard
+-- (e.g. OpenAI) so a non-technical owner can connect a service without editing
+-- Vercel env vars. Single row. RLS restricts to authenticated; no anon access,
+-- so the secret never reaches the public API. Server code reads it; the client
+-- only ever sees a masked preview.
+-- =============================================================================
+create table if not exists public.integration_settings (
+  id smallint primary key default 1,
+  openai_api_key text,
+  updated_at timestamptz not null default now(),
+  constraint integration_settings_single_row check (id = 1)
+);
+
+alter table public.integration_settings enable row level security;
+
+drop policy if exists "authed read integration settings" on public.integration_settings;
+create policy "authed read integration settings" on public.integration_settings
+  for select to authenticated using (true);
+
+drop policy if exists "authed insert integration settings" on public.integration_settings;
+create policy "authed insert integration settings" on public.integration_settings
+  for insert to authenticated with check (true);
+
+drop policy if exists "authed update integration settings" on public.integration_settings;
+create policy "authed update integration settings" on public.integration_settings
+  for update to authenticated using (true);
+
+-- =============================================================================
 -- Done.
 -- =============================================================================
