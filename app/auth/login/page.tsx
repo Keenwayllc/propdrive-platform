@@ -13,10 +13,17 @@ import { LogoBadge } from "@/components/logo";
 import { loginSchema, type LoginValues } from "@/lib/form-schemas";
 import { signIn } from "@/lib/auth";
 
+const ERROR_MESSAGES: Record<string, string> = {
+  link_expired: "That link has expired or was already used. Please try again.",
+  auth: "Something went wrong. Please sign in again.",
+};
+
 function LoginForm() {
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [error, setError] = useState<string | null>(
+    () => ERROR_MESSAGES[searchParams.get("error") ?? ""] ?? null
+  );
   // Only allow same-origin relative paths to prevent open-redirect attacks
   // (reject absolute URLs, "//evil.com", and "/\evil.com" variants).
   const rawRedirect = searchParams.get("redirect") ?? "/dashboard";
@@ -70,7 +77,7 @@ function LoginForm() {
             {errors.password && <span className="text-sm text-red-600">{errors.password.message}</span>}
           </label>
 
-          {error && <p className="text-sm text-amber-600">{error}</p>}
+          {error && <p className="text-sm text-red-600">{error}</p>}
 
           <button
             type="submit"

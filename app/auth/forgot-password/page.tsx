@@ -1,8 +1,9 @@
 "use client";
 
 /**
- * Forgot password. Phase 1 validates the email and simulates the reset request.
- * Phase 2 calls the Supabase password-reset helper.
+ * Forgot password. Sends a Supabase recovery email whose link lands on
+ * /auth/callback (which exchanges the code for a session) and forwards the user
+ * to /auth/update-password to set a new one.
  */
 import { useState } from "react";
 import Link from "next/link";
@@ -32,7 +33,7 @@ export default function ForgotPasswordPage() {
     await requestPasswordReset(
       values.email,
       typeof window !== "undefined"
-        ? `${window.location.origin}/auth/login`
+        ? `${window.location.origin}/auth/callback?next=/auth/update-password`
         : undefined
     );
     setSent(true);
