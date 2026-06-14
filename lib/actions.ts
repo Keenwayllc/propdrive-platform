@@ -7,6 +7,7 @@
  * cookie-aware server client. RLS allows anonymous inserts on leads/appointments.
  */
 import { createServerSupabase } from "@/lib/supabase-server";
+import { notifyNewLead, notifyNewAppointment } from "@/lib/notify";
 import {
   leadFormSchema,
   homeValuationSchema,
@@ -49,6 +50,14 @@ export async function submitLead(values: LeadFormValues): Promise<ActionResult> 
     console.error("[actions] submitLead", error.message);
     return { ok: false, error: "Something went wrong. Please try again." };
   }
+  await notifyNewLead({
+    full_name: v.full_name,
+    email: v.email,
+    phone: v.phone,
+    lead_type: v.lead_type,
+    message: v.message,
+    property_interest: v.property_interest,
+  });
   return { ok: true };
 }
 
@@ -76,6 +85,14 @@ export async function submitValuation(
     console.error("[actions] submitValuation", error.message);
     return { ok: false, error: "Something went wrong. Please try again." };
   }
+  await notifyNewLead({
+    full_name: v.full_name,
+    email: v.email,
+    phone: v.phone,
+    lead_type: "valuation",
+    address: v.address,
+    message: v.message,
+  });
   return { ok: true };
 }
 
@@ -103,5 +120,13 @@ export async function submitShowing(
     console.error("[actions] submitShowing", error.message);
     return { ok: false, error: "Something went wrong. Please try again." };
   }
+  await notifyNewAppointment({
+    lead_name: v.lead_name,
+    email: v.email,
+    phone: v.phone,
+    property: v.property,
+    appointment_date: v.appointment_date,
+    appointment_time: v.appointment_time,
+  });
   return { ok: true };
 }
