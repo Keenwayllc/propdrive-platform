@@ -49,3 +49,5 @@ next-env.d.ts
 /brand/*.png
 /brand/_*.js
 /brand/ChatGPT*.png
+
+.vercel
