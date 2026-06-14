@@ -1,20 +1,34 @@
 /**
  * Properties listing page. Renders the filter bar and a results grid.
- * Phase 1 shows an empty state; data fetching from Supabase lands in Phase 2.
+ * Filters are driven by the URL query string (?q / ?type / ?min / ?max),
+ * read here and applied server-side in getActiveProperties().
  */
 import type { Metadata } from "next";
 import PropertyFilter from "@/components/property-filter";
 import PropertyCard from "@/components/property-card";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { getActiveProperties } from "@/lib/queries";
+import type { PropertyType } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "Properties",
   description: "Browse homes for sale across Los Angeles County.",
 };
 
-export default async function PropertiesPage() {
-  const properties = await getActiveProperties();
+export default async function PropertiesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; type?: string; min?: string; max?: string }>;
+}) {
+  const sp = await searchParams;
+  const min = sp.min ? Number(sp.min) : null;
+  const max = sp.max ? Number(sp.max) : null;
+  const properties = await getActiveProperties({
+    query: sp.q,
+    property_type: (sp.type as PropertyType | "any") || "any",
+    min_price: Number.isFinite(min) ? min : null,
+    max_price: Number.isFinite(max) ? max : null,
+  });
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">

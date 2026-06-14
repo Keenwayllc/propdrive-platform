@@ -13,18 +13,55 @@ import type {
   BrandSettings,
   Lead,
   Property,
+  PropertyType,
   SiteSettings,
 } from "@/lib/types";
 
 /* --------------------------------------------------------------- Public reads */
 
+/** Optional filters for the public listings page. */
+export interface PropertyFilters {
+  query?: string;
+  property_type?: PropertyType | "any";
+  min_price?: number | null;
+  max_price?: number | null;
+}
+
+/**
+ * Strip characters that are syntactically meaningful inside a PostgREST `.or()`
+ * filter string so user input can't corrupt the query.
+ */
+function sanitizeLike(input: string): string {
+  return input.replace(/[,()*.:%]/g, " ").trim();
+}
+
 /** Active, public listings ordered featured-first then newest. */
-export async function getActiveProperties(): Promise<Property[]> {
+export async function getActiveProperties(
+  filters?: PropertyFilters
+): Promise<Property[]> {
   const supabase = await createServerSupabase();
-  const { data, error } = await supabase
-    .from("properties")
-    .select("*")
-    .eq("active", true)
+  let q = supabase.from("properties").select("*").eq("active", true);
+
+  if (filters?.property_type && filters.property_type !== "any") {
+    q = q.eq("property_type", filters.property_type);
+  }
+  if (typeof filters?.min_price === "number" && Number.isFinite(filters.min_price)) {
+    q = q.gte("price", filters.min_price);
+  }
+  if (typeof filters?.max_price === "number" && Number.isFinite(filters.max_price)) {
+    q = q.lte("price", filters.max_price);
+  }
+  if (filters?.query) {
+    const clean = sanitizeLike(filters.query);
+    if (clean) {
+      const like = `*${clean}*`;
+      q = q.or(
+        `city.ilike.${like},address.ilike.${like},zip.ilike.${like},title.ilike.${like}`
+      );
+    }
+  }
+
+  const { data, error } = await q
     .order("featured", { ascending: false })
     .order("created_at", { ascending: false });
 
@@ -79,6 +116,7 @@ export async function getPropertyById(id: string): Promise<Property | null> {
     .from("properties")
     .select("*")
     .eq("id", id)
+    .eq("active", true)
     .maybeSingle();
 
   if (error) {
