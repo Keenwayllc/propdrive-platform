@@ -6,17 +6,22 @@
  */
 import { z } from "zod";
 
-const phoneRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
+// Validate by digit count (7–15, per E.164) rather than a rigid shape, so
+// "+1 (310) 555-0148", "310-555-0148 x12", and "3105550148" all pass while
+// junk is still rejected.
+function isValidPhone(v: string): boolean {
+  const digits = v.replace(/\D/g, "");
+  return digits.length >= 7 && digits.length <= 15;
+}
+const requiredPhone = z
+  .string()
+  .refine(isValidPhone, "Please enter a valid phone number.");
 
 /** Shared, generic lead capture (buyer / seller / contact). */
 export const leadFormSchema = z.object({
   full_name: z.string().min(2, "Please enter your full name."),
   email: z.string().email("Please enter a valid email address."),
-  phone: z
-    .string()
-    .regex(phoneRegex, "Please enter a valid phone number.")
-    .optional()
-    .or(z.literal("")),
+  phone: requiredPhone.optional().or(z.literal("")),
   lead_type: z.enum(["buyer", "seller", "general", "valuation"]),
   message: z.string().max(2000).optional().or(z.literal("")),
   property_interest: z.string().max(255).optional().or(z.literal("")),
@@ -30,8 +35,8 @@ export type LeadFormValues = z.infer<typeof leadFormSchema>;
 export const scheduleShowingSchema = z.object({
   lead_name: z.string().min(2, "Please enter your name."),
   email: z.string().email("Please enter a valid email address."),
-  phone: z.string().regex(phoneRegex, "Please enter a valid phone number."),
-  property: z.string().min(1, "Please select a property."),
+  phone: requiredPhone,
+  property: z.string().min(1, "Please enter the property address."),
   appointment_date: z.string().min(1, "Please choose a date."),
   appointment_time: z.string().min(1, "Please choose a time."),
   appointment_type: z.enum([
@@ -49,7 +54,7 @@ export type ScheduleShowingValues = z.infer<typeof scheduleShowingSchema>;
 export const homeValuationSchema = z.object({
   full_name: z.string().min(2, "Please enter your full name."),
   email: z.string().email("Please enter a valid email address."),
-  phone: z.string().regex(phoneRegex, "Please enter a valid phone number."),
+  phone: requiredPhone,
   address: z.string().min(5, "Please enter the property address."),
   timeline: z.string().max(120).optional().or(z.literal("")),
   message: z.string().max(1000).optional().or(z.literal("")),

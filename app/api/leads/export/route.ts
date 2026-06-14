@@ -34,9 +34,15 @@ const HEADERS = [
   "Received",
 ];
 
-/** Quote a CSV cell; doubles embedded quotes per RFC 4180. */
+/**
+ * Quote a CSV cell (doubles embedded quotes per RFC 4180) and neutralise CSV
+ * formula injection: lead fields come from a public form, so a value starting
+ * with = + - @ (or a control char) could execute when opened in Excel/Sheets.
+ * Prefixing with a single quote forces it to be treated as text.
+ */
 function cell(value: unknown): string {
-  const s = value == null ? "" : String(value);
+  let s = value == null ? "" : String(value);
+  if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
   return `"${s.replace(/"/g, '""')}"`;
 }
 

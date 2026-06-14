@@ -3,6 +3,7 @@
  * and the actual homes for sale in the area. Dynamic route: `params` is async.
  */
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -53,8 +54,11 @@ export default async function NeighborhoodDetailPage({
 }) {
   const { name } = await params;
   const hood = getNeighborhood(name);
-  const display = hood?.name ?? deSlug(name);
-  const listings = await getPropertiesByArea(hood?.name ?? display);
+  // Unknown slug → 404 rather than an indexable half-empty page for a place
+  // that doesn't exist.
+  if (!hood) notFound();
+  const display = hood.name;
+  const listings = await getPropertiesByArea(hood.name);
 
   const prices = listings.map((l) => l.price);
   const stats = [

@@ -66,7 +66,7 @@ export default function LeadsChart({
                 domain={[0, Math.max(4, maxLeads)]}
               />
               <Tooltip
-                formatter={(value) => [`${value} lead${value === 1 ? "" : "s"}`, "Leads"]}
+                formatter={(value) => [`${value} lead${Number(value) === 1 ? "" : "s"}`, "Leads"]}
               />
               <Area
                 type="monotone"

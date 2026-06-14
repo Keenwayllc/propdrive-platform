@@ -62,7 +62,11 @@ export default function LeadAiDraft({
     const subjLine = lines.find((l) => /^subject:/i.test(l.trim()));
     const subject = subjLine ? subjLine.replace(/^subject:\s*/i, "").trim() : "Following up";
     const body = lines.filter((l) => !/^subject:/i.test(l.trim())).join("\n").trim();
-    return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    // Encode the address too: lead emails come from a public form, so an
+    // unencoded value like "x@x.com?bcc=..." could inject extra mailto headers.
+    return `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
   }
 
   return (

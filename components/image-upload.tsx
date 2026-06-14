@@ -27,6 +27,11 @@ function safeName(name: string): string {
   return name.replace(/[^a-zA-Z0-9.\-_]/g, "_").slice(-40);
 }
 
+/** Max accepted size per file (matches the "~10MB" UI hint). */
+const MAX_BYTES = 10 * 1024 * 1024;
+/** Max images kept per property. */
+const MAX_IMAGES = 24;
+
 export default function ImageUpload({
   label = "Images",
   value,
@@ -50,9 +55,27 @@ export default function ImageUpload({
     setUploading(true);
     const uploaded: string[] = [];
 
+    let remaining = MAX_IMAGES - urls.length;
+    if (remaining <= 0) {
+      setUploading(false);
+      setError(`You can upload up to ${MAX_IMAGES} images.`);
+      return;
+    }
+
     try {
       for (const file of Array.from(fileList)) {
-        if (!file.type.startsWith("image/")) continue;
+        if (remaining <= 0) {
+          setError(`Only the first ${MAX_IMAGES} images were kept.`);
+          break;
+        }
+        if (!file.type.startsWith("image/")) {
+          setError(`"${file.name}" isn't an image — skipped.`);
+          continue;
+        }
+        if (file.size > MAX_BYTES) {
+          setError(`"${file.name}" is over 10MB — skipped.`);
+          continue;
+        }
         const path = `${crypto.randomUUID()}-${safeName(file.name)}`;
         const { error: uploadError } = await supabase.storage
           .from(bucket)
@@ -63,6 +86,7 @@ export default function ImageUpload({
         }
         const { data } = supabase.storage.from(bucket).getPublicUrl(path);
         uploaded.push(data.publicUrl);
+        remaining -= 1;
       }
       if (uploaded.length > 0) update([...urls, ...uploaded]);
     } catch {
