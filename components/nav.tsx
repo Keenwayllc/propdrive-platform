@@ -112,7 +112,7 @@ export default function Nav({
           aria-label="Toggle navigation menu"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className="rounded-xl p-2 text-ink lg:hidden"
+          className="rounded-xl bg-surface/60 p-2 text-ink backdrop-blur transition-colors hover:bg-surface lg:hidden"
         >
           {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>

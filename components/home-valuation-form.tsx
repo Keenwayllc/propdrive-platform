@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * Home valuation request form. Captures a seller lead with the property address.
- * Phase 1: validation + simulated submit; Phase 2 wires Supabase + AVM lookup.
+ * Home valuation request form. Captures a seller lead with the property address,
+ * validates with Zod, and submits via a Server Action.
  */
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -17,6 +17,7 @@ export default function HomeValuationForm() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<HomeValuationValues>({
     resolver: zodResolver(homeValuationSchema),
@@ -39,6 +40,16 @@ export default function HomeValuationForm() {
         <p className="mt-1 text-sm text-green-700">
           We&apos;ll send your personalized home valuation within one business day.
         </p>
+        <button
+          type="button"
+          onClick={() => {
+            reset();
+            setSubmitted(false);
+          }}
+          className="mt-4 text-sm font-semibold text-green-800 underline-offset-2 hover:underline"
+        >
+          Request another valuation
+        </button>
       </div>
     );
   }

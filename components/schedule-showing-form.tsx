@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * Schedule-a-showing form. Captures an appointment request tied to a property.
- * Phase 1: validation + simulated submit. Supabase insert lands in Phase 2.
+ * Schedule-a-showing form. Captures an appointment request tied to a property,
+ * validates with Zod, and submits via a Server Action.
  */
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -27,6 +27,7 @@ export default function ScheduleShowingForm({
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<ScheduleShowingValues>({
     resolver: zodResolver(scheduleShowingSchema),
@@ -50,6 +51,16 @@ export default function ScheduleShowingForm({
         <p className="mt-1 text-sm text-green-700">
           We&apos;ll confirm your appointment by email shortly.
         </p>
+        <button
+          type="button"
+          onClick={() => {
+            reset({ property: propertyLabel, appointment_type: "showing" });
+            setSubmitted(false);
+          }}
+          className="mt-4 text-sm font-semibold text-green-800 underline-offset-2 hover:underline"
+        >
+          Schedule another showing
+        </button>
       </div>
     );
   }

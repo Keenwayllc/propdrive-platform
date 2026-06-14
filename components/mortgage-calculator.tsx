@@ -56,7 +56,11 @@ export default function MortgageCalculator() {
   }, [state]);
 
   function set<K extends keyof CalcState>(key: K, value: number) {
-    setState((prev) => ({ ...prev, [key]: Number.isFinite(value) ? value : 0 }));
+    // Clamp to sane bounds so negative / empty / zero inputs can't produce
+    // NaN or Infinity in the payment math (e.g. a 0-year term).
+    const v = Number.isFinite(value) ? Math.max(value, 0) : 0;
+    const clamped = key === "termYears" ? Math.max(Math.round(v), 1) : v;
+    setState((prev) => ({ ...prev, [key]: clamped }));
   }
 
   return (
