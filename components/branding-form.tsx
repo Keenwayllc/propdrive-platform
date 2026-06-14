@@ -69,8 +69,13 @@ export default function BrandingForm({
           <ColorPicker label="Secondary accent" value={form.accent_color} onChange={(v) => set("accent_color", v)} />
         </div>
         <p className="text-xs leading-relaxed text-faint">
-          Primary is the main color used for buttons, links, and highlights. Ink
-          is the dark color for headings and body text.
+          <strong className="font-semibold text-muted">Primary</strong> is the main
+          color for buttons, links, and icons.{" "}
+          <strong className="font-semibold text-muted">Ink</strong> is the dark
+          color for headings and body text.{" "}
+          <strong className="font-semibold text-muted">Secondary accent</strong> is
+          used for section titles, emphasis, and hover states. All three update
+          your public site instantly when you save.
         </p>
       </div>
 

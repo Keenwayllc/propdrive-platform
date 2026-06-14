@@ -1,7 +1,11 @@
 /**
  * Layout for all public marketing pages: shared header + footer chrome, fed by
- * the editable site_settings / brand_settings. The agent's primary brand color
- * is applied as the accent across the whole public site via a scoped CSS var.
+ * the editable site_settings / brand_settings. The agent's brand colors are
+ * applied across the whole public site via scoped CSS vars:
+ *   primary_color   -> --color-accent       (buttons, links, icons)
+ *   accent_color    -> --color-accent-strong (hover states, emphasis text)
+ *   secondary_color -> --color-ink          (headings & body text)
+ * The soft accent tint is derived from the primary so backgrounds never clash.
  */
 import type { CSSProperties } from "react";
 import Nav from "@/components/nav";
@@ -21,9 +25,13 @@ export default async function MarketingLayout({
 
   const companyName = site?.company_name || brand?.company_name || "PropDrive";
   const accent = brand?.primary_color || "#b85c38";
+  const accentStrong = brand?.accent_color || "#9e4a2c";
+  const ink = brand?.secondary_color || "#1a1714";
   const brandStyle = {
     "--color-accent": accent,
-    "--color-accent-strong": accent,
+    "--color-accent-strong": accentStrong,
+    "--color-ink": ink,
+    "--color-accent-soft": `color-mix(in srgb, ${accent} 14%, white)`,
   } as CSSProperties;
 
   return (
