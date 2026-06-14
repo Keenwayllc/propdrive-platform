@@ -4,6 +4,7 @@
  * read here and applied server-side in getActiveProperties().
  */
 import type { Metadata } from "next";
+import Link from "next/link";
 import PropertyFilter from "@/components/property-filter";
 import PropertyCard from "@/components/property-card";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
@@ -23,6 +24,7 @@ export default async function PropertiesPage({
   const sp = await searchParams;
   const min = sp.min ? Number(sp.min) : null;
   const max = sp.max ? Number(sp.max) : null;
+  const hasFilters = Boolean(sp.q || (sp.type && sp.type !== "any") || sp.min || sp.max);
   const properties = await getActiveProperties({
     query: sp.q,
     property_type: (sp.type as PropertyType | "any") || "any",
@@ -52,11 +54,23 @@ export default async function PropertiesPage({
 
       {properties.length === 0 ? (
         <div className="mt-8 rounded-[1.75rem] border border-dashed border-line bg-surface p-16 text-center text-muted">
-          No listings match right now. Check back soon or{" "}
-          <a href="/contact" className="text-accent hover:underline">
-            tell us what you&apos;re looking for
-          </a>
-          .
+          {hasFilters ? (
+            <>
+              No listings match these filters.{" "}
+              <Link href="/properties" className="text-accent hover:underline">
+                Clear filters
+              </Link>{" "}
+              to see everything.
+            </>
+          ) : (
+            <>
+              No listings match right now. Check back soon or{" "}
+              <a href="/contact" className="text-accent hover:underline">
+                tell us what you&apos;re looking for
+              </a>
+              .
+            </>
+          )}
         </div>
       ) : (
         <Stagger className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

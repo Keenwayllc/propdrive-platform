@@ -48,7 +48,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
 
         <div className="absolute left-3 top-3 flex gap-2">
           <span className="rounded-full bg-background/90 px-3 py-1 text-xs font-semibold text-ink backdrop-blur">
-            {STATUS_LABELS[property.status]}
+            {STATUS_LABELS[property.status] ?? property.status}
           </span>
           {property.featured && (
             <span className="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-white">
