@@ -10,7 +10,7 @@ import { ArrowLeft } from "lucide-react";
 import PropertyCard from "@/components/property-card";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { getNeighborhood } from "@/lib/neighborhoods";
-import { getPropertiesByArea } from "@/lib/queries";
+import { getPropertiesByArea, getNeighborhoodBySlug } from "@/lib/queries";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -40,7 +40,8 @@ export async function generateMetadata({
   params: Promise<{ name: string }>;
 }): Promise<Metadata> {
   const { name } = await params;
-  const display = getNeighborhood(name)?.name ?? deSlug(name);
+  const row = await getNeighborhoodBySlug(name);
+  const display = row?.name ?? getNeighborhood(name)?.name ?? deSlug(name);
   return {
     title: `${display} Homes`,
     description: `Explore homes for sale in ${display}, Los Angeles County.`,
@@ -53,7 +54,14 @@ export default async function NeighborhoodDetailPage({
   params: Promise<{ name: string }>;
 }) {
   const { name } = await params;
-  const hood = getNeighborhood(name);
+  // Prefer the dashboard-managed neighborhood; fall back to the built-in list.
+  const row = await getNeighborhoodBySlug(name);
+  const fallback = getNeighborhood(name);
+  const hood = row
+    ? { name: row.name, image: row.image_url, blurb: row.blurb }
+    : fallback
+      ? { name: fallback.name, image: fallback.image, blurb: fallback.blurb }
+      : null;
   // Unknown slug → 404 rather than an indexable half-empty page for a place
   // that doesn't exist.
   if (!hood) notFound();
@@ -78,7 +86,7 @@ export default async function NeighborhoodDetailPage({
       {/* Hero */}
       <section className="relative isolate">
         <div className="absolute inset-0 -z-10 bg-ink">
-          {hood && (
+          {hood.image && (
             <Image
               src={hood.image}
               alt={display}
@@ -105,7 +113,7 @@ export default async function NeighborhoodDetailPage({
             <h1 className="mt-3 font-display text-5xl font-medium tracking-tight text-white sm:text-6xl">
               {display}
             </h1>
-            {hood && (
+            {hood.blurb && (
               <p className="mt-4 max-w-xl text-lg leading-relaxed text-white/75">
                 {hood.blurb}
               </p>

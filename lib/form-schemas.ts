@@ -104,6 +104,19 @@ export const propertyInputSchema = z.object({
 });
 export type PropertyInput = z.infer<typeof propertyInputSchema>;
 
+/** One homepage stat. Value is coerced from the form's string input. */
+export const siteStatSchema = z.object({
+  value: z.coerce.number(),
+  suffix: z.string().max(8).default(""),
+  label: z.string().min(1, "Label is required."),
+});
+
+export const DEFAULT_STATS = [
+  { value: 127, suffix: "", label: "Homes closed" },
+  { value: 11, suffix: "", label: "Avg. days on market" },
+  { value: 98.2, suffix: "%", label: "Of list price" },
+];
+
 /** Editable marketing copy (site_settings). */
 export const siteSettingsSchema = z.object({
   company_name: z.string().min(1, "Company name is required."),
@@ -122,8 +135,33 @@ export const siteSettingsSchema = z.object({
       linkedin: z.string().optional().default(""),
     })
     .default({ facebook: "", instagram: "", linkedin: "" }),
+  stats: z.array(siteStatSchema).length(3).default(DEFAULT_STATS),
 });
 export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;
+
+/** A homepage testimonial (dashboard-managed). */
+export const testimonialSchema = z.object({
+  quote: z.string().min(1, "Quote is required."),
+  author_name: z.string().min(1, "Name is required."),
+  author_detail: z.string().optional().default(""),
+  sort_order: z.coerce.number().int().default(0),
+  active: z.boolean().default(true),
+});
+export type TestimonialInput = z.infer<typeof testimonialSchema>;
+
+/** A neighborhood / market area (dashboard-managed). */
+export const neighborhoodSchema = z.object({
+  name: z.string().min(1, "Name is required."),
+  slug: z
+    .string()
+    .min(1, "Slug is required.")
+    .regex(/^[a-z0-9-]+$/, "Use lowercase letters, numbers, and hyphens only."),
+  image_url: z.string().optional().default(""),
+  blurb: z.string().optional().default(""),
+  sort_order: z.coerce.number().int().default(0),
+  active: z.boolean().default(true),
+});
+export type NeighborhoodInput = z.infer<typeof neighborhoodSchema>;
 
 /** Editable visual identity (brand_settings). */
 export const brandSettingsSchema = z.object({
@@ -137,6 +175,7 @@ export const brandSettingsSchema = z.object({
   logo_url: z.string().nullable().default(null),
   logo_light_url: z.string().nullable().default(null),
   agent_photo_url: z.string().nullable().default(null),
+  hero_image_url: z.string().nullable().default(null),
 });
 export type BrandSettingsInput = z.infer<typeof brandSettingsSchema>;
 

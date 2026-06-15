@@ -17,6 +17,13 @@ export interface Profile {
 
 export type ProfileRole = "agent" | "admin" | "staff";
 
+/** A single homepage headline stat (e.g. "127 Homes closed"). */
+export interface SiteStat {
+  value: number;
+  suffix: string;
+  label: string;
+}
+
 /** Editable marketing copy that powers the public-facing website. */
 export interface SiteSettings {
   id: string;
@@ -34,6 +41,32 @@ export interface SiteSettings {
   contact_email: string;
   office_address: string;
   social_links: SocialLinks;
+  stats: SiteStat[];
+  created_at: string;
+  updated_at: string;
+}
+
+/** A client testimonial shown on the homepage. */
+export interface Testimonial {
+  id: string;
+  quote: string;
+  author_name: string;
+  author_detail: string;
+  sort_order: number;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+/** A neighborhood / market area shown across the marketing site. */
+export interface Neighborhood {
+  id: string;
+  name: string;
+  slug: string;
+  image_url: string;
+  blurb: string;
+  sort_order: number;
+  active: boolean;
   created_at: string;
   updated_at: string;
 }

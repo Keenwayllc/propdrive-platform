@@ -18,12 +18,16 @@ import {
   profileUpdateSchema,
   emailUpdateSchema,
   passwordUpdateSchema,
+  testimonialSchema,
+  neighborhoodSchema,
   type PropertyInput,
   type SiteSettingsInput,
   type BrandSettingsInput,
   type ProfileUpdateInput,
   type EmailUpdateInput,
   type PasswordUpdateInput,
+  type TestimonialInput,
+  type NeighborhoodInput,
 } from "@/lib/form-schemas";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
@@ -419,5 +423,144 @@ export async function setAppointmentStatus(
   if (error) return { ok: false, error: "Could not update the appointment." };
   revalidatePath("/dashboard/appointments");
   revalidatePath("/dashboard");
+  return { ok: true };
+}
+
+/* --------------------------------------------------------- Testimonials */
+
+function revalidateTestimonials() {
+  revalidatePath("/");
+  revalidatePath("/dashboard/testimonials");
+}
+
+export async function createTestimonial(
+  input: TestimonialInput
+): Promise<MutationResult> {
+  const parsed = testimonialSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Please check the fields." };
+  }
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { data, error } = await supabase
+    .from("testimonials")
+    .insert(parsed.data)
+    .select("id")
+    .single();
+  if (error) {
+    console.error("[admin] createTestimonial", error.message);
+    return { ok: false, error: "Could not add the testimonial." };
+  }
+  revalidateTestimonials();
+  return { ok: true, id: data.id as string };
+}
+
+export async function updateTestimonial(
+  id: string,
+  input: TestimonialInput
+): Promise<MutationResult> {
+  const parsed = testimonialSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Please check the fields." };
+  }
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { error } = await supabase
+    .from("testimonials")
+    .update(parsed.data)
+    .eq("id", id);
+  if (error) {
+    console.error("[admin] updateTestimonial", error.message);
+    return { ok: false, error: "Could not update the testimonial." };
+  }
+  revalidateTestimonials();
+  return { ok: true, id };
+}
+
+export async function deleteTestimonial(id: string): Promise<MutationResult> {
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { error } = await supabase.from("testimonials").delete().eq("id", id);
+  if (error) {
+    console.error("[admin] deleteTestimonial", error.message);
+    return { ok: false, error: "Could not delete the testimonial." };
+  }
+  revalidateTestimonials();
+  return { ok: true };
+}
+
+/* --------------------------------------------------------- Neighborhoods */
+
+function revalidateNeighborhoods() {
+  revalidatePath("/", "layout");
+  revalidatePath("/neighborhoods");
+  revalidatePath("/dashboard/neighborhoods");
+}
+
+export async function createNeighborhood(
+  input: NeighborhoodInput
+): Promise<MutationResult> {
+  const parsed = neighborhoodSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Please check the fields." };
+  }
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { data, error } = await supabase
+    .from("neighborhoods")
+    .insert(parsed.data)
+    .select("id")
+    .single();
+  if (error) {
+    console.error("[admin] createNeighborhood", error.message);
+    const msg = error.message.includes("duplicate")
+      ? "That slug is already used. Pick a unique one."
+      : "Could not add the neighborhood.";
+    return { ok: false, error: msg };
+  }
+  revalidateNeighborhoods();
+  return { ok: true, id: data.id as string };
+}
+
+export async function updateNeighborhood(
+  id: string,
+  input: NeighborhoodInput
+): Promise<MutationResult> {
+  const parsed = neighborhoodSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Please check the fields." };
+  }
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { error } = await supabase
+    .from("neighborhoods")
+    .update(parsed.data)
+    .eq("id", id);
+  if (error) {
+    console.error("[admin] updateNeighborhood", error.message);
+    const msg = error.message.includes("duplicate")
+      ? "That slug is already used. Pick a unique one."
+      : "Could not update the neighborhood.";
+    return { ok: false, error: msg };
+  }
+  revalidateNeighborhoods();
+  return { ok: true, id };
+}
+
+export async function deleteNeighborhood(id: string): Promise<MutationResult> {
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { error } = await supabase.from("neighborhoods").delete().eq("id", id);
+  if (error) {
+    console.error("[admin] deleteNeighborhood", error.message);
+    return { ok: false, error: "Could not delete the neighborhood." };
+  }
+  revalidateNeighborhoods();
   return { ok: true };
 }

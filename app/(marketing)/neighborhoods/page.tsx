@@ -6,15 +6,25 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
-import { NEIGHBORHOODS } from "@/lib/neighborhoods";
+import { NEIGHBORHOODS as FALLBACK } from "@/lib/neighborhoods";
+import { getNeighborhoods } from "@/lib/queries";
 
 export const metadata: Metadata = {
   title: "Neighborhoods",
   description: "Explore the neighborhoods of Los Angeles County.",
 };
 
-export default function NeighborhoodsPage() {
-  const [featured, ...rest] = NEIGHBORHOODS;
+export default async function NeighborhoodsPage() {
+  const rows = await getNeighborhoods();
+  const hoods = rows.length
+    ? rows.map((n) => ({
+        name: n.name,
+        slug: n.slug,
+        image: n.image_url,
+        blurb: n.blurb,
+      }))
+    : FALLBACK;
+  const [featured, ...rest] = hoods;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-24">

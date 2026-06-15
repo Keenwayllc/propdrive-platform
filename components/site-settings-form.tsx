@@ -6,7 +6,7 @@
  */
 import { useState } from "react";
 import { updateSiteSettings } from "@/lib/admin-actions";
-import type { SiteSettingsInput } from "@/lib/form-schemas";
+import { DEFAULT_STATS, type SiteSettingsInput } from "@/lib/form-schemas";
 import type { SiteSettings } from "@/lib/types";
 
 function toInput(s: SiteSettings | null): SiteSettingsInput {
@@ -25,6 +25,10 @@ function toInput(s: SiteSettings | null): SiteSettingsInput {
       instagram: s?.social_links?.instagram ?? "",
       linkedin: s?.social_links?.linkedin ?? "",
     },
+    stats:
+      s?.stats && s.stats.length === 3
+        ? s.stats.map((t) => ({ value: t.value, suffix: t.suffix, label: t.label }))
+        : DEFAULT_STATS,
   };
 }
 
@@ -45,6 +49,16 @@ export default function SiteSettingsForm({
 
   function setSocial(key: "facebook" | "instagram" | "linkedin", value: string) {
     setForm((prev) => ({ ...prev, social_links: { ...prev.social_links, [key]: value } }));
+    setStatus("idle");
+  }
+
+  function setStat(i: number, key: "value" | "suffix" | "label", value: string) {
+    setForm((prev) => {
+      const stats = prev.stats.map((s, idx) =>
+        idx === i ? { ...s, [key]: key === "value" ? Number(value) || 0 : value } : s
+      );
+      return { ...prev, stats };
+    });
     setStatus("idle");
   }
 
@@ -86,6 +100,44 @@ export default function SiteSettingsForm({
         >
           <textarea rows={2} value={form.hero_subtitle} onChange={(e) => set("hero_subtitle", e.target.value)} className="form-input" />
         </Field>
+      </Section>
+
+      <Section
+        title="Homepage stats"
+        description="The three headline numbers shown on your homepage hero (and reused on the page). Set your own figures, or leave the defaults."
+      >
+        <div className="space-y-4">
+          {form.stats.map((s, i) => (
+            <div key={i} className="grid gap-3 sm:grid-cols-[1fr_1fr_2fr]">
+              <Field label={`Stat ${i + 1} number`}>
+                <input
+                  type="number"
+                  step="0.1"
+                  aria-label={`Stat ${i + 1} number`}
+                  value={s.value}
+                  onChange={(e) => setStat(i, "value", e.target.value)}
+                  className="form-input"
+                />
+              </Field>
+              <Field label="Suffix" hint="e.g. % or +">
+                <input
+                  value={s.suffix}
+                  onChange={(e) => setStat(i, "suffix", e.target.value)}
+                  className="form-input"
+                  placeholder="%"
+                />
+              </Field>
+              <Field label="Label">
+                <input
+                  value={s.label}
+                  onChange={(e) => setStat(i, "label", e.target.value)}
+                  className="form-input"
+                  placeholder="e.g. Homes closed"
+                />
+              </Field>
+            </div>
+          ))}
+        </div>
       </Section>
 
       <Section

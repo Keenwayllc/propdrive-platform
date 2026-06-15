@@ -16,9 +16,12 @@ import {
   getFeaturedProperties,
   getSiteSettings,
   getBrandSettings,
+  getTestimonials,
+  getNeighborhoods,
 } from "@/lib/queries";
+import { DEFAULT_STATS } from "@/lib/form-schemas";
 
-const NEIGHBORHOOD_TILES = [
+const FALLBACK_TILES = [
   { name: "Beverly Hills", slug: "beverly-hills", image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80" },
   { name: "Malibu", slug: "malibu", image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80" },
   { name: "Santa Monica", slug: "santa-monica", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" },
@@ -27,7 +30,7 @@ const NEIGHBORHOOD_TILES = [
   { name: "Calabasas", slug: "calabasas", image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80" },
 ];
 
-const TESTIMONIALS = [
+const FALLBACK_TESTIMONIALS = [
   {
     quote:
       "Priya found us a Westwood condo before it ever hit the market. Calm, sharp, and three steps ahead the whole way.",
@@ -62,15 +65,42 @@ const NEIGHBORHOODS = [
 ];
 
 export default async function HomePage() {
-  const [featured, site, brand] = await Promise.all([
+  const [featured, site, brand, testimonialRows, hoodRows] = await Promise.all([
     getFeaturedProperties(3),
     getSiteSettings(),
     getBrandSettings(),
+    getTestimonials(),
+    getNeighborhoods(),
   ]);
   const heroTitle = site?.hero_title || "Find the home that feels like arrival.";
   const heroSubtitle =
     site?.hero_subtitle ||
     "Hand-picked listings and local guidance from an advisor who knows every street from the Palisades to the Valley.";
+
+  const stats = site?.stats?.length ? site.stats : DEFAULT_STATS;
+  const stat = (i: number) =>
+    stats[i] ? `${stats[i].value}${stats[i].suffix}` : "";
+  const heroImage = brand?.hero_image_url || "/hero/hero-banner.png";
+
+  const testimonials = testimonialRows.length
+    ? testimonialRows.map((t) => ({
+        quote: t.quote,
+        name: t.author_name,
+        detail: t.author_detail,
+      }))
+    : FALLBACK_TESTIMONIALS;
+
+  const tiles = hoodRows.length
+    ? hoodRows.slice(0, 6).map((n) => ({
+        name: n.name,
+        slug: n.slug,
+        image: n.image_url,
+      }))
+    : FALLBACK_TILES;
+
+  const marqueeNames = hoodRows.length
+    ? hoodRows.map((n) => n.name)
+    : NEIGHBORHOODS;
 
   const agentName = brand?.agent_name || "Marcus Rivera";
   const brokerage = brand?.brokerage_name || site?.company_name || "California Realty Group";
@@ -84,13 +114,18 @@ export default async function HomePage() {
   return (
     <>
       {/* ----------------------------------------------------- Hero banner */}
-      <HomeHero title={heroTitle} subtitle={heroSubtitle} />
+      <HomeHero
+        title={heroTitle}
+        subtitle={heroSubtitle}
+        stats={stats}
+        heroImage={heroImage}
+      />
 
       {/* Kinetic neighborhood marquee */}
       <div className="border-y border-line bg-surface/60 py-4">
         <div className="flex overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
           <div className="pd-marquee flex shrink-0 items-center gap-10 pr-10">
-            {[...NEIGHBORHOODS, ...NEIGHBORHOODS].map((n, i) => (
+            {[...marqueeNames, ...marqueeNames].map((n, i) => (
               <span
                 key={`${n}-${i}`}
                 className="flex items-center gap-3 whitespace-nowrap font-display text-xl italic text-faint"
@@ -170,7 +205,9 @@ export default async function HomePage() {
                 On market
               </span>
               <div className="relative">
-                <p className="font-mono text-4xl font-semibold text-ink">11</p>
+                <p className="font-mono text-4xl font-semibold text-ink">
+                  {stats[1]?.value ?? 11}
+                </p>
                 <p className="mt-1 text-sm text-muted">
                   median days before an offer
                 </p>
@@ -182,7 +219,7 @@ export default async function HomePage() {
             <BentoCard
               icon={<TrendingUp className="h-5 w-5" />}
               title="Priced on real data"
-              text="98.2% of list price, on average — not guesswork."
+              text={`${stat(2)} of list price, on average. Not guesswork.`}
               image="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80"
               imageAlt="Bright modern living room interior"
             />
@@ -236,7 +273,7 @@ export default async function HomePage() {
           </Reveal>
 
           <Stagger className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-            {NEIGHBORHOOD_TILES.map((n) => (
+            {tiles.map((n) => (
               <StaggerItem key={n.slug}>
                 <Link
                   href={`/neighborhoods/${n.slug}`}
@@ -309,7 +346,9 @@ export default async function HomePage() {
               />
             </div>
             <div className="pd-float absolute -bottom-5 right-4 rounded-2xl border border-line bg-surface/95 px-5 py-3 shadow-[0_20px_40px_-20px_rgba(26,23,20,0.35)] backdrop-blur sm:right-0 lg:right-8">
-              <p className="font-mono text-2xl font-semibold text-ink">127</p>
+              <p className="font-mono text-2xl font-semibold text-ink">
+                {stats[0]?.value ?? 127}
+              </p>
               <p className="text-xs text-muted">homes closed</p>
             </div>
           </Reveal>
@@ -382,7 +421,7 @@ export default async function HomePage() {
           </Reveal>
 
           <Stagger className="mt-12 grid gap-5 md:grid-cols-3">
-            {TESTIMONIALS.map((t) => (
+            {testimonials.map((t) => (
               <StaggerItem key={t.name}>
                 <figure className="flex h-full flex-col justify-between rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-7 backdrop-blur">
                   <div>

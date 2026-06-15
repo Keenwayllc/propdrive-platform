@@ -17,22 +17,28 @@ import {
   useTransform,
 } from "framer-motion";
 import { Magnetic, WordReveal, CountUp } from "@/components/motion";
+import type { SiteStat } from "@/lib/types";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-const STATS = [
-  { value: 127, suffix: "", decimals: 0, label: "Homes closed" },
-  { value: 11, suffix: "", decimals: 0, label: "Avg. days on market" },
-  { value: 98.2, suffix: "%", decimals: 1, label: "Of list price" },
-] as const;
+const FALLBACK_STATS: SiteStat[] = [
+  { value: 127, suffix: "", label: "Homes closed" },
+  { value: 11, suffix: "", label: "Avg. days on market" },
+  { value: 98.2, suffix: "%", label: "Of list price" },
+];
 
 export default function HomeHero({
   title,
   subtitle,
+  stats,
+  heroImage = "/hero/hero-banner.png",
 }: {
   title: string;
   subtitle: string;
+  stats?: SiteStat[];
+  heroImage?: string;
 }) {
+  const statList = stats && stats.length ? stats : FALLBACK_STATS;
   const reduce = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
 
@@ -58,7 +64,7 @@ export default function HomeHero({
           transition={{ duration: 1.6, ease: EASE }}
         >
           <Image
-            src="/hero/hero-banner.png"
+            src={heroImage}
             alt="Modern luxury estate overlooking Los Angeles at golden hour"
             fill
             priority
@@ -127,13 +133,13 @@ export default function HomeHero({
             transition={{ duration: 0.8, ease: EASE, delay: 0.82 }}
             className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-line/80 pt-6"
           >
-            {STATS.map((s, i) => (
-              <div key={s.label}>
+            {statList.map((s, i) => (
+              <div key={`${s.label}-${i}`}>
                 <dt className="font-mono text-2xl font-semibold text-ink">
                   <CountUp
                     value={s.value}
                     suffix={s.suffix}
-                    decimals={s.decimals}
+                    decimals={Number.isInteger(s.value) ? 0 : 1}
                     duration={1.4 + i * 0.15}
                   />
                 </dt>

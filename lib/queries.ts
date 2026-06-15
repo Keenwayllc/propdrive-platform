@@ -12,9 +12,11 @@ import type {
   Appointment,
   BrandSettings,
   Lead,
+  Neighborhood,
   Property,
   PropertyType,
   SiteSettings,
+  Testimonial,
 } from "@/lib/types";
 
 /* --------------------------------------------------------------- Public reads */
@@ -156,6 +158,57 @@ export async function getBrandSettings(): Promise<BrandSettings | null> {
     return null;
   }
   return (data as BrandSettings | null) ?? null;
+}
+
+/** Active testimonials for the homepage, ordered. */
+export async function getTestimonials(): Promise<Testimonial[]> {
+  const supabase = await createServerSupabase();
+  const { data, error } = await supabase
+    .from("testimonials")
+    .select("*")
+    .eq("active", true)
+    .order("sort_order", { ascending: true });
+
+  if (error) {
+    console.error("[queries] getTestimonials", error.message);
+    return [];
+  }
+  return (data ?? []) as Testimonial[];
+}
+
+/** Active neighborhoods for the public marketing site, ordered. */
+export async function getNeighborhoods(): Promise<Neighborhood[]> {
+  const supabase = await createServerSupabase();
+  const { data, error } = await supabase
+    .from("neighborhoods")
+    .select("*")
+    .eq("active", true)
+    .order("sort_order", { ascending: true });
+
+  if (error) {
+    console.error("[queries] getNeighborhoods", error.message);
+    return [];
+  }
+  return (data ?? []) as Neighborhood[];
+}
+
+/** A single active neighborhood by slug, or null. */
+export async function getNeighborhoodBySlug(
+  slug: string
+): Promise<Neighborhood | null> {
+  const supabase = await createServerSupabase();
+  const { data, error } = await supabase
+    .from("neighborhoods")
+    .select("*")
+    .eq("slug", slug)
+    .eq("active", true)
+    .maybeSingle();
+
+  if (error) {
+    console.error("[queries] getNeighborhoodBySlug", error.message);
+    return null;
+  }
+  return (data as Neighborhood | null) ?? null;
 }
 
 /* ------------------------------------------------------ Integration keys */
@@ -311,4 +364,34 @@ export async function getDashboardStats(): Promise<{
     upcomingAppointments: appts.count ?? 0,
     activeListings: listings.count ?? 0,
   };
+}
+
+/** All testimonials (incl. inactive) for the dashboard manager. */
+export async function getAllTestimonials(): Promise<Testimonial[]> {
+  const supabase = await createServerSupabase();
+  const { data, error } = await supabase
+    .from("testimonials")
+    .select("*")
+    .order("sort_order", { ascending: true });
+
+  if (error) {
+    console.error("[queries] getAllTestimonials", error.message);
+    return [];
+  }
+  return (data ?? []) as Testimonial[];
+}
+
+/** All neighborhoods (incl. inactive) for the dashboard manager. */
+export async function getAllNeighborhoods(): Promise<Neighborhood[]> {
+  const supabase = await createServerSupabase();
+  const { data, error } = await supabase
+    .from("neighborhoods")
+    .select("*")
+    .order("sort_order", { ascending: true });
+
+  if (error) {
+    console.error("[queries] getAllNeighborhoods", error.message);
+    return [];
+  }
+  return (data ?? []) as Neighborhood[];
 }

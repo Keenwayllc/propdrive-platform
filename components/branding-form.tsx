@@ -23,6 +23,7 @@ function toInput(b: BrandSettings | null): BrandSettingsInput {
     logo_url: b?.logo_url ?? null,
     logo_light_url: b?.logo_light_url ?? null,
     agent_photo_url: b?.agent_photo_url ?? null,
+    hero_image_url: b?.hero_image_url ?? null,
   };
 }
 
@@ -145,6 +146,18 @@ export default function BrandingForm({
           />
           <p className="mt-2 text-xs leading-relaxed text-faint">
             A headshot shown in the agent section of your homepage.
+          </p>
+        </div>
+        <div>
+          <ImageUpload
+            label="Homepage hero image"
+            multiple={false}
+            value={form.hero_image_url ? [form.hero_image_url] : []}
+            onChange={(urls) => set("hero_image_url", urls[urls.length - 1] ?? null)}
+          />
+          <p className="mt-2 text-xs leading-relaxed text-faint">
+            The large background photo at the top of your homepage. Use a wide,
+            high-resolution image. If you skip this, the default banner is used.
           </p>
         </div>
       </div>
