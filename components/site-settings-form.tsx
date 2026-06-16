@@ -9,6 +9,7 @@ import { updateSiteSettings } from "@/lib/admin-actions";
 import { DEFAULT_STATS, type SiteSettingsInput } from "@/lib/form-schemas";
 import type { SiteSettings } from "@/lib/types";
 import AiFieldAssist from "@/components/ai-field-assist";
+import AddressAutocomplete from "@/components/address-autocomplete";
 
 function toInput(s: SiteSettings | null): SiteSettingsInput {
   return {
@@ -220,8 +221,12 @@ export default function SiteSettingsForm({
             <input value={form.contact_email} onChange={(e) => set("contact_email", e.target.value)} className="form-input" placeholder="you@yourbrokerage.com" />
           </Field>
         </div>
-        <Field label="Office address" hint="Displayed on your contact page.">
-          <input value={form.office_address} onChange={(e) => set("office_address", e.target.value)} className="form-input" />
+        <Field label="Office address" hint="Displayed on your contact page. Start typing for suggestions.">
+          <AddressAutocomplete
+            value={form.office_address}
+            onChange={(v) => set("office_address", v)}
+            placeholder="Start typing your office address…"
+          />
         </Field>
         <Field
           label="Footer tagline"

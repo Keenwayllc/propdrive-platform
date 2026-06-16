@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Sparkles, Loader2, Eraser } from "lucide-react";
 import ImageUpload from "@/components/image-upload";
+import AddressAutocomplete, { type AddressParts } from "@/components/address-autocomplete";
 import { createProperty, updateProperty } from "@/lib/admin-actions";
 import { runAiTool } from "@/lib/ai-actions";
 import type { PropertyInput } from "@/lib/form-schemas";
@@ -31,6 +32,8 @@ interface PropertyFormValues {
   description: string;
   features: string;
   map_address: string;
+  lat: string;
+  lng: string;
   featured: boolean;
   active: boolean;
 }
@@ -68,6 +71,8 @@ function toDefaults(property?: Property): PropertyFormValues {
     description: property?.description ?? "",
     features: (property?.features ?? []).join("\n"),
     map_address: property?.map_address ?? "",
+    lat: property?.lat != null ? String(property.lat) : "",
+    lng: property?.lng != null ? String(property.lng) : "",
     featured: property?.featured ?? false,
     active: property?.active ?? true,
   };
@@ -97,8 +102,21 @@ export default function PropertyForm({ property }: PropertyFormProps) {
     handleSubmit,
     getValues,
     setValue,
+    watch,
     formState: { isSubmitting },
   } = useForm<PropertyFormValues>({ defaultValues: toDefaults(property) });
+
+  // When a customer picks an address suggestion, fill the related fields and
+  // capture coordinates so the map pin works without any manual lookup.
+  function onAddressSelect(p: AddressParts) {
+    if (p.line1) setValue("address", p.line1, { shouldDirty: true });
+    if (p.city) setValue("city", p.city, { shouldDirty: true });
+    if (p.state) setValue("state", p.state, { shouldDirty: true });
+    if (p.postcode) setValue("zip", p.postcode, { shouldDirty: true });
+    if (!getValues("map_address")) setValue("map_address", p.label, { shouldDirty: true });
+    if (p.lat != null) setValue("lat", String(p.lat), { shouldDirty: true });
+    if (p.lng != null) setValue("lng", String(p.lng), { shouldDirty: true });
+  }
 
   // Generate the description from the details already typed into the form,
   // using the same listing-description tool from the AI Tools page.
@@ -146,6 +164,8 @@ export default function PropertyForm({ property }: PropertyFormProps) {
       features: splitLines(values.features),
       image_urls: imageUrls,
       map_address: values.map_address,
+      lat: values.lat ? Number(values.lat) : null,
+      lng: values.lng ? Number(values.lng) : null,
       featured: values.featured,
       active: values.active,
     };
@@ -173,7 +193,12 @@ export default function PropertyForm({ property }: PropertyFormProps) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Address">
-          <input {...register("address")} className="form-input" />
+          <AddressAutocomplete
+            value={watch("address")}
+            onChange={(v) => setValue("address", v, { shouldDirty: true })}
+            onSelect={onAddressSelect}
+            placeholder="Start typing the street address…"
+          />
         </Field>
         <Field label="City">
           <input {...register("city", { required: true })} className="form-input" />

@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { homeValuationSchema, type HomeValuationValues } from "@/lib/form-schemas";
 import { submitValuation } from "@/lib/actions";
+import AddressAutocomplete from "@/components/address-autocomplete";
 
 export default function HomeValuationForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -18,10 +19,14 @@ export default function HomeValuationForm() {
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<HomeValuationValues>({
     resolver: zodResolver(homeValuationSchema),
   });
+  // Register the address field so RHF tracks it while the autocomplete drives it.
+  register("address");
 
   async function onSubmit(values: HomeValuationValues) {
     setServerError(null);
@@ -67,9 +72,9 @@ export default function HomeValuationForm() {
         <span className="mb-1.5 block text-sm font-medium text-ink">
           Property address
         </span>
-        <input
-          {...register("address")}
-          className="form-input"
+        <AddressAutocomplete
+          value={watch("address") ?? ""}
+          onChange={(v) => setValue("address", v, { shouldValidate: true })}
           placeholder="123 Ocean Ave, Santa Monica, CA"
         />
         {errors.address && (

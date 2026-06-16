@@ -99,6 +99,8 @@ export const propertyInputSchema = z.object({
   features: z.array(z.string()).default([]),
   image_urls: z.array(z.string()).default([]),
   map_address: z.string().optional().default(""),
+  lat: z.coerce.number().nullable().optional(),
+  lng: z.coerce.number().nullable().optional(),
   featured: z.boolean().default(false),
   active: z.boolean().default(true),
 });
