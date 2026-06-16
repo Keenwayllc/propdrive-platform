@@ -12,6 +12,7 @@ import {
   Sparkles,
   MapPin,
   CreditCard,
+  BarChart3,
   CheckCircle2,
   Circle,
   ExternalLink,
@@ -110,6 +111,18 @@ function buildIntegrations(openaiConfigured: boolean): Integration[] {
         what: "Turns a street address into map coordinates so each listing's pin lands in the right spot.",
       },
     ],
+  },
+  {
+    icon: BarChart3,
+    name: "Google Analytics",
+    purpose: "Visitor & traffic stats (GA4)",
+    required: false,
+    configured: Boolean(process.env.NEXT_PUBLIC_GA_ID),
+    docsUrl: "https://analytics.google.com/",
+    docsLabel: "Google Analytics",
+    envVars: ["NEXT_PUBLIC_GA_ID"],
+    note:
+      "Recommended if you plan to sell on a marketplace. Create a free GA4 property, copy its Measurement ID (looks like G-XXXXXXXXXX), and add it below. Listings with Analytics connected attract noticeably more buyer interest.",
   },
   {
     icon: CreditCard,

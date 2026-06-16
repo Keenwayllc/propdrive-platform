@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
+import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -73,6 +74,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Google Analytics 4 loads only when a measurement ID is set, so the site
+  // works untouched until an owner adds NEXT_PUBLIC_GA_ID in Vercel.
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
   return (
     <html
       lang="en"
@@ -80,6 +85,20 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-[--background] text-[--foreground]">
         {children}
+        {gaId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${gaId}');`}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   );
