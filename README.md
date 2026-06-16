@@ -10,23 +10,33 @@ and resold.
 
 - **Live:** [getpropdrive.com](https://getpropdrive.com)
 - **Stack:** Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 ·
-  Supabase (Postgres, Auth, Storage) · OpenAI · Resend · react-hook-form + Zod ·
-  recharts · framer-motion · lucide-react
+  Supabase (Postgres, Auth, Storage) · OpenAI · Resend · Leaflet/OpenStreetMap ·
+  react-hook-form + Zod · recharts · qrcode · framer-motion · lucide-react
 
 ## What's included
 
-**Public site:** homepage, property listings with live search/filter, property
-detail pages with photo galleries, LA County neighborhood pages with market
-stats, home-valuation request, mortgage calculator, about, contact, privacy &
-terms.
+**Public site:** homepage, property listings with live search/filter and address
+autocomplete, property detail pages with photo galleries and an interactive map,
+LA County neighborhood pages with market stats, a Market Insights blog,
+home-valuation request, mortgage calculator, about, contact, privacy & terms.
+Per-listing SEO (schema.org rich-result data) and social share images, plus a
+printable property flyer with a scan-to-view QR code.
 
-**Agent dashboard:** overview stats, lead CRM with status tracking, appointments
-manager, full property CRUD with image uploads, CSV lead export, AI tools
-(property descriptions, follow-up email drafting), and self-serve white-label
-editors (website copy, branding/colors/logo, account & security).
+**Agent dashboard:** overview with lead analytics (leads over time, by type, and
+a status pipeline), lead CRM with status tracking, appointments manager, full
+property CRUD with image uploads and automatic map pins, CSV lead export, and a
+full AI tool suite (8 tools: listing descriptions, social posts, follow-up
+emails, neighborhood highlights, an advisor, an objection handler, an open-house
+planner, and price positioning), plus an AI article writer in the blog.
 
-**Built in:** auth with password reset, email notifications on new leads, RLS on
-every table, and a fully white-label theming system.
+**White-label, owner-editable:** company name, logo, colors, agent details,
+homepage stats, hero image, testimonials, neighborhoods, blog, and all marketing
+copy, edited from the dashboard with AI assist and one-click clear/reset.
+
+**Growth & built-ins:** buyer/seller/valuation/general lead forms, schedule a
+showing, saved-search email alerts (cron), auth with password reset, email
+notifications on new leads, address autocomplete and geocoding with no paid API
+key (OpenStreetMap), and RLS on every table.
 
 ## Quick start
 
@@ -34,7 +44,15 @@ every table, and a fully white-label theming system.
 npm install
 cp .env.example .env.local   # fill in your Supabase keys
 npm run dev                  # http://localhost:3000
+
+# Optional: load (or reset) the demo properties + neighborhoods
+CONFIRM_RESET=yes npm run seed
 ```
+
+> `npm run seed` reads `scripts/seed-data.json` and reseeds the `properties` and
+> `neighborhoods` tables using your service-role key. The `CONFIRM_RESET=yes`
+> guard is required because it clears those tables first, so it can never wipe a
+> live database by accident.
 
 ## Documentation
 
