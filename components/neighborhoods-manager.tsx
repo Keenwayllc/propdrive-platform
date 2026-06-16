@@ -14,6 +14,7 @@ import {
   updateNeighborhood,
   deleteNeighborhood,
 } from "@/lib/admin-actions";
+import AiFieldAssist from "@/components/ai-field-assist";
 import type { Neighborhood } from "@/lib/types";
 
 function slugify(name: string): string {
@@ -26,8 +27,10 @@ function slugify(name: string): string {
 
 export default function NeighborhoodsManager({
   initial,
+  aiConnected = false,
 }: {
   initial: Neighborhood[];
+  aiConnected?: boolean;
 }) {
   const router = useRouter();
   const refresh = () => router.refresh();
@@ -40,9 +43,9 @@ export default function NeighborhoodsManager({
         </p>
       )}
       {initial.map((n) => (
-        <Row key={n.id} item={n} onChanged={refresh} />
+        <Row key={n.id} item={n} onChanged={refresh} aiConnected={aiConnected} />
       ))}
-      <NewRow nextOrder={initial.length + 1} onChanged={refresh} />
+      <NewRow nextOrder={initial.length + 1} onChanged={refresh} aiConnected={aiConnected} />
     </div>
   );
 }
@@ -55,7 +58,15 @@ function Card({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Row({ item, onChanged }: { item: Neighborhood; onChanged: () => void }) {
+function Row({
+  item,
+  onChanged,
+  aiConnected,
+}: {
+  item: Neighborhood;
+  onChanged: () => void;
+  aiConnected: boolean;
+}) {
   const [name, setName] = useState(item.name);
   const [slug, setSlug] = useState(item.slug);
   const [blurb, setBlurb] = useState(item.blurb);
@@ -118,7 +129,17 @@ function Row({ item, onChanged }: { item: Neighborhood; onChanged: () => void })
         </label>
       </div>
       <label className="block">
-        <span className="mb-1 block text-sm font-medium text-ink">Blurb</span>
+        <span className="mb-1 flex items-center justify-between gap-2">
+          <span className="text-sm font-medium text-ink">Blurb</span>
+          <AiFieldAssist
+            aiConnected={aiConnected}
+            label="Write with AI"
+            instruction={`a short, appealing one-sentence description of the ${name || "neighborhood"} area in Los Angeles County for a real estate site; be specific and do not invent statistics`}
+            getCurrent={() => blurb}
+            getContext={() => `Neighborhood: ${name}`}
+            onResult={(t) => setBlurb(t)}
+          />
+        </span>
         <textarea
           rows={2}
           value={blurb}
@@ -172,7 +193,15 @@ function Row({ item, onChanged }: { item: Neighborhood; onChanged: () => void })
   );
 }
 
-function NewRow({ nextOrder, onChanged }: { nextOrder: number; onChanged: () => void }) {
+function NewRow({
+  nextOrder,
+  onChanged,
+  aiConnected,
+}: {
+  nextOrder: number;
+  onChanged: () => void;
+  aiConnected: boolean;
+}) {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [blurb, setBlurb] = useState("");
@@ -239,7 +268,17 @@ function NewRow({ nextOrder, onChanged }: { nextOrder: number; onChanged: () => 
         </label>
       </div>
       <label className="block">
-        <span className="mb-1 block text-sm font-medium text-ink">Blurb</span>
+        <span className="mb-1 flex items-center justify-between gap-2">
+          <span className="text-sm font-medium text-ink">Blurb</span>
+          <AiFieldAssist
+            aiConnected={aiConnected}
+            label="Write with AI"
+            instruction={`a short, appealing one-sentence description of the ${name || "neighborhood"} area in Los Angeles County for a real estate site; be specific and do not invent statistics`}
+            getCurrent={() => blurb}
+            getContext={() => `Neighborhood: ${name}`}
+            onResult={(t) => setBlurb(t)}
+          />
+        </span>
         <textarea
           rows={2}
           value={blurb}

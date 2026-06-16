@@ -88,6 +88,58 @@ export async function runAiTool(
   return runOpenAi(prompt.system, prompt.user);
 }
 
+/**
+ * Generic single-field copy assistant for the dashboard. Writes or improves one
+ * short piece of marketing copy (a headline, subtitle, bio, blurb, tagline, a
+ * polished testimonial, etc). Returns plain text ready to drop into the field.
+ * Honors the "no em dashes" house style.
+ */
+export async function assistField(opts: {
+  /** What the field is for, e.g. "a homepage hero headline for a realtor". */
+  instruction: string;
+  /** Existing text to improve, if any. */
+  current?: string;
+  /** Brand/context to ground the copy (company name, city, etc). */
+  context?: string;
+  /** Optional extra guidance the user typed. */
+  guidance?: string;
+  maxTokens?: number;
+}): Promise<AiResult> {
+  const supabase = await createServerSupabase();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "You must be signed in to do that." };
+
+  const instruction = opts.instruction.trim();
+  if (!instruction) return { ok: false, error: "Nothing to write." };
+
+  const system =
+    "You are an expert real estate marketing copywriter. Write polished, warm, " +
+    "specific copy that sounds human and trustworthy. Avoid hype and cliches " +
+    "like 'must see' or 'dream home', and never invent facts, names, or numbers " +
+    "that were not provided. Never use em dashes; use commas, periods, or " +
+    "parentheses instead. Return ONLY the finished text for the field, with no " +
+    "quotation marks, labels, preamble, or markdown.";
+
+  const parts = [`Task: ${instruction}.`];
+  if (opts.context?.trim()) parts.push(`Brand context: ${opts.context.trim()}`);
+  if (opts.current?.trim())
+    parts.push(`Improve this existing text, keeping its meaning:\n${opts.current.trim()}`);
+  if (opts.guidance?.trim()) parts.push(`Extra guidance: ${opts.guidance.trim()}`);
+
+  const res = await runOpenAi(system, parts.join("\n\n"), {
+    maxTokens: opts.maxTokens ?? 400,
+  });
+  if (!res.ok) return res;
+  // Strip stray wrapping quotes and any em dashes the model slipped in.
+  const text = res.text
+    .replace(/^["'""]+|["'""]+$/g, "")
+    .replace(/\s*—\s*/g, ", ")
+    .trim();
+  return { ok: true, text };
+}
+
 export type BlogDraft = { title: string; excerpt: string; body: string };
 
 /**

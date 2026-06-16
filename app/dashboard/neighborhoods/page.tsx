@@ -3,10 +3,13 @@
  * the public site (homepage tiles + the Neighborhoods pages).
  */
 import NeighborhoodsManager from "@/components/neighborhoods-manager";
-import { getAllNeighborhoods } from "@/lib/queries";
+import { getAllNeighborhoods, getOpenAiKeyStatus } from "@/lib/queries";
 
 export default async function NeighborhoodsAdminPage() {
-  const neighborhoods = await getAllNeighborhoods();
+  const [neighborhoods, ai] = await Promise.all([
+    getAllNeighborhoods(),
+    getOpenAiKeyStatus(),
+  ]);
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -17,7 +20,7 @@ export default async function NeighborhoodsAdminPage() {
           your own to target any region. Changes go live immediately.
         </p>
       </div>
-      <NeighborhoodsManager initial={neighborhoods} />
+      <NeighborhoodsManager initial={neighborhoods} aiConnected={ai.source !== null} />
     </div>
   );
 }

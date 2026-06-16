@@ -8,6 +8,7 @@ import { useState } from "react";
 import { updateSiteSettings } from "@/lib/admin-actions";
 import { DEFAULT_STATS, type SiteSettingsInput } from "@/lib/form-schemas";
 import type { SiteSettings } from "@/lib/types";
+import AiFieldAssist from "@/components/ai-field-assist";
 
 function toInput(s: SiteSettings | null): SiteSettingsInput {
   return {
@@ -34,8 +35,10 @@ function toInput(s: SiteSettings | null): SiteSettingsInput {
 
 export default function SiteSettingsForm({
   initial,
+  aiConnected = false,
 }: {
   initial: SiteSettings | null;
+  aiConnected?: boolean;
 }) {
   const [form, setForm] = useState<SiteSettingsInput>(toInput(initial));
   const [saving, setSaving] = useState(false);
@@ -60,6 +63,16 @@ export default function SiteSettingsForm({
       return { ...prev, stats };
     });
     setStatus("idle");
+  }
+
+  // Grounding context for the AI so generated copy matches the business.
+  function brandContext(): string {
+    const bits = [
+      form.company_name && `Business name: ${form.company_name}`,
+      "Industry: residential real estate, serving Los Angeles County",
+      form.about_text && `About: ${form.about_text}`,
+    ].filter(Boolean);
+    return bits.join(". ");
   }
 
   async function save() {
@@ -91,12 +104,30 @@ export default function SiteSettingsForm({
         <Field
           label="Hero title"
           hint="The big headline on your homepage. Leave blank to use the default."
+          action={
+            <AiFieldAssist
+              aiConnected={aiConnected}
+              instruction="a short, memorable homepage hero headline for a real estate agent (under 9 words, no period needed)"
+              getCurrent={() => form.hero_title}
+              getContext={brandContext}
+              onResult={(t) => set("hero_title", t)}
+            />
+          }
         >
           <input value={form.hero_title} onChange={(e) => set("hero_title", e.target.value)} className="form-input" placeholder="e.g. Find the home that feels like arrival." />
         </Field>
         <Field
           label="Hero subtitle"
           hint="The supporting sentence right under the homepage headline."
+          action={
+            <AiFieldAssist
+              aiConnected={aiConnected}
+              instruction="one warm supporting sentence under a real estate homepage headline (one sentence)"
+              getCurrent={() => form.hero_subtitle}
+              getContext={brandContext}
+              onResult={(t) => set("hero_subtitle", t)}
+            />
+          }
         >
           <textarea rows={2} value={form.hero_subtitle} onChange={(e) => set("hero_subtitle", e.target.value)} className="form-input" />
         </Field>
@@ -108,7 +139,7 @@ export default function SiteSettingsForm({
       >
         <div className="space-y-4">
           {form.stats.map((s, i) => (
-            <div key={i} className="grid gap-3 sm:grid-cols-[1fr_1fr_2fr]">
+            <div key={i} className="grid items-end gap-3 sm:grid-cols-[1fr_1fr_2fr]">
               <Field label={`Stat ${i + 1} number`}>
                 <input
                   type="number"
@@ -144,12 +175,34 @@ export default function SiteSettingsForm({
         title="About"
         description="The 'About' block on your homepage and About page."
       >
-        <Field label="About title" hint="Heading for your About section.">
+        <Field
+          label="About title"
+          hint="Heading for your About section."
+          action={
+            <AiFieldAssist
+              aiConnected={aiConnected}
+              instruction="a short, inviting heading for a real estate agent's About section (under 6 words)"
+              getCurrent={() => form.about_title}
+              getContext={brandContext}
+              onResult={(t) => set("about_title", t)}
+            />
+          }
+        >
           <input value={form.about_title} onChange={(e) => set("about_title", e.target.value)} className="form-input" placeholder="e.g. Meet your agent" />
         </Field>
         <Field
           label="About text"
           hint="A short bio or company description. A couple of short paragraphs works best."
+          action={
+            <AiFieldAssist
+              aiConnected={aiConnected}
+              maxTokens={600}
+              instruction="a warm, credible About bio for a real estate agent or brokerage, two short paragraphs"
+              getCurrent={() => form.about_text}
+              getContext={brandContext}
+              onResult={(t) => set("about_text", t)}
+            />
+          }
         >
           <textarea rows={4} value={form.about_text} onChange={(e) => set("about_text", e.target.value)} className="form-input" />
         </Field>
@@ -173,6 +226,15 @@ export default function SiteSettingsForm({
         <Field
           label="Footer tagline"
           hint="The small line of text under your logo at the bottom of every page."
+          action={
+            <AiFieldAssist
+              aiConnected={aiConnected}
+              instruction="a short footer tagline for a real estate agent's website (under 10 words)"
+              getCurrent={() => form.footer_text}
+              getContext={brandContext}
+              onResult={(t) => set("footer_text", t)}
+            />
+          }
         >
           <input value={form.footer_text} onChange={(e) => set("footer_text", e.target.value)} className="form-input" />
         </Field>
@@ -235,18 +297,23 @@ function Field({
   label,
   hint,
   required,
+  action,
   children,
 }: {
   label: string;
   hint?: string;
   required?: boolean;
+  action?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-medium text-ink">
-        {label}
-        {required && <span className="ml-1 text-accent">*</span>}
+      <span className="mb-1 flex items-center justify-between gap-2">
+        <span className="text-sm font-medium text-ink">
+          {label}
+          {required && <span className="ml-1 text-accent">*</span>}
+        </span>
+        {action}
       </span>
       {hint && <span className="mb-1.5 block text-xs leading-relaxed text-faint">{hint}</span>}
       {children}

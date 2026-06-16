@@ -13,12 +13,15 @@ import {
   updateTestimonial,
   deleteTestimonial,
 } from "@/lib/admin-actions";
+import AiFieldAssist from "@/components/ai-field-assist";
 import type { Testimonial } from "@/lib/types";
 
 export default function TestimonialsManager({
   initial,
+  aiConnected = false,
 }: {
   initial: Testimonial[];
+  aiConnected?: boolean;
 }) {
   const router = useRouter();
   const refresh = () => router.refresh();
@@ -41,9 +44,9 @@ export default function TestimonialsManager({
         </p>
       )}
       {initial.map((t) => (
-        <Row key={t.id} item={t} onChanged={refresh} />
+        <Row key={t.id} item={t} onChanged={refresh} aiConnected={aiConnected} />
       ))}
-      <NewRow nextOrder={initial.length + 1} onChanged={refresh} />
+      <NewRow nextOrder={initial.length + 1} onChanged={refresh} aiConnected={aiConnected} />
     </div>
   );
 }
@@ -56,7 +59,15 @@ function Card({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Row({ item, onChanged }: { item: Testimonial; onChanged: () => void }) {
+function Row({
+  item,
+  onChanged,
+  aiConnected,
+}: {
+  item: Testimonial;
+  onChanged: () => void;
+  aiConnected: boolean;
+}) {
   const [quote, setQuote] = useState(item.quote);
   const [name, setName] = useState(item.author_name);
   const [detail, setDetail] = useState(item.author_detail);
@@ -106,7 +117,17 @@ function Row({ item, onChanged }: { item: Testimonial; onChanged: () => void }) 
   return (
     <Card>
       <label className="block">
-        <span className="mb-1 block text-sm font-medium text-ink">Quote</span>
+        <span className="mb-1 flex items-center justify-between gap-2">
+          <span className="text-sm font-medium text-ink">Quote</span>
+          <AiFieldAssist
+            aiConnected={aiConnected}
+            label="Polish"
+            instruction="lightly polish this real client testimonial so it reads clearly and warmly in the client's own voice; keep it honest and do not invent facts, names, or results"
+            getCurrent={() => quote}
+            getContext={() => `Client name: ${name}. Detail: ${detail}`}
+            onResult={(t) => setQuote(t)}
+          />
+        </span>
         <textarea
           rows={3}
           value={quote}
@@ -169,7 +190,15 @@ function Row({ item, onChanged }: { item: Testimonial; onChanged: () => void }) 
   );
 }
 
-function NewRow({ nextOrder, onChanged }: { nextOrder: number; onChanged: () => void }) {
+function NewRow({
+  nextOrder,
+  onChanged,
+  aiConnected,
+}: {
+  nextOrder: number;
+  onChanged: () => void;
+  aiConnected: boolean;
+}) {
   const [quote, setQuote] = useState("");
   const [name, setName] = useState("");
   const [detail, setDetail] = useState("");
@@ -208,7 +237,17 @@ function NewRow({ nextOrder, onChanged }: { nextOrder: number; onChanged: () => 
     <Card>
       <p className="text-sm font-semibold uppercase tracking-[0.14em] text-faint">Add a testimonial</p>
       <label className="block">
-        <span className="mb-1 block text-sm font-medium text-ink">Quote</span>
+        <span className="mb-1 flex items-center justify-between gap-2">
+          <span className="text-sm font-medium text-ink">Quote</span>
+          <AiFieldAssist
+            aiConnected={aiConnected}
+            label="Polish"
+            instruction="polish this client testimonial so it reads clearly and warmly in the client's own voice; keep it honest and do not invent facts, names, or results"
+            getCurrent={() => quote}
+            getContext={() => `Client name: ${name}. Detail: ${detail}`}
+            onResult={(t) => setQuote(t)}
+          />
+        </span>
         <textarea
           rows={3}
           value={quote}

@@ -3,10 +3,13 @@
  * homepage.
  */
 import TestimonialsManager from "@/components/testimonials-manager";
-import { getAllTestimonials } from "@/lib/queries";
+import { getAllTestimonials, getOpenAiKeyStatus } from "@/lib/queries";
 
 export default async function TestimonialsPage() {
-  const testimonials = await getAllTestimonials();
+  const [testimonials, ai] = await Promise.all([
+    getAllTestimonials(),
+    getOpenAiKeyStatus(),
+  ]);
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -16,7 +19,7 @@ export default async function TestimonialsPage() {
           The client stories shown on your homepage. Changes go live immediately.
         </p>
       </div>
-      <TestimonialsManager initial={testimonials} />
+      <TestimonialsManager initial={testimonials} aiConnected={ai.source !== null} />
     </div>
   );
 }

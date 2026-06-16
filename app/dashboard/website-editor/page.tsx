@@ -2,10 +2,13 @@
  * Website editor — edit the public site's marketing copy (site_settings).
  */
 import SiteSettingsForm from "@/components/site-settings-form";
-import { getSiteSettings } from "@/lib/queries";
+import { getSiteSettings, getOpenAiKeyStatus } from "@/lib/queries";
 
 export default async function WebsiteEditorPage() {
-  const settings = await getSiteSettings();
+  const [settings, ai] = await Promise.all([
+    getSiteSettings(),
+    getOpenAiKeyStatus(),
+  ]);
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -16,7 +19,7 @@ export default async function WebsiteEditorPage() {
           immediately.
         </p>
       </div>
-      <SiteSettingsForm initial={settings} />
+      <SiteSettingsForm initial={settings} aiConnected={ai.source !== null} />
     </div>
   );
 }
