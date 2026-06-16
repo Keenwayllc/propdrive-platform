@@ -87,3 +87,53 @@ export async function runAiTool(
 
   return runOpenAi(prompt.system, prompt.user);
 }
+
+export type BlogDraft = { title: string; excerpt: string; body: string };
+
+/**
+ * Generate a full blog / Market Insights article from a short topic. Returns a
+ * structured draft (title, excerpt, body) the owner can edit before publishing.
+ */
+export async function generateBlogArticle(
+  topic: string
+): Promise<{ ok: true; article: BlogDraft } | { ok: false; error: string }> {
+  const supabase = await createServerSupabase();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "You must be signed in to do that." };
+
+  const t = topic.trim();
+  if (!t) return { ok: false, error: "Enter a topic to write about." };
+
+  const system =
+    "You are an expert real estate content writer. Write a helpful, SEO-friendly blog article for a real estate agent's website. Be specific and genuinely useful to buyers or sellers, avoid hype and clichés, and never invent statistics. Do not use em dashes. " +
+    'Return ONLY valid JSON, no markdown or code fences, with exactly these keys: "title" (a compelling headline), "excerpt" (one sentence under 160 characters), and "body" (4 to 6 short paragraphs separated by blank lines).';
+  const userMsg = `Write a real estate blog article about: ${t}`;
+
+  const res = await runOpenAi(system, userMsg, { maxTokens: 1400 });
+  if (!res.ok) return res;
+
+  const cleaned = res.text
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/```\s*$/i, "")
+    .trim();
+
+  try {
+    const obj = JSON.parse(cleaned) as Partial<BlogDraft>;
+    if (!obj.title || !obj.body) {
+      return { ok: false, error: "Could not parse the draft. Please try again." };
+    }
+    return {
+      ok: true,
+      article: {
+        title: String(obj.title),
+        excerpt: String(obj.excerpt ?? ""),
+        body: String(obj.body),
+      },
+    };
+  } catch {
+    // Model didn't return clean JSON; fall back to using the raw text as body.
+    return { ok: true, article: { title: "", excerpt: "", body: res.text } };
+  }
+}

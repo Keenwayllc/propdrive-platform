@@ -13,7 +13,11 @@ export type AiResult =
   | { ok: true; text: string }
   | { ok: false; error: string };
 
-export async function runOpenAi(system: string, user: string): Promise<AiResult> {
+export async function runOpenAi(
+  system: string,
+  user: string,
+  opts?: { maxTokens?: number }
+): Promise<AiResult> {
   const apiKey = await getOpenAiKey();
   if (!apiKey) {
     return {
@@ -27,7 +31,7 @@ export async function runOpenAi(system: string, user: string): Promise<AiResult>
     const completion = await client.chat.completions.create({
       model: "gpt-4o-mini",
       temperature: 0.7,
-      max_tokens: 700,
+      max_tokens: opts?.maxTokens ?? 700,
       messages: [
         { role: "system", content: system },
         { role: "user", content: user },

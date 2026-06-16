@@ -7,9 +7,10 @@
  */
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, Sparkles, Loader2 } from "lucide-react";
 import ImageUpload from "@/components/image-upload";
 import { createPost, updatePost, deletePost } from "@/lib/admin-actions";
+import { generateBlogArticle } from "@/lib/ai-actions";
 import type { Post } from "@/lib/types";
 
 function slugify(s: string): string {
@@ -151,9 +152,30 @@ function NewRow({ onChanged }: { onChanged: () => void }) {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
+  const [topic, setTopic] = useState("");
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiErr, setAiErr] = useState<string | null>(null);
+
   function onTitle(v: string) {
     setTitle(v);
     if (!touchedSlug) setSlug(slugify(v));
+  }
+
+  async function writeWithAi() {
+    setAiBusy(true);
+    setAiErr(null);
+    const res = await generateBlogArticle(topic);
+    setAiBusy(false);
+    if (!res.ok) {
+      setAiErr(res.error);
+      return;
+    }
+    if (res.article.title) {
+      setTitle(res.article.title);
+      if (!touchedSlug) setSlug(slugify(res.article.title));
+    }
+    if (res.article.excerpt) setExcerpt(res.article.excerpt);
+    setBody(res.article.body);
   }
 
   async function add() {
@@ -186,6 +208,42 @@ function NewRow({ onChanged }: { onChanged: () => void }) {
   return (
     <Card>
       <p className="text-sm font-semibold uppercase tracking-[0.14em] text-faint">Write a new article</p>
+
+      <div className="rounded-2xl border border-accent/30 bg-accent-soft/50 p-4">
+        <div className="flex items-center gap-2 text-sm font-semibold text-accent-strong">
+          <Sparkles className="h-4 w-4" /> Write with AI
+        </div>
+        <p className="mt-1 text-xs text-muted">
+          Enter a topic and let AI draft the title, summary, and full article. You
+          can edit everything before publishing.
+        </p>
+        <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+          <input
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            className="form-input"
+            placeholder="e.g. Spring 2026 market trends for first-time buyers in LA"
+          />
+          <button
+            type="button"
+            onClick={writeWithAi}
+            disabled={aiBusy || !topic.trim()}
+            className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-strong disabled:opacity-60"
+          >
+            {aiBusy ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" /> Writing…
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4" /> Generate
+              </>
+            )}
+          </button>
+        </div>
+        {aiErr && <p className="mt-2 text-xs text-red-600">{aiErr}</p>}
+      </div>
+
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="block">
           <span className="mb-1 block text-sm font-medium text-ink">Title</span>
