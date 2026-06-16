@@ -26,6 +26,7 @@ import {
   BellRing,
   Sparkles,
   Plug,
+  Globe,
   Settings,
   LogOut,
   Menu,
@@ -53,6 +54,7 @@ const NAV: ReadonlyArray<{ href: string; label: string; icon: LucideIcon }> = [
   { href: "/dashboard/insights", label: "Market Insights", icon: Newspaper },
   { href: "/dashboard/ai-tools", label: "AI Tools", icon: Sparkles },
   { href: "/dashboard/integrations", label: "Integrations", icon: Plug },
+  { href: "/dashboard/domain", label: "Domain", icon: Globe },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
