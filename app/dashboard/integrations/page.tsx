@@ -35,6 +35,11 @@ type Integration = {
   envVars: string[];
   /** OpenAI can also be connected from the dashboard (no Vercel needed). */
   dashboardConnect?: string;
+  /** A short orienting note shown at the top of the setup steps. */
+  note?: string;
+  /** Provider APIs the customer must turn on (e.g. Google Cloud APIs), each
+   *  with a plain-language description of what it powers in PropDrive. */
+  enableApis?: { name: string; what: string }[];
 };
 
 function buildIntegrations(openaiConfigured: boolean): Integration[] {
@@ -83,12 +88,28 @@ function buildIntegrations(openaiConfigured: boolean): Integration[] {
   {
     icon: MapPin,
     name: "Google Maps",
-    purpose: "Property maps",
+    purpose: "Upgraded property maps & address autocomplete",
     required: false,
     configured: Boolean(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY),
     docsUrl: "https://console.cloud.google.com/google/maps-apis/credentials",
     docsLabel: "Google Maps credentials",
     envVars: ["NEXT_PUBLIC_GOOGLE_MAPS_API_KEY"],
+    note:
+      "Optional. Your maps and address autocomplete already work for free using OpenStreetMap, no key needed. Add a Google key only if you want Google's maps and Places autocomplete. Google requires a billing account, though its free monthly credit covers most small sites.",
+    enableApis: [
+      {
+        name: "Maps JavaScript API",
+        what: "Draws the interactive map with pins on your property pages.",
+      },
+      {
+        name: "Places API",
+        what: "Powers the address suggestions that appear as visitors type in your forms.",
+      },
+      {
+        name: "Geocoding API",
+        what: "Turns a street address into map coordinates so each listing's pin lands in the right spot.",
+      },
+    ],
   },
   {
     icon: CreditCard,
@@ -134,6 +155,15 @@ export default async function IntegrationsPage() {
             Vercel → your project → Settings → Environment Variables
           </span>
           , then redeploy. Each card below has the exact variable names to copy.
+        </p>
+        <p className="mt-2 text-muted">
+          <span className="font-medium text-ink">Only Supabase is required</span>{" "}
+          to run PropDrive. Everything else is optional and adds a feature:
+          Resend sends lead and alert emails, Twilio sends SMS, OpenAI powers the
+          AI writing tools, Stripe takes payments, and Google Maps upgrades your
+          maps. Your maps and address autocomplete already work for free with
+          OpenStreetMap, so Google Maps is only needed if you want Google&apos;s
+          version.
         </p>
       </div>
 
@@ -192,6 +222,37 @@ export default async function IntegrationsPage() {
               </summary>
 
               <div className="mt-3 space-y-3 text-sm">
+                {svc.note && (
+                  <p className="rounded-lg bg-amber-50 px-3 py-2 text-amber-800">
+                    {svc.note}
+                  </p>
+                )}
+                {svc.enableApis && (
+                  <div>
+                    <p className="font-medium text-ink">
+                      Turn on these APIs in Google Cloud
+                    </p>
+                    <p className="mt-0.5 text-muted">
+                      In the Google Cloud console, open APIs &amp; Services →
+                      Library, then enable each one (they all use the same key):
+                    </p>
+                    <ul className="mt-1.5 space-y-1.5">
+                      {svc.enableApis.map((api) => (
+                        <li
+                          key={api.name}
+                          className="rounded-md bg-surface/60 px-2.5 py-1.5"
+                        >
+                          <code className="text-xs font-semibold text-ink">
+                            {api.name}
+                          </code>
+                          <span className="mt-0.5 block text-xs text-muted">
+                            {api.what}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 {svc.dashboardConnect && (
                   <div className="rounded-lg border border-accent/30 bg-accent-soft/50 p-3">
                     <p className="font-medium text-ink">

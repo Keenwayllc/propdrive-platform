@@ -58,6 +58,7 @@ export default function AddressAutocomplete({
   required,
   onBlur,
   ariaLabel,
+  formatSelection,
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -70,6 +71,9 @@ export default function AddressAutocomplete({
   required?: boolean;
   onBlur?: () => void;
   ariaLabel?: string;
+  /** Override the text written into the field when a suggestion is picked.
+   *  Defaults to the full formatted address. */
+  formatSelection?: (parts: AddressParts) => string;
 }) {
   const [results, setResults] = useState<AddressParts[]>([]);
   const [open, setOpen] = useState(false);
@@ -87,13 +91,13 @@ export default function AddressAutocomplete({
       return;
     }
     const q = value.trim();
-    if (q.length < 4) {
-      setResults([]);
-      setOpen(false);
-      return;
-    }
     const controller = new AbortController();
     const timer = setTimeout(async () => {
+      if (q.length < 4) {
+        setResults([]);
+        setOpen(false);
+        return;
+      }
       setBusy(true);
       try {
         const url =
@@ -135,7 +139,7 @@ export default function AddressAutocomplete({
 
   function pick(parts: AddressParts) {
     justPicked.current = true;
-    onChange(parts.label);
+    onChange(formatSelection ? formatSelection(parts) : parts.label);
     onSelect?.(parts);
     setOpen(false);
     setResults([]);

@@ -10,7 +10,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
+import AddressAutocomplete, { type AddressParts } from "@/components/address-autocomplete";
 import type { PropertyType } from "@/lib/types";
+
+/** Pick a search-friendly token from an address suggestion so it matches the
+ *  listings' city/zip/address text (a full one-line label rarely matches). */
+function searchToken(p: AddressParts): string {
+  return p.city || p.postcode || p.line1 || p.label;
+}
 
 export interface PropertyFilters {
   query: string;
@@ -86,12 +93,13 @@ export default function PropertyFilter() {
     <div className="rounded-[1.5rem] border border-line bg-surface p-4 shadow-[0_18px_40px_-30px_rgba(26,23,20,0.3)]">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <div className="relative lg:col-span-2">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-faint" />
-          <input
-            type="search"
-            aria-label="Search by city, address, or ZIP"
+          <Search className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-faint" />
+          <AddressAutocomplete
             value={filters.query}
-            onChange={(e) => update("query", e.target.value, { debounced: true })}
+            onChange={(v) => update("query", v, { debounced: true })}
+            onSelect={(p) => update("query", searchToken(p))}
+            formatSelection={searchToken}
+            ariaLabel="Search by city, address, or ZIP"
             placeholder="City, address, or ZIP"
             className="w-full rounded-lg border border-line py-2 pl-9 pr-3 text-sm text-ink focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
           />
