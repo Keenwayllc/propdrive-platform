@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -37,7 +38,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://getpropdrive.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "PropDrive — The real estate lead platform built for agents",
     template: "%s | PropDrive",
@@ -48,7 +49,7 @@ export const metadata: Metadata = {
     title: "PropDrive — The real estate lead platform built for agents",
     description:
       "Property listings, lead CRM, branding editor, and AI tools for modern real estate agents.",
-    url: "https://getpropdrive.com",
+    url: SITE_URL,
     siteName: "PropDrive",
     type: "website",
     images: [

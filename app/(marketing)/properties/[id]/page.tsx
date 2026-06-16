@@ -11,6 +11,7 @@ import ScheduleShowingForm from "@/components/schedule-showing-form";
 import PropertyGallery from "@/components/property-gallery";
 import { Reveal } from "@/components/motion";
 import { getPropertyById } from "@/lib/queries";
+import { SITE_URL } from "@/lib/site";
 import type { Property } from "@/lib/types";
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -73,7 +74,7 @@ function listingJsonLd(property: Property) {
     "@type": "RealEstateListing",
     name: property.title,
     description: property.description || undefined,
-    url: `https://getpropdrive.com/properties/${property.id}`,
+    url: `${SITE_URL}/properties/${property.id}`,
     image: property.image_urls.length ? property.image_urls : undefined,
     offers: {
       "@type": "Offer",

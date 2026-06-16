@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getActiveProperties } from "@/lib/queries";
-
-const BASE = "https://getpropdrive.com";
+import { SITE_URL as BASE } from "@/lib/site";
 
 /** Sitemap: static marketing routes + every active listing. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
