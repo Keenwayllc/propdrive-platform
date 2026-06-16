@@ -3,9 +3,9 @@
  * site runs on Vercel, so this is a DNS + Vercel task (no code). Shows the exact
  * records to copy and an honest "or have it done for you" option.
  */
-import { Globe, CheckCircle2, ExternalLink } from "lucide-react";
+import { Globe, CheckCircle2, ExternalLink, Mail } from "lucide-react";
 import CopyButton from "@/components/copy-button";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, SUPPORT_EMAIL } from "@/lib/site";
 
 const DNS_RECORDS = [
   {
@@ -56,9 +56,18 @@ export default function DomainPage() {
           Connecting a domain takes about ten minutes but involves DNS settings.
           If you would rather not touch that, we will connect your domain,
           verify it, and confirm your site is live and secure for a one-time fee
-          of $99. Just reach out with the domain you bought. Prefer to do it
-          yourself? Follow the four free steps below.
+          of $99. Prefer to do it yourself? Follow the four free steps below.
         </p>
+        {SUPPORT_EMAIL && (
+          <a
+            href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
+              "Domain & Launch Setup ($99)"
+            )}`}
+            className="mt-3 inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent"
+          >
+            <Mail className="h-4 w-4" /> Email us to set it up
+          </a>
+        )}
       </div>
 
       {/* Steps */}

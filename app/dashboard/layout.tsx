@@ -31,6 +31,7 @@ import {
   LogOut,
   Menu,
   X,
+  LifeBuoy,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -38,6 +39,21 @@ import { LogoBadge } from "@/components/logo";
 import ScrollToTop from "@/components/scroll-to-top";
 import { supabase } from "@/lib/supabase-client";
 import { signOut } from "@/lib/auth";
+import { SUPPORT_EMAIL } from "@/lib/site";
+
+/** "Need help?" support link, shown when a support email is configured. */
+function SupportLink({ onNavigate }: { onNavigate?: () => void }) {
+  if (!SUPPORT_EMAIL) return null;
+  return (
+    <a
+      href={`mailto:${SUPPORT_EMAIL}?subject=PropDrive%20support`}
+      onClick={onNavigate}
+      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-line"
+    >
+      <LifeBuoy className="h-5 w-5 shrink-0" /> Need help?
+    </a>
+  );
+}
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -122,12 +138,19 @@ export default function DashboardLayout({
   return (
     <div className="flex min-h-screen bg-background">
       {/* Desktop sidebar */}
-      <aside className="hidden w-64 shrink-0 border-r border-line bg-white lg:block">
+      <aside className="hidden w-64 shrink-0 flex-col border-r border-line bg-white lg:flex">
         <div className="flex h-16 items-center gap-2 border-b border-line px-6 text-ink">
           <LogoBadge size={32} />
           <span className="font-display text-xl tracking-tight">PropDrive</span>
         </div>
-        <NavLinks pathname={pathname} />
+        <div className="flex-1 overflow-y-auto">
+          <NavLinks pathname={pathname} />
+        </div>
+        {SUPPORT_EMAIL && (
+          <div className="border-t border-line p-3">
+            <SupportLink />
+          </div>
+        )}
       </aside>
 
       {/* Mobile drawer */}
@@ -171,6 +194,7 @@ export default function DashboardLayout({
                 <NavLinks pathname={pathname} onNavigate={() => setNavOpen(false)} />
               </div>
               <div className="border-t border-line p-3">
+                <SupportLink onNavigate={() => setNavOpen(false)} />
                 <button
                   type="button"
                   onClick={handleSignOut}
