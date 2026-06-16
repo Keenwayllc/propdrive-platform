@@ -11,6 +11,7 @@ import {
   Copy,
   Check,
   RotateCcw,
+  Eraser,
   FileText,
   Megaphone,
   Mail,
@@ -46,6 +47,15 @@ export default function AiToolCard({
   function set(name: string, v: string) {
     setValues((prev) => ({ ...prev, [name]: v }));
   }
+
+  function clearForm() {
+    setValues({});
+    setResult(null);
+    setError(null);
+  }
+
+  const hasInput =
+    Object.values(values).some((v) => v.trim()) || result !== null;
 
   async function onGenerate(e: React.FormEvent) {
     e.preventDefault();
@@ -149,6 +159,17 @@ export default function AiToolCard({
                 {busy && <Loader2 className="h-4 w-4 animate-spin" />}
                 {busy ? "Generating…" : tool.cta}
               </button>
+              {hasInput && (
+                <button
+                  type="button"
+                  onClick={clearForm}
+                  disabled={busy}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2.5 text-sm font-medium text-muted transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-700 disabled:opacity-60"
+                >
+                  <Eraser className="h-4 w-4" />
+                  Clear form
+                </button>
+              )}
               {error && <span className="text-sm text-red-600">{error}</span>}
             </div>
           </form>

@@ -8,7 +8,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Trash2, Plus, Sparkles, Loader2, HelpCircle } from "lucide-react";
+import { Trash2, Plus, Sparkles, Loader2, HelpCircle, Eraser, RotateCcw } from "lucide-react";
 import ImageUpload from "@/components/image-upload";
 import { createPost, updatePost, deletePost } from "@/lib/admin-actions";
 import { generateBlogArticle } from "@/lib/ai-actions";
@@ -195,6 +195,18 @@ function Row({
     if (res.ok) onChanged();
   }
 
+  function reset() {
+    setTitle(item.title);
+    setSlug(item.slug);
+    setExcerpt(item.excerpt);
+    setBody(item.body);
+    setAuthor(item.author);
+    setCover(item.cover_image_url);
+    setPublished(item.published);
+    setMsg(null);
+    setErr(false);
+  }
+
   async function remove() {
     if (!window.confirm(`Delete "${item.title}"?`)) return;
     setBusy(true);
@@ -255,6 +267,9 @@ function Row({
         </label>
         <div className="flex items-center gap-3">
           {msg && <span className={`text-sm ${err ? "text-red-600" : "text-green-600"}`}>{msg}</span>}
+          <button type="button" onClick={reset} disabled={busy} title="Undo unsaved edits and restore the saved article" className="inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm font-medium text-muted hover:bg-surface disabled:opacity-60">
+            <RotateCcw className="h-4 w-4" /> Reset
+          </button>
           <button type="button" onClick={remove} disabled={busy} className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-100 disabled:opacity-60">
             <Trash2 className="h-4 w-4" /> Delete
           </button>
@@ -306,6 +321,11 @@ function NewRow({
       setMsg(res.error ?? "Could not create.");
       return;
     }
+    clearForm();
+    onChanged();
+  }
+
+  function clearForm() {
     setTitle("");
     setSlug("");
     setTouchedSlug(false);
@@ -313,8 +333,12 @@ function NewRow({
     setBody("");
     setAuthor("");
     setCover("");
-    onChanged();
+    setMsg(null);
   }
+
+  const hasInput = Boolean(
+    title || slug || excerpt || body || author || cover
+  );
 
   return (
     <Card>
@@ -370,6 +394,11 @@ function NewRow({
       />
       <div className="flex items-center justify-end gap-3">
         {msg && <span className="text-sm text-red-600">{msg}</span>}
+        {hasInput && (
+          <button type="button" onClick={clearForm} disabled={busy} title="Clear every field below" className="inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm font-medium text-muted hover:border-red-200 hover:bg-red-50 hover:text-red-700 disabled:opacity-60">
+            <Eraser className="h-4 w-4" /> Clear form
+          </button>
+        )}
         <button type="button" onClick={add} disabled={busy || !title.trim()} className="inline-flex items-center gap-1.5 rounded-full bg-ink px-5 py-2 text-sm font-semibold text-white hover:bg-accent disabled:opacity-60">
           <Plus className="h-4 w-4" /> {busy ? "Publishing…" : "Publish article"}
         </button>

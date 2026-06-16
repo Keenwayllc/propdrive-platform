@@ -8,7 +8,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Sparkles, Loader2, Eraser } from "lucide-react";
 import ImageUpload from "@/components/image-upload";
 import { createProperty, updateProperty } from "@/lib/admin-actions";
 import { runAiTool } from "@/lib/ai-actions";
@@ -228,19 +228,34 @@ export default function PropertyForm({ property }: PropertyFormProps) {
       <div>
         <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
           <span className="text-sm font-medium text-ink">Description</span>
-          <button
-            type="button"
-            onClick={generateDescription}
-            disabled={aiBusy}
-            className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent-soft px-3 py-1 text-xs font-semibold text-accent-strong transition-colors hover:bg-accent-soft/70 active:translate-y-px disabled:opacity-60"
-          >
-            {aiBusy ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <Sparkles className="h-3.5 w-3.5" />
-            )}
-            {aiBusy ? "Writing…" : "Generate with AI"}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setValue("description", "", { shouldDirty: true });
+                setAiError(null);
+              }}
+              disabled={aiBusy}
+              title="Clear the description"
+              className="inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1 text-xs font-medium text-muted transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-700 disabled:opacity-60"
+            >
+              <Eraser className="h-3.5 w-3.5" />
+              Clear
+            </button>
+            <button
+              type="button"
+              onClick={generateDescription}
+              disabled={aiBusy}
+              className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent-soft px-3 py-1 text-xs font-semibold text-accent-strong transition-colors hover:bg-accent-soft/70 active:translate-y-px disabled:opacity-60"
+            >
+              {aiBusy ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Sparkles className="h-3.5 w-3.5" />
+              )}
+              {aiBusy ? "Writing…" : "Generate with AI"}
+            </button>
+          </div>
         </div>
         <textarea rows={4} {...register("description")} className="form-input" />
         {aiError && <p className="mt-1.5 text-sm text-red-600">{aiError}</p>}
