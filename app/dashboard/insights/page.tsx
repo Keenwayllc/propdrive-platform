@@ -2,10 +2,10 @@
  * Market Insights manager — write, edit, publish, and remove blog articles.
  */
 import PostsManager from "@/components/posts-manager";
-import { getAllPosts } from "@/lib/queries";
+import { getAllPosts, getOpenAiKeyStatus } from "@/lib/queries";
 
 export default async function InsightsAdminPage() {
-  const posts = await getAllPosts();
+  const [posts, ai] = await Promise.all([getAllPosts(), getOpenAiKeyStatus()]);
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -16,7 +16,7 @@ export default async function InsightsAdminPage() {
           live immediately.
         </p>
       </div>
-      <PostsManager initial={posts} />
+      <PostsManager initial={posts} aiConnected={ai.source !== null} />
     </div>
   );
 }

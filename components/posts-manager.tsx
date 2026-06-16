@@ -6,8 +6,9 @@
  * Supabase Storage. Changes hit Server Actions and refresh the route.
  */
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Trash2, Plus, Sparkles, Loader2 } from "lucide-react";
+import { Trash2, Plus, Sparkles, Loader2, HelpCircle } from "lucide-react";
 import ImageUpload from "@/components/image-upload";
 import { createPost, updatePost, deletePost } from "@/lib/admin-actions";
 import { generateBlogArticle } from "@/lib/ai-actions";
@@ -21,7 +22,13 @@ function slugify(s: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-export default function PostsManager({ initial }: { initial: Post[] }) {
+export default function PostsManager({
+  initial,
+  aiConnected = false,
+}: {
+  initial: Post[];
+  aiConnected?: boolean;
+}) {
   const router = useRouter();
   const refresh = () => router.refresh();
 
@@ -35,7 +42,7 @@ export default function PostsManager({ initial }: { initial: Post[] }) {
       {initial.map((p) => (
         <Row key={p.id} item={p} onChanged={refresh} />
       ))}
-      <NewRow onChanged={refresh} />
+      <NewRow onChanged={refresh} aiConnected={aiConnected} />
     </div>
   );
 }
@@ -141,7 +148,13 @@ function Row({ item, onChanged }: { item: Post; onChanged: () => void }) {
   );
 }
 
-function NewRow({ onChanged }: { onChanged: () => void }) {
+function NewRow({
+  onChanged,
+  aiConnected,
+}: {
+  onChanged: () => void;
+  aiConnected: boolean;
+}) {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [touchedSlug, setTouchedSlug] = useState(false);
@@ -210,10 +223,37 @@ function NewRow({ onChanged }: { onChanged: () => void }) {
       <p className="text-sm font-semibold uppercase tracking-[0.14em] text-faint">Write a new article</p>
 
       <div className="rounded-2xl border border-accent/30 bg-accent-soft/50 p-4">
-        <div className="flex items-center gap-2 text-sm font-semibold text-accent-strong">
-          <Sparkles className="h-4 w-4" /> Write with AI
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2 text-sm font-semibold text-accent-strong">
+            <Sparkles className="h-4 w-4" /> Write with AI
+            {/* Tooltip: short how-to on hover/focus */}
+            <span className="group relative inline-flex">
+              <HelpCircle className="h-4 w-4 cursor-help text-muted" tabIndex={0} aria-label="How it works" />
+              <span className="pointer-events-none absolute left-1/2 top-6 z-20 w-60 -translate-x-1/2 rounded-xl bg-ink px-3 py-2 text-xs font-normal leading-relaxed text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">
+                1. Type a topic. 2. Click Generate. 3. AI fills the title, summary,
+                and article. 4. Edit anything, then Publish.
+              </span>
+            </span>
+          </div>
+          {/* Cute connection status */}
+          {aiConnected ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+              </span>
+              Your AI assistant is on ✨
+            </span>
+          ) : (
+            <Link
+              href="/dashboard/ai-tools"
+              className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700 hover:bg-amber-200"
+            >
+              Connect OpenAI to turn it on →
+            </Link>
+          )}
         </div>
-        <p className="mt-1 text-xs text-muted">
+        <p className="mt-1.5 text-xs text-muted">
           Enter a topic and let AI draft the title, summary, and full article. You
           can edit everything before publishing.
         </p>
@@ -227,7 +267,8 @@ function NewRow({ onChanged }: { onChanged: () => void }) {
           <button
             type="button"
             onClick={writeWithAi}
-            disabled={aiBusy || !topic.trim()}
+            disabled={aiBusy || !topic.trim() || !aiConnected}
+            title={aiConnected ? undefined : "Connect your OpenAI key under AI Tools first"}
             className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-strong disabled:opacity-60"
           >
             {aiBusy ? (
