@@ -11,6 +11,7 @@ import ScheduleShowingForm from "@/components/schedule-showing-form";
 import PropertyGallery from "@/components/property-gallery";
 import { Reveal } from "@/components/motion";
 import { getPropertyById } from "@/lib/queries";
+import type { Property } from "@/lib/types";
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -34,9 +35,70 @@ export async function generateMetadata({
   const { id } = await params;
   const property = await getPropertyById(id);
   if (!property) return { title: "Listing not found" };
+
+  const description = `${currency.format(property.price)} · ${property.bedrooms} bd · ${property.bathrooms} ba · ${property.square_feet.toLocaleString()} sqft · ${property.city}, ${property.state}`;
+  const cover = property.image_urls[0];
+  const url = `/properties/${property.id}`;
+
   return {
     title: property.title,
-    description: `${property.bedrooms} bd · ${property.bathrooms} ba · ${property.city}, ${property.state}`,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title: property.title,
+      description,
+      url,
+      type: "website",
+      images: cover ? [{ url: cover, alt: property.title }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: property.title,
+      description,
+      images: cover ? [cover] : undefined,
+    },
+  };
+}
+
+/** schema.org structured data so the listing can show as a rich result. */
+function listingJsonLd(property: Property) {
+  const availability =
+    property.status === "sold"
+      ? "https://schema.org/SoldOut"
+      : property.status === "pending"
+        ? "https://schema.org/LimitedAvailability"
+        : "https://schema.org/InStock";
+  return {
+    "@context": "https://schema.org",
+    "@type": "RealEstateListing",
+    name: property.title,
+    description: property.description || undefined,
+    url: `https://getpropdrive.com/properties/${property.id}`,
+    image: property.image_urls.length ? property.image_urls : undefined,
+    offers: {
+      "@type": "Offer",
+      price: property.price,
+      priceCurrency: "USD",
+      availability,
+    },
+    about: {
+      "@type": "SingleFamilyResidence",
+      numberOfBedrooms: property.bedrooms,
+      numberOfBathroomsTotal: property.bathrooms,
+      floorSize: {
+        "@type": "QuantitativeValue",
+        value: property.square_feet,
+        unitCode: "FTK",
+      },
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: property.address || undefined,
+        addressLocality: property.city,
+        addressRegion: property.state,
+        postalCode: property.zip || undefined,
+        addressCountry: "US",
+      },
+    },
   };
 }
 
@@ -64,6 +126,13 @@ export default async function PropertyDetailsPage({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-14">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          // Escape `<` so a field containing "</script>" can't break out.
+          __html: JSON.stringify(listingJsonLd(property)).replace(/</g, "\\u003c"),
+        }}
+      />
       <Link
         href="/properties"
         className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
