@@ -5,8 +5,9 @@ import Link from "next/link";
 import { Users, CalendarCheck, Building2, TrendingUp, Inbox } from "lucide-react";
 import DashboardCard from "@/components/dashboard-card";
 import LeadsChart, { type ChartPoint } from "@/components/leads-chart";
+import LeadsBreakdown, { type Slice } from "@/components/leads-breakdown";
 import { getDashboardStats, getLeads } from "@/lib/queries";
-import type { Lead } from "@/lib/types";
+import type { Lead, LeadStatus, LeadType } from "@/lib/types";
 
 /** Real monthly lead counts for the last `months` calendar months. */
 function buildLeadsSeries(leads: Lead[], months = 6): ChartPoint[] {
@@ -35,10 +36,30 @@ const TYPE_STYLES: Record<string, string> = {
   general: "bg-line text-muted",
 };
 
+const LEAD_TYPES: LeadType[] = ["buyer", "seller", "valuation", "general"];
+const LEAD_STATUSES: LeadStatus[] = ["new", "contacted", "qualified", "closed", "lost"];
+
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/** Count leads by type and by status for the breakdown panel. */
+function buildBreakdown(leads: Lead[]): { byType: Slice[]; byStatus: Slice[] } {
+  const typeCounts = new Map<string, number>();
+  const statusCounts = new Map<string, number>();
+  for (const lead of leads) {
+    typeCounts.set(lead.lead_type, (typeCounts.get(lead.lead_type) ?? 0) + 1);
+    statusCounts.set(lead.status, (statusCounts.get(lead.status) ?? 0) + 1);
+  }
+  return {
+    byType: LEAD_TYPES.map((t) => ({ label: cap(t), count: typeCounts.get(t) ?? 0 })),
+    byStatus: LEAD_STATUSES.map((s) => ({ label: cap(s), count: statusCounts.get(s) ?? 0 })),
+  };
+}
+
 export default async function DashboardOverviewPage() {
   const [stats, leads] = await Promise.all([getDashboardStats(), getLeads()]);
   const recent = leads.slice(0, 5);
   const leadsSeries = buildLeadsSeries(leads);
+  const { byType, byStatus } = buildBreakdown(leads);
 
   return (
     <div className="space-y-6">
@@ -55,6 +76,8 @@ export default async function DashboardOverviewPage() {
         <DashboardCard label="Active listings" value={stats.activeListings} icon={Building2} />
         <DashboardCard label="Total leads" value={leads.length} icon={TrendingUp} />
       </div>
+
+      <LeadsBreakdown byType={byType} byStatus={byStatus} />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <LeadsChart data={leadsSeries} />
