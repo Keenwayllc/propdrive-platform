@@ -72,6 +72,50 @@ export const AI_TOOLS: AiToolConfig[] = [
       { name: "audience", label: "Audience", type: "select", options: ["Families", "First-time buyers", "Luxury buyers", "Investors"] },
     ],
   },
+  {
+    id: "agent-advice",
+    title: "Ask the Advisor",
+    description: "Get expert real estate advice, scripts, and strategy for any situation.",
+    cta: "Get advice",
+    fields: [
+      { name: "question", label: "Your question or situation", type: "textarea", placeholder: "e.g. How do I convince a seller to lower an overpriced listing?", required: true },
+      { name: "focus", label: "Focus", type: "select", options: ["Working with a seller", "Working with a buyer", "Marketing & lead gen", "Negotiation", "General"] },
+    ],
+  },
+  {
+    id: "objection-handler",
+    title: "Objection Handler",
+    description: "Turn a client objection into a confident, professional response.",
+    cta: "Handle objection",
+    fields: [
+      { name: "objection", label: "What the client said", type: "textarea", placeholder: "e.g. Your commission is too high.", required: true },
+      { name: "party", label: "Who said it", type: "select", options: ["Seller", "Buyer"] },
+      { name: "context", label: "Context", type: "text", placeholder: "e.g. First-time seller, competitive listing" },
+    ],
+  },
+  {
+    id: "open-house-plan",
+    title: "Open House Plan",
+    description: "Get a promotion and run-of-show plan for an open house.",
+    cta: "Build plan",
+    fields: [
+      { name: "listing", label: "Listing", type: "text", placeholder: "e.g. 412 Ocean Ave, Santa Monica", required: true },
+      { name: "datetime", label: "Date & time", type: "text", placeholder: "e.g. Sat Jun 21, 1-4pm" },
+      { name: "highlights", label: "Highlights to push", type: "textarea", placeholder: "Ocean views, renovated kitchen, walk to the pier…" },
+    ],
+  },
+  {
+    id: "price-positioning",
+    title: "Price Positioning",
+    description: "Talking points to justify your pricing to a seller or buyer.",
+    cta: "Write talking points",
+    fields: [
+      { name: "address", label: "Property", type: "text", placeholder: "e.g. 412 Ocean Ave, Santa Monica", required: true },
+      { name: "price", label: "Your recommended price", type: "text", placeholder: "e.g. $2,150,000", required: true },
+      { name: "comps", label: "Comps / market notes", type: "textarea", placeholder: "Recent nearby sales, condition, demand…" },
+      { name: "audience", label: "Audience", type: "select", options: ["Seller", "Buyer"] },
+    ],
+  },
 ];
 
 export function getAiTool(id: string): AiToolConfig | undefined {

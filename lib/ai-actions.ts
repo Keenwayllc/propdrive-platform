@@ -31,30 +31,66 @@ function buildPrompt(
 ): { system: string; user: string } | null {
   const details = fieldLines(toolId, fields);
 
+  // House style appended to every tool: keep it honest and never use em dashes.
+  const STYLE =
+    " Never use em dashes; use commas, periods, or parentheses instead. Never invent facts, names, statistics, or prices that were not provided.";
+
   switch (toolId) {
     case "listing-description":
       return {
         system:
-          "You are an expert real estate copywriter. Write a polished MLS-style property description: 2–3 short paragraphs, vivid but truthful, no clichés like 'must see' or 'won't last'. Never invent facts not provided. Honor the requested tone. Do not include a headline or the price unless given.",
+          "You are an expert real estate copywriter. Write a polished MLS-style property description: 2 to 3 short paragraphs, vivid but truthful, no cliches like 'must see' or 'won't last'. Honor the requested tone. Do not include a headline or the price unless given." +
+          STYLE,
         user: `Write a listing description from these details:\n\n${details}`,
       };
     case "social-post":
       return {
         system:
-          "You are a social media manager for a real estate agent. Write one engaging, platform-appropriate caption. Keep it concise, add a clear call to action, and include 3–6 relevant hashtags on their own line. Match the platform's style. Do not invent facts.",
+          "You are a social media manager for a real estate agent. Write one engaging, platform-appropriate caption. Keep it concise, add a clear call to action, and include 3 to 6 relevant hashtags on their own line. Match the platform's style." +
+          STYLE,
         user: `Write a social caption from these details:\n\n${details}`,
       };
     case "follow-up-email":
       return {
         system:
-          "You are a thoughtful real estate agent writing a personalized follow-up email to a lead. Keep it warm, specific, and short (under 150 words). Reference their interest, suggest a clear next step, and end with a friendly sign-off placeholder like '[Your name]'. Include a subject line on the first line as 'Subject: …'.",
+          "You are a thoughtful real estate agent writing a personalized follow-up email to a lead. Keep it warm, specific, and short (under 150 words). Reference their interest, suggest a clear next step, and end with a friendly sign-off placeholder like '[Your name]'. Include a subject line on the first line as 'Subject: ...'." +
+          STYLE,
         user: `Draft a follow-up email from these details:\n\n${details}`,
       };
     case "neighborhood-highlights":
       return {
         system:
-          "You are a knowledgeable local real estate advisor. Summarize what makes a neighborhood appealing to the given audience in 2 short paragraphs plus 3–5 bullet highlights. Be specific and balanced; avoid exaggeration and do not fabricate statistics.",
+          "You are a knowledgeable local real estate advisor. Summarize what makes a neighborhood appealing to the given audience in 2 short paragraphs plus 3 to 5 bullet highlights. Be specific and balanced and avoid exaggeration." +
+          STYLE,
         user: `Summarize this neighborhood's appeal:\n\n${details}`,
+      };
+    case "agent-advice":
+      return {
+        system:
+          "You are a seasoned real estate broker and coach advising a working agent. Give practical, specific, actionable advice. When useful, include a short word-for-word script the agent can say, and a brief list of next steps. Be encouraging and professional, and stay within ethical and fair-housing guidelines (never advise anything discriminatory or misleading)." +
+          STYLE,
+        user: `Advise the agent on this:\n\n${details}`,
+      };
+    case "objection-handler":
+      return {
+        system:
+          "You are a top real estate sales coach. Turn the client's objection into a calm, confident, professional response the agent can use. Acknowledge the concern, reframe with value, and end by moving the conversation forward. Provide the response as a short word-for-word script, then 2 to 3 quick tips. Stay honest and never pressure or mislead." +
+          STYLE,
+        user: `Handle this objection:\n\n${details}`,
+      };
+    case "open-house-plan":
+      return {
+        system:
+          "You are an experienced listing agent. Produce a practical open house plan with three sections: Promotion (before the event), Run of show (during), and Follow up (after). Use short bullet points and keep it realistic for a solo agent." +
+          STYLE,
+        user: `Build an open house plan from these details:\n\n${details}`,
+      };
+    case "price-positioning":
+      return {
+        system:
+          "You are a real estate pricing strategist. Write clear talking points the agent can use to justify the recommended price to the given audience. Reference any comps or market notes provided, explain the reasoning simply, and anticipate one likely pushback with a calm response. Use short bullet points. Do not fabricate comps or numbers." +
+          STYLE,
+        user: `Write pricing talking points from these details:\n\n${details}`,
       };
     default:
       return null;
@@ -85,7 +121,19 @@ export async function runAiTool(
   const prompt = buildPrompt(toolId, fields);
   if (!prompt) return { ok: false, error: "Unknown tool." };
 
-  return runOpenAi(prompt.system, prompt.user);
+  // The advice/plan tools produce longer, structured output.
+  const longTools = new Set([
+    "agent-advice",
+    "objection-handler",
+    "open-house-plan",
+    "price-positioning",
+  ]);
+  const res = await runOpenAi(prompt.system, prompt.user, {
+    maxTokens: longTools.has(toolId) ? 1000 : 700,
+  });
+  if (!res.ok) return res;
+  // Safety net: enforce the no-em-dash house style even if the model slips.
+  return { ok: true, text: res.text.replace(/\s*—\s*/g, ", ") };
 }
 
 /**

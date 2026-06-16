@@ -16,6 +16,10 @@ import {
   Megaphone,
   Mail,
   Sparkles,
+  Lightbulb,
+  ShieldQuestion,
+  CalendarDays,
+  TrendingUp,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { AiToolConfig } from "@/lib/ai-tools-config";
@@ -28,6 +32,10 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   "social-post": Megaphone,
   "follow-up-email": Mail,
   "neighborhood-highlights": Sparkles,
+  "agent-advice": Lightbulb,
+  "objection-handler": ShieldQuestion,
+  "open-house-plan": CalendarDays,
+  "price-positioning": TrendingUp,
 };
 
 export default function AiToolCard({
