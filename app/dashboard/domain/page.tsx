@@ -49,12 +49,15 @@ export default function DomainPage() {
 
       {/* Do it for you */}
       <div className="rounded-xl border border-accent/30 bg-accent-soft/50 p-4 text-sm">
-        <p className="font-medium text-ink">Want this done for you?</p>
+        <p className="font-medium text-ink">
+          Want this done for you? Domain &amp; Launch Setup, $99 one-time
+        </p>
         <p className="mt-1 text-muted">
           Connecting a domain takes about ten minutes but involves DNS settings.
-          If you would rather not touch that, your site administrator can set it
-          up for you. Just send them the domain you bought and they will handle
-          the rest. Otherwise, follow the four steps below.
+          If you would rather not touch that, we will connect your domain,
+          verify it, and confirm your site is live and secure for a one-time fee
+          of $99. Just reach out with the domain you bought. Prefer to do it
+          yourself? Follow the four free steps below.
         </p>
       </div>
 
