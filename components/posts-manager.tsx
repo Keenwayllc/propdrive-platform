@@ -40,7 +40,7 @@ export default function PostsManager({
         </p>
       )}
       {initial.map((p) => (
-        <Row key={p.id} item={p} onChanged={refresh} />
+        <Row key={p.id} item={p} onChanged={refresh} aiConnected={aiConnected} />
       ))}
       <NewRow onChanged={refresh} aiConnected={aiConnected} />
     </div>
@@ -55,7 +55,117 @@ function Card({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Row({ item, onChanged }: { item: Post; onChanged: () => void }) {
+/**
+ * Shared "Write with AI" box. Used in both the new-article card and on each
+ * existing article so the owner can draft or rewrite a post from a topic.
+ * Calls back with the generated draft so the parent fills its own fields.
+ */
+function AiWriterBox({
+  aiConnected,
+  onDraft,
+  rewrite = false,
+}: {
+  aiConnected: boolean;
+  onDraft: (article: { title: string; excerpt: string; body: string }) => void;
+  rewrite?: boolean;
+}) {
+  const [topic, setTopic] = useState("");
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiErr, setAiErr] = useState<string | null>(null);
+
+  async function run() {
+    setAiBusy(true);
+    setAiErr(null);
+    const res = await generateBlogArticle(topic);
+    setAiBusy(false);
+    if (!res.ok) {
+      setAiErr(res.error);
+      return;
+    }
+    onDraft(res.article);
+  }
+
+  return (
+    <div className="rounded-2xl border border-accent/30 bg-accent-soft/50 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2 text-sm font-semibold text-accent-strong">
+          <Sparkles className="h-4 w-4" /> {rewrite ? "Rewrite with AI" : "Write with AI"}
+          {/* Tooltip: short how-to on hover/focus */}
+          <span className="group relative inline-flex">
+            <HelpCircle className="h-4 w-4 cursor-help text-muted" tabIndex={0} aria-label="How it works" />
+            <span className="pointer-events-none absolute left-1/2 top-6 z-20 w-60 -translate-x-1/2 rounded-xl bg-ink px-3 py-2 text-xs font-normal leading-relaxed text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">
+              {rewrite
+                ? "1. Type a new angle or topic. 2. Click Generate. 3. AI rewrites the title, summary, and article. 4. Edit, then Save."
+                : "1. Type a topic. 2. Click Generate. 3. AI fills the title, summary, and article. 4. Edit anything, then Publish."}
+            </span>
+          </span>
+        </div>
+        {/* Cute connection status */}
+        {aiConnected ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+            </span>
+            Your AI assistant is on ✨
+          </span>
+        ) : (
+          <Link
+            href="/dashboard/ai-tools"
+            className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700 hover:bg-amber-200"
+          >
+            Connect OpenAI to turn it on →
+          </Link>
+        )}
+      </div>
+      <p className="mt-1.5 text-xs text-muted">
+        {rewrite
+          ? "Enter a fresh angle and let AI rewrite this article. Your current text stays until you generate, and you can edit before saving."
+          : "Enter a topic and let AI draft the title, summary, and full article. You can edit everything before publishing."}
+      </p>
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+        <input
+          value={topic}
+          onChange={(e) => setTopic(e.target.value)}
+          className="form-input"
+          placeholder={
+            rewrite
+              ? "e.g. Make it focus on first-time sellers"
+              : "e.g. Spring 2026 market trends for first-time buyers in LA"
+          }
+        />
+        <button
+          type="button"
+          onClick={run}
+          disabled={aiBusy || !topic.trim() || !aiConnected}
+          title={aiConnected ? undefined : "Connect your OpenAI key under AI Tools first"}
+          className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-strong disabled:opacity-60"
+        >
+          {aiBusy ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" /> Writing…
+            </>
+          ) : (
+            <>
+              <Sparkles className="h-4 w-4" /> Generate
+            </>
+          )}
+        </button>
+      </div>
+      {aiErr && <p className="mt-2 text-xs text-red-600">{aiErr}</p>}
+    </div>
+  );
+}
+
+function Row({
+  item,
+  onChanged,
+  aiConnected,
+}: {
+  item: Post;
+  onChanged: () => void;
+  aiConnected: boolean;
+}) {
   const [title, setTitle] = useState(item.title);
   const [slug, setSlug] = useState(item.slug);
   const [excerpt, setExcerpt] = useState(item.excerpt);
@@ -100,6 +210,15 @@ function Row({ item, onChanged }: { item: Post; onChanged: () => void }) {
 
   return (
     <Card>
+      <AiWriterBox
+        aiConnected={aiConnected}
+        rewrite
+        onDraft={(a) => {
+          if (a.title) setTitle(a.title);
+          if (a.excerpt) setExcerpt(a.excerpt);
+          if (a.body) setBody(a.body);
+        }}
+      />
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="block">
           <span className="mb-1 block text-sm font-medium text-ink">Title</span>
@@ -165,30 +284,9 @@ function NewRow({
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const [topic, setTopic] = useState("");
-  const [aiBusy, setAiBusy] = useState(false);
-  const [aiErr, setAiErr] = useState<string | null>(null);
-
   function onTitle(v: string) {
     setTitle(v);
     if (!touchedSlug) setSlug(slugify(v));
-  }
-
-  async function writeWithAi() {
-    setAiBusy(true);
-    setAiErr(null);
-    const res = await generateBlogArticle(topic);
-    setAiBusy(false);
-    if (!res.ok) {
-      setAiErr(res.error);
-      return;
-    }
-    if (res.article.title) {
-      setTitle(res.article.title);
-      if (!touchedSlug) setSlug(slugify(res.article.title));
-    }
-    if (res.article.excerpt) setExcerpt(res.article.excerpt);
-    setBody(res.article.body);
   }
 
   async function add() {
@@ -222,68 +320,17 @@ function NewRow({
     <Card>
       <p className="text-sm font-semibold uppercase tracking-[0.14em] text-faint">Write a new article</p>
 
-      <div className="rounded-2xl border border-accent/30 bg-accent-soft/50 p-4">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2 text-sm font-semibold text-accent-strong">
-            <Sparkles className="h-4 w-4" /> Write with AI
-            {/* Tooltip: short how-to on hover/focus */}
-            <span className="group relative inline-flex">
-              <HelpCircle className="h-4 w-4 cursor-help text-muted" tabIndex={0} aria-label="How it works" />
-              <span className="pointer-events-none absolute left-1/2 top-6 z-20 w-60 -translate-x-1/2 rounded-xl bg-ink px-3 py-2 text-xs font-normal leading-relaxed text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">
-                1. Type a topic. 2. Click Generate. 3. AI fills the title, summary,
-                and article. 4. Edit anything, then Publish.
-              </span>
-            </span>
-          </div>
-          {/* Cute connection status */}
-          {aiConnected ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-              </span>
-              Your AI assistant is on ✨
-            </span>
-          ) : (
-            <Link
-              href="/dashboard/ai-tools"
-              className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700 hover:bg-amber-200"
-            >
-              Connect OpenAI to turn it on →
-            </Link>
-          )}
-        </div>
-        <p className="mt-1.5 text-xs text-muted">
-          Enter a topic and let AI draft the title, summary, and full article. You
-          can edit everything before publishing.
-        </p>
-        <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-          <input
-            value={topic}
-            onChange={(e) => setTopic(e.target.value)}
-            className="form-input"
-            placeholder="e.g. Spring 2026 market trends for first-time buyers in LA"
-          />
-          <button
-            type="button"
-            onClick={writeWithAi}
-            disabled={aiBusy || !topic.trim() || !aiConnected}
-            title={aiConnected ? undefined : "Connect your OpenAI key under AI Tools first"}
-            className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-strong disabled:opacity-60"
-          >
-            {aiBusy ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Writing…
-              </>
-            ) : (
-              <>
-                <Sparkles className="h-4 w-4" /> Generate
-              </>
-            )}
-          </button>
-        </div>
-        {aiErr && <p className="mt-2 text-xs text-red-600">{aiErr}</p>}
-      </div>
+      <AiWriterBox
+        aiConnected={aiConnected}
+        onDraft={(a) => {
+          if (a.title) {
+            setTitle(a.title);
+            if (!touchedSlug) setSlug(slugify(a.title));
+          }
+          if (a.excerpt) setExcerpt(a.excerpt);
+          setBody(a.body);
+        }}
+      />
 
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="block">
