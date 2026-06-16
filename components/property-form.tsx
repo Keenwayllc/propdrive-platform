@@ -195,7 +195,13 @@ export default function PropertyForm({ property }: PropertyFormProps) {
         <Field label="Address">
           <AddressAutocomplete
             value={watch("address")}
-            onChange={(v) => setValue("address", v, { shouldDirty: true })}
+            onChange={(v) => {
+              setValue("address", v, { shouldDirty: true });
+              // Typing a new address invalidates old coordinates; the server
+              // re-geocodes on save unless a suggestion is picked below.
+              setValue("lat", "", { shouldDirty: true });
+              setValue("lng", "", { shouldDirty: true });
+            }}
             onSelect={onAddressSelect}
             placeholder="Start typing the street address…"
           />

@@ -32,6 +32,7 @@ import {
   type PostInput,
 } from "@/lib/form-schemas";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { geocodeAddress, composeAddress } from "@/lib/geocode";
 
 export interface MutationResult {
   ok: boolean;
@@ -71,6 +72,19 @@ async function getAdminClient(): Promise<SupabaseClient | null> {
 const NOT_AUTHED = "You must be signed in to do that.";
 const NOT_ADMIN = "Only an admin can change integration keys.";
 
+/**
+ * Fill missing map coordinates by geocoding the address. Safety net for when the
+ * owner types an address by hand instead of picking an autocomplete suggestion,
+ * so the property always shows a pin on the map. Never throws — if geocoding
+ * fails, the listing just saves without coordinates (no map pin, as before).
+ */
+async function withCoordinates(input: PropertyInput): Promise<PropertyInput> {
+  if (input.lat != null && input.lng != null) return input;
+  const coords = await geocodeAddress(composeAddress(input));
+  if (!coords) return input;
+  return { ...input, lat: coords.lat, lng: coords.lng };
+}
+
 function revalidateProperty(id?: string) {
   revalidatePath("/");
   revalidatePath("/properties");
@@ -89,9 +103,10 @@ export async function createProperty(
   const supabase = await getAuthedClient();
   if (!supabase) return { ok: false, error: NOT_AUTHED };
 
+  const record = await withCoordinates(parsed.data);
   const { data, error } = await supabase
     .from("properties")
-    .insert(parsed.data)
+    .insert(record)
     .select("id")
     .single();
 
@@ -113,9 +128,10 @@ export async function updateProperty(
   const supabase = await getAuthedClient();
   if (!supabase) return { ok: false, error: NOT_AUTHED };
 
+  const record = await withCoordinates(parsed.data);
   const { error } = await supabase
     .from("properties")
-    .update(parsed.data)
+    .update(record)
     .eq("id", id);
 
   if (error) {
