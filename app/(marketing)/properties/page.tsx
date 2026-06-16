@@ -7,6 +7,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PropertyFilter from "@/components/property-filter";
 import PropertyCard from "@/components/property-card";
+import PropertyMap from "@/components/property-map";
+import SaveSearchForm from "@/components/save-search-form";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { getActiveProperties } from "@/lib/queries";
 import type { PropertyType } from "@/lib/types";
@@ -51,6 +53,25 @@ export default async function PropertiesPage({
       <div className="sticky top-20 z-30">
         <PropertyFilter />
       </div>
+
+      <div className="mt-6">
+        <SaveSearchForm />
+      </div>
+
+      {properties.some((p) => p.lat != null && p.lng != null) && (
+        <div className="mt-6">
+          <PropertyMap
+            properties={properties.map((p) => ({
+              id: p.id,
+              title: p.title,
+              price: p.price,
+              city: p.city,
+              lat: p.lat,
+              lng: p.lng,
+            }))}
+          />
+        </div>
+      )}
 
       {properties.length === 0 ? (
         <div className="mt-8 rounded-[1.75rem] border border-dashed border-line bg-surface p-16 text-center text-muted">

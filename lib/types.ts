@@ -135,8 +135,37 @@ export interface Property {
   map_address: string;
   featured: boolean;
   active: boolean;
+  lat: number | null;
+  lng: number | null;
   created_at: string;
   updated_at: string;
+}
+
+/** A blog / market-insights article. */
+export interface Post {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  body: string;
+  cover_image_url: string;
+  author: string;
+  published: boolean;
+  published_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
+/** A buyer's saved search; powers new-listing email alerts. */
+export interface SavedSearch {
+  id: string;
+  email: string;
+  query: string;
+  property_type: string;
+  min_price: number | null;
+  max_price: number | null;
+  last_alerted_at: string | null;
+  created_at: string;
 }
 
 export type LeadType = "buyer" | "seller" | "general" | "valuation";

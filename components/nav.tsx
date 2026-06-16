@@ -22,6 +22,7 @@ const NAV_LINKS: ReadonlyArray<{ href: string; label: string }> = [
   { href: "/open-houses", label: "Open Houses" },
   { href: "/home-valuation", label: "Home Value" },
   { href: "/mortgage-calculator", label: "Mortgage" },
+  { href: "/insights", label: "Insights" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];

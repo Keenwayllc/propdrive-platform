@@ -13,8 +13,10 @@ import type {
   BrandSettings,
   Lead,
   Neighborhood,
+  Post,
   Property,
   PropertyType,
+  SavedSearch,
   SiteSettings,
   Testimonial,
 } from "@/lib/types";
@@ -211,6 +213,39 @@ export async function getNeighborhoodBySlug(
   return (data as Neighborhood | null) ?? null;
 }
 
+/** Published blog / market-insights posts, newest first. */
+export async function getPosts(): Promise<Post[]> {
+  const supabase = await createServerSupabase();
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("published", true)
+    .order("published_at", { ascending: false });
+
+  if (error) {
+    console.error("[queries] getPosts", error.message);
+    return [];
+  }
+  return (data ?? []) as Post[];
+}
+
+/** A single published post by slug, or null. */
+export async function getPostBySlug(slug: string): Promise<Post | null> {
+  const supabase = await createServerSupabase();
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("slug", slug)
+    .eq("published", true)
+    .maybeSingle();
+
+  if (error) {
+    console.error("[queries] getPostBySlug", error.message);
+    return null;
+  }
+  return (data as Post | null) ?? null;
+}
+
 /* ------------------------------------------------------ Integration keys */
 
 /** Mask a secret for display: keep the first 5 and last 4 chars. */
@@ -394,4 +429,34 @@ export async function getAllNeighborhoods(): Promise<Neighborhood[]> {
     return [];
   }
   return (data ?? []) as Neighborhood[];
+}
+
+/** All posts (incl. drafts) for the dashboard manager. */
+export async function getAllPosts(): Promise<Post[]> {
+  const supabase = await createServerSupabase();
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*")
+    .order("published_at", { ascending: false });
+
+  if (error) {
+    console.error("[queries] getAllPosts", error.message);
+    return [];
+  }
+  return (data ?? []) as Post[];
+}
+
+/** Saved searches captured from the public site (dashboard view). */
+export async function getSavedSearches(): Promise<SavedSearch[]> {
+  const supabase = await createServerSupabase();
+  const { data, error } = await supabase
+    .from("saved_searches")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("[queries] getSavedSearches", error.message);
+    return [];
+  }
+  return (data ?? []) as SavedSearch[];
 }

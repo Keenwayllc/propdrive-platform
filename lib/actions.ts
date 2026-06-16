@@ -12,9 +12,11 @@ import {
   leadFormSchema,
   homeValuationSchema,
   scheduleShowingSchema,
+  savedSearchSchema,
   type LeadFormValues,
   type HomeValuationValues,
   type ScheduleShowingValues,
+  type SavedSearchInput,
 } from "@/lib/form-schemas";
 
 export interface ActionResult {
@@ -128,5 +130,29 @@ export async function submitShowing(
     appointment_date: v.appointment_date,
     appointment_time: v.appointment_time,
   });
+  return { ok: true };
+}
+
+/** Save a buyer's search so they get emailed when new matching listings appear. */
+export async function submitSavedSearch(
+  values: SavedSearchInput
+): Promise<ActionResult> {
+  const parsed = savedSearchSchema.safeParse(values);
+  if (!parsed.success) return { ok: false, error: "Please enter a valid email address." };
+  const v = parsed.data;
+
+  const supabase = await createServerSupabase();
+  const { error } = await supabase.from("saved_searches").insert({
+    email: v.email,
+    query: v.query ?? "",
+    property_type: v.property_type ?? "any",
+    min_price: v.min_price ?? null,
+    max_price: v.max_price ?? null,
+  });
+
+  if (error) {
+    console.error("[actions] submitSavedSearch", error.message);
+    return { ok: false, error: "Something went wrong. Please try again." };
+  }
   return { ok: true };
 }

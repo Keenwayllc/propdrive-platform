@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/listing-alerts",
+      "schedule": "0 14 * * *"
+    }
+  ]
+}

@@ -112,3 +112,67 @@ export async function notifyNewAppointment(appt: {
     ["Time", appt.appointment_time],
   ]);
 }
+
+/**
+ * Email a buyer the new listings that match their saved search. Sent by the
+ * listing-alerts cron. Returns true only if an email was actually dispatched.
+ */
+export async function sendListingAlert(
+  to: string,
+  listings: Array<{ id: string; title: string; price: number; city: string }>,
+  baseUrl: string
+): Promise<boolean> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey || listings.length === 0) return false;
+
+  const currency = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  });
+
+  try {
+    const from = process.env.NOTIFY_FROM || "PropDrive <onboarding@resend.dev>";
+    const rows = listings
+      .map(
+        (l) =>
+          `<tr><td style="padding:8px 0;border-bottom:1px solid #e8e1d6">` +
+          `<a href="${baseUrl}/properties/${l.id}" style="color:#1a1714;font-weight:600;text-decoration:none">${esc(
+            l.title
+          )}</a><br>` +
+          `<span style="color:#75695b">${esc(currency.format(l.price))} · ${esc(
+            l.city
+          )}</span></td></tr>`
+      )
+      .join("");
+
+    const subject =
+      listings.length === 1
+        ? "A new listing matches your search"
+        : `${listings.length} new listings match your search`;
+
+    const html = `
+      <div style="font-family:system-ui,sans-serif;max-width:520px">
+        <h2 style="color:#1a1714;margin:0 0 4px">${esc(subject)}</h2>
+        <p style="color:#75695b;margin:0 0 16px">Here's what just came on the market for you.</p>
+        <table style="border-collapse:collapse;width:100%;font-size:14px">${rows}</table>
+        <p style="margin:18px 0 0"><a href="${baseUrl}/properties" style="color:#b85c38">Browse all listings</a></p>
+      </div>`;
+
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ from, to, subject, html }),
+    });
+    return res.ok;
+  } catch (err) {
+    console.error(
+      "[notify] sendListingAlert failed",
+      err instanceof Error ? err.message : String(err)
+    );
+    return false;
+  }
+}

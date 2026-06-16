@@ -20,6 +20,7 @@ import {
   passwordUpdateSchema,
   testimonialSchema,
   neighborhoodSchema,
+  postSchema,
   type PropertyInput,
   type SiteSettingsInput,
   type BrandSettingsInput,
@@ -28,6 +29,7 @@ import {
   type PasswordUpdateInput,
   type TestimonialInput,
   type NeighborhoodInput,
+  type PostInput,
 } from "@/lib/form-schemas";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
@@ -562,5 +564,73 @@ export async function deleteNeighborhood(id: string): Promise<MutationResult> {
     return { ok: false, error: "Could not delete the neighborhood." };
   }
   revalidateNeighborhoods();
+  return { ok: true };
+}
+
+/* ---------------------------------------------------- Blog / Market Insights */
+
+function revalidatePosts(slug?: string) {
+  revalidatePath("/insights");
+  revalidatePath("/dashboard/insights");
+  if (slug) revalidatePath(`/insights/${slug}`);
+}
+
+export async function createPost(input: PostInput): Promise<MutationResult> {
+  const parsed = postSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Please check the fields." };
+  }
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { data, error } = await supabase
+    .from("posts")
+    .insert(parsed.data)
+    .select("id")
+    .single();
+  if (error) {
+    console.error("[admin] createPost", error.message);
+    const msg = error.message.includes("duplicate")
+      ? "That slug is already used. Pick a unique one."
+      : "Could not create the post.";
+    return { ok: false, error: msg };
+  }
+  revalidatePosts(parsed.data.slug);
+  return { ok: true, id: data.id as string };
+}
+
+export async function updatePost(
+  id: string,
+  input: PostInput
+): Promise<MutationResult> {
+  const parsed = postSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Please check the fields." };
+  }
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { error } = await supabase.from("posts").update(parsed.data).eq("id", id);
+  if (error) {
+    console.error("[admin] updatePost", error.message);
+    const msg = error.message.includes("duplicate")
+      ? "That slug is already used. Pick a unique one."
+      : "Could not update the post.";
+    return { ok: false, error: msg };
+  }
+  revalidatePosts(parsed.data.slug);
+  return { ok: true, id };
+}
+
+export async function deletePost(id: string): Promise<MutationResult> {
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { error } = await supabase.from("posts").delete().eq("id", id);
+  if (error) {
+    console.error("[admin] deletePost", error.message);
+    return { ok: false, error: "Could not delete the post." };
+  }
+  revalidatePosts();
   return { ok: true };
 }

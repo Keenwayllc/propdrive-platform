@@ -16,6 +16,7 @@ const FOOTER_COLUMNS: ReadonlyArray<{
       { href: "/properties", label: "All Properties" },
       { href: "/neighborhoods", label: "Neighborhoods" },
       { href: "/open-houses", label: "Open Houses" },
+      { href: "/insights", label: "Market Insights" },
     ],
   },
   {

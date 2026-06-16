@@ -149,6 +149,31 @@ export const testimonialSchema = z.object({
 });
 export type TestimonialInput = z.infer<typeof testimonialSchema>;
 
+/** A blog / market-insights post (dashboard-managed). */
+export const postSchema = z.object({
+  title: z.string().min(1, "Title is required."),
+  slug: z
+    .string()
+    .min(1, "Slug is required.")
+    .regex(/^[a-z0-9-]+$/, "Use lowercase letters, numbers, and hyphens only."),
+  excerpt: z.string().optional().default(""),
+  body: z.string().optional().default(""),
+  cover_image_url: z.string().optional().default(""),
+  author: z.string().optional().default(""),
+  published: z.boolean().default(true),
+});
+export type PostInput = z.infer<typeof postSchema>;
+
+/** A buyer's saved search submitted from the public site. */
+export const savedSearchSchema = z.object({
+  email: z.string().email("Please enter a valid email address."),
+  query: z.string().optional().default(""),
+  property_type: z.string().optional().default("any"),
+  min_price: z.coerce.number().min(0).nullable().optional(),
+  max_price: z.coerce.number().min(0).nullable().optional(),
+});
+export type SavedSearchInput = z.infer<typeof savedSearchSchema>;
+
 /** A neighborhood / market area (dashboard-managed). */
 export const neighborhoodSchema = z.object({
   name: z.string().min(1, "Name is required."),
