@@ -7,7 +7,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Pencil, Trash2, Eye, EyeOff } from "lucide-react";
+import { Pencil, Trash2, Eye, EyeOff, FileText } from "lucide-react";
 import { deleteProperty, setPropertyActive } from "@/lib/admin-actions";
 
 export interface PropertyRowActionsProps {
@@ -37,6 +37,16 @@ export default function PropertyRowActions({ id, active }: PropertyRowActionsPro
 
   return (
     <div className="flex items-center justify-end gap-1">
+      <Link
+        href={`/flyer/${id}`}
+        target="_blank"
+        aria-label="Print flyer / QR code"
+        title="Print flyer / QR code"
+        className="rounded-lg p-2 text-muted hover:bg-background hover:text-ink"
+      >
+        <FileText className="h-4 w-4" />
+      </Link>
+
       <Link
         href={`/dashboard/properties/${id}/edit`}
         aria-label="Edit listing"

@@ -6,7 +6,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Bath, BedDouble, MapPin, Ruler, Check } from "lucide-react";
+import { ArrowLeft, Bath, BedDouble, MapPin, Ruler, Check, FileText } from "lucide-react";
 import ScheduleShowingForm from "@/components/schedule-showing-form";
 import PropertyGallery from "@/components/property-gallery";
 import { Reveal } from "@/components/motion";
@@ -153,6 +153,13 @@ export default async function PropertyDetailsPage({
               </p>
             </div>
             <ScheduleShowingForm propertyLabel={property.map_address || property.title} />
+            <Link
+              href={`/flyer/${property.id}`}
+              target="_blank"
+              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-surface"
+            >
+              <FileText className="h-4 w-4" /> Print flyer / QR code
+            </Link>
           </div>
         </aside>
       </div>
