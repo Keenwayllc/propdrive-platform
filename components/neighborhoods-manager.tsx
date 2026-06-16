@@ -7,7 +7,7 @@
  */
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, Eraser, RotateCcw } from "lucide-react";
 import ImageUpload from "@/components/image-upload";
 import {
   createNeighborhood,
@@ -82,6 +82,16 @@ function Row({ item, onChanged }: { item: Neighborhood; onChanged: () => void })
     if (res.ok) onChanged();
   }
 
+  function reset() {
+    setName(item.name);
+    setSlug(item.slug);
+    setBlurb(item.blurb);
+    setImage(item.image_url);
+    setActive(item.active);
+    setMsg(null);
+    setErr(false);
+  }
+
   async function remove() {
     if (!window.confirm(`Delete ${item.name}?`)) return;
     setBusy(true);
@@ -131,6 +141,15 @@ function Row({ item, onChanged }: { item: Neighborhood; onChanged: () => void })
           {msg && (
             <span className={`text-sm ${err ? "text-red-600" : "text-green-600"}`}>{msg}</span>
           )}
+          <button
+            type="button"
+            onClick={reset}
+            disabled={busy}
+            title="Undo unsaved edits and restore the saved neighborhood"
+            className="inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm font-medium text-muted hover:bg-surface disabled:opacity-60"
+          >
+            <RotateCcw className="h-4 w-4" /> Reset
+          </button>
           <button
             type="button"
             onClick={remove}
@@ -183,13 +202,20 @@ function NewRow({ nextOrder, onChanged }: { nextOrder: number; onChanged: () => 
       setMsg(res.error ?? "Could not add.");
       return;
     }
+    clearForm();
+    onChanged();
+  }
+
+  function clearForm() {
     setName("");
     setSlug("");
     setBlurb("");
     setImage("");
     setTouchedSlug(false);
-    onChanged();
+    setMsg(null);
   }
+
+  const hasInput = Boolean(name || slug || blurb || image);
 
   return (
     <Card>
@@ -230,6 +256,17 @@ function NewRow({ nextOrder, onChanged }: { nextOrder: number; onChanged: () => 
       />
       <div className="flex items-center justify-end gap-3">
         {msg && <span className="text-sm text-red-600">{msg}</span>}
+        {hasInput && (
+          <button
+            type="button"
+            onClick={clearForm}
+            disabled={busy}
+            title="Clear every field below"
+            className="inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm font-medium text-muted hover:border-red-200 hover:bg-red-50 hover:text-red-700 disabled:opacity-60"
+          >
+            <Eraser className="h-4 w-4" /> Clear form
+          </button>
+        )}
         <button
           type="button"
           onClick={add}

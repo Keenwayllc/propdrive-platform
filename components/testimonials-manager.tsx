@@ -7,7 +7,7 @@
  */
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, Eraser, RotateCcw, Lightbulb } from "lucide-react";
 import {
   createTestimonial,
   updateTestimonial,
@@ -25,6 +25,16 @@ export default function TestimonialsManager({
 
   return (
     <div className="space-y-5">
+      <div className="flex gap-3 rounded-2xl border border-accent/20 bg-accent-soft/40 p-4 text-sm text-ink">
+        <Lightbulb className="mt-0.5 h-5 w-5 shrink-0 text-accent-strong" />
+        <p className="leading-relaxed">
+          <span className="font-semibold">Tip:</span> The best testimonials are
+          short, specific, and in the client&apos;s own voice. Mention the
+          neighborhood, the result (sold in 9 days, found before it hit the
+          market), and a feeling. Always use real, permission-given quotes. Feel
+          free to lightly polish wording for clarity, just keep it honest.
+        </p>
+      </div>
       {initial.length === 0 && (
         <p className="rounded-[1.5rem] border border-dashed border-line bg-surface p-6 text-sm text-muted">
           No testimonials yet. Add your first one below.
@@ -69,6 +79,15 @@ function Row({ item, onChanged }: { item: Testimonial; onChanged: () => void }) 
     setErr(!res.ok);
     setMsg(res.ok ? "Saved." : res.error ?? "Could not save.");
     if (res.ok) onChanged();
+  }
+
+  function reset() {
+    setQuote(item.quote);
+    setName(item.author_name);
+    setDetail(item.author_detail);
+    setActive(item.active);
+    setMsg(null);
+    setErr(false);
   }
 
   async function remove() {
@@ -121,6 +140,15 @@ function Row({ item, onChanged }: { item: Testimonial; onChanged: () => void }) 
           )}
           <button
             type="button"
+            onClick={reset}
+            disabled={busy}
+            title="Undo unsaved edits and restore the saved testimonial"
+            className="inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm font-medium text-muted hover:bg-surface disabled:opacity-60"
+          >
+            <RotateCcw className="h-4 w-4" /> Reset
+          </button>
+          <button
+            type="button"
             onClick={remove}
             disabled={busy}
             className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-100 disabled:opacity-60"
@@ -163,11 +191,18 @@ function NewRow({ nextOrder, onChanged }: { nextOrder: number; onChanged: () => 
       setMsg(res.error ?? "Could not add.");
       return;
     }
+    clearForm();
+    onChanged();
+  }
+
+  function clearForm() {
     setQuote("");
     setName("");
     setDetail("");
-    onChanged();
+    setMsg(null);
   }
+
+  const hasInput = Boolean(quote || name || detail);
 
   return (
     <Card>
@@ -194,6 +229,17 @@ function NewRow({ nextOrder, onChanged }: { nextOrder: number; onChanged: () => 
       </div>
       <div className="flex items-center justify-end gap-3">
         {msg && <span className="text-sm text-red-600">{msg}</span>}
+        {hasInput && (
+          <button
+            type="button"
+            onClick={clearForm}
+            disabled={busy}
+            title="Clear every field below"
+            className="inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm font-medium text-muted hover:border-red-200 hover:bg-red-50 hover:text-red-700 disabled:opacity-60"
+          >
+            <Eraser className="h-4 w-4" /> Clear form
+          </button>
+        )}
         <button
           type="button"
           onClick={add}
