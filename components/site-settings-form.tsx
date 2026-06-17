@@ -10,6 +10,7 @@ import { DEFAULT_STATS, type SiteSettingsInput } from "@/lib/form-schemas";
 import type { SiteSettings } from "@/lib/types";
 import AiFieldAssist from "@/components/ai-field-assist";
 import AddressAutocomplete from "@/components/address-autocomplete";
+import { SocialIcon, SOCIAL_PLATFORMS, type SocialPlatform } from "@/components/social-icons";
 
 function toInput(s: SiteSettings | null): SiteSettingsInput {
   return {
@@ -25,7 +26,10 @@ function toInput(s: SiteSettings | null): SiteSettingsInput {
     social_links: {
       facebook: s?.social_links?.facebook ?? "",
       instagram: s?.social_links?.instagram ?? "",
+      twitter: s?.social_links?.twitter ?? "",
       linkedin: s?.social_links?.linkedin ?? "",
+      youtube: s?.social_links?.youtube ?? "",
+      tiktok: s?.social_links?.tiktok ?? "",
     },
     stats:
       s?.stats && s.stats.length === 3
@@ -51,7 +55,7 @@ export default function SiteSettingsForm({
     setStatus("idle");
   }
 
-  function setSocial(key: "facebook" | "instagram" | "linkedin", value: string) {
+  function setSocial(key: SocialPlatform, value: string) {
     setForm((prev) => ({ ...prev, social_links: { ...prev.social_links, [key]: value } }));
     setStatus("idle");
   }
@@ -247,18 +251,28 @@ export default function SiteSettingsForm({
 
       <Section
         title="Social links"
-        description="Links to your profiles. Paste the full address, or leave a field blank to hide that icon."
+        description="Links to your profiles. Paste the full address, or leave a field blank to hide that icon on your site. Icons appear in your footer automatically."
       >
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Field label="Facebook">
-            <input value={form.social_links.facebook} onChange={(e) => setSocial("facebook", e.target.value)} className="form-input" placeholder="https://facebook.com/yourpage" />
-          </Field>
-          <Field label="Instagram">
-            <input value={form.social_links.instagram} onChange={(e) => setSocial("instagram", e.target.value)} className="form-input" placeholder="https://instagram.com/yourhandle" />
-          </Field>
-          <Field label="LinkedIn">
-            <input value={form.social_links.linkedin} onChange={(e) => setSocial("linkedin", e.target.value)} className="form-input" placeholder="https://linkedin.com/in/you" />
-          </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {SOCIAL_PLATFORMS.map((p) => {
+            const key = p.key as SocialPlatform;
+            return (
+              <label key={p.key} className="block">
+                <span className="mb-1 flex items-center gap-2 text-sm font-medium text-ink">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-ink text-white">
+                    <SocialIcon name={key} className="h-3.5 w-3.5" />
+                  </span>
+                  {p.label}
+                </span>
+                <input
+                  value={form.social_links[key] ?? ""}
+                  onChange={(e) => setSocial(key, e.target.value)}
+                  className="form-input"
+                  placeholder={p.placeholder}
+                />
+              </label>
+            );
+          })}
         </div>
       </Section>
 

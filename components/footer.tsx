@@ -4,6 +4,7 @@
  */
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { SocialIcon, SOCIAL_PLATFORMS } from "@/components/social-icons";
 import type { SiteSettings, BrandSettings } from "@/lib/types";
 
 const FOOTER_COLUMNS: ReadonlyArray<{
@@ -53,11 +54,11 @@ export default function Footer({ site, brand }: FooterProps) {
   const license = brand?.license_number || "DRE License #00000000";
   const social = site?.social_links ?? {};
 
-  const socialLinks = [
-    { href: social.facebook, label: "Facebook" },
-    { href: social.instagram, label: "Instagram" },
-    { href: social.linkedin, label: "LinkedIn" },
-  ].filter((s) => s.href && s.href.trim() !== "");
+  const socialLinks = SOCIAL_PLATFORMS.map((p) => ({
+    key: p.key,
+    label: p.label,
+    href: social[p.key],
+  })).filter((s) => s.href && s.href.trim() !== "");
 
   return (
     <footer className="bg-ink text-background">
@@ -113,16 +114,18 @@ export default function Footer({ site, brand }: FooterProps) {
             </p>
 
             {socialLinks.length > 0 && (
-              <div className="mt-5 flex flex-wrap gap-2">
+              <div className="mt-5 flex flex-wrap gap-2.5">
                 {socialLinks.map((s) => (
                   <a
-                    key={s.label}
+                    key={s.key}
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-full border border-white/15 px-3 py-1.5 text-xs font-medium text-white/70 transition-colors hover:border-white/40 hover:text-white"
+                    aria-label={s.label}
+                    title={s.label}
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white/70 transition-colors hover:border-white/40 hover:bg-white/10 hover:text-white"
                   >
-                    {s.label}
+                    <SocialIcon name={s.key} className="h-4 w-4" />
                   </a>
                 ))}
               </div>

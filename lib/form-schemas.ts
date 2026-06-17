@@ -134,9 +134,19 @@ export const siteSettingsSchema = z.object({
     .object({
       facebook: z.string().optional().default(""),
       instagram: z.string().optional().default(""),
+      twitter: z.string().optional().default(""),
       linkedin: z.string().optional().default(""),
+      youtube: z.string().optional().default(""),
+      tiktok: z.string().optional().default(""),
     })
-    .default({ facebook: "", instagram: "", linkedin: "" }),
+    .default({
+      facebook: "",
+      instagram: "",
+      twitter: "",
+      linkedin: "",
+      youtube: "",
+      tiktok: "",
+    }),
   stats: z.array(siteStatSchema).length(3).default(DEFAULT_STATS),
 });
 export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;

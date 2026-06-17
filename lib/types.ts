@@ -77,6 +77,7 @@ export interface SocialLinks {
   linkedin?: string;
   twitter?: string;
   youtube?: string;
+  tiktok?: string;
   zillow?: string;
 }
 
