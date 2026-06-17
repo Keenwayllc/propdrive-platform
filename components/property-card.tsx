@@ -5,6 +5,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Bath, BedDouble, MapPin, Ruler, ArrowUpRight } from "lucide-react";
+import SavePropertyButton from "@/components/save-property-button";
 import type { Property } from "@/lib/types";
 
 const PLACEHOLDER_IMAGE =
@@ -32,10 +33,9 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   const cover = property.image_urls[0] ?? PLACEHOLDER_IMAGE;
 
   return (
-    <Link
-      href={`/properties/${property.id}`}
-      className="group block overflow-hidden rounded-[1.5rem] border border-line bg-surface shadow-[0_18px_44px_-30px_rgba(26,23,20,0.4)] transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_28px_60px_-30px_rgba(26,23,20,0.45)]"
-    >
+    <div className="group relative overflow-hidden rounded-[1.5rem] border border-line bg-surface shadow-[0_18px_44px_-30px_rgba(26,23,20,0.4)] transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_28px_60px_-30px_rgba(26,23,20,0.45)]">
+      <SavePropertyButton propertyTitle={property.title} />
+      <Link href={`/properties/${property.id}`} className="block">
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-line">
         <Image
           src={cover}
@@ -92,6 +92,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           </span>
         </div>
       </div>
-    </Link>
+      </Link>
+    </div>
   );
 }

@@ -10,12 +10,40 @@ import { useSearchParams } from "next/navigation";
 import { BellRing, Check } from "lucide-react";
 import { submitSavedSearch } from "@/lib/actions";
 
+const TYPE_LABELS: Record<string, string> = {
+  single_family: "single family homes",
+  condo: "condos",
+  townhouse: "townhouses",
+  multi_family: "multi-family homes",
+  land: "land",
+  commercial: "commercial",
+};
+
+const money = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 0,
+});
+
 export default function SaveSearchForm() {
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Plain-language summary of what the visitor is saving, from the URL filters.
+  const q = searchParams.get("q")?.trim();
+  const type = searchParams.get("type");
+  const min = searchParams.get("min");
+  const max = searchParams.get("max");
+  const parts: string[] = [];
+  if (type && type !== "any" && TYPE_LABELS[type]) parts.push(TYPE_LABELS[type]);
+  if (q) parts.push(`in ${q}`);
+  if (min && max) parts.push(`from ${money.format(Number(min))} to ${money.format(Number(max))}`);
+  else if (min) parts.push(`over ${money.format(Number(min))}`);
+  else if (max) parts.push(`under ${money.format(Number(max))}`);
+  const summary = parts.length ? parts.join(" ") : "any new listing";
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -50,16 +78,18 @@ export default function SaveSearchForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-5 sm:flex-row sm:items-center sm:justify-between"
+      className="flex flex-col gap-3 rounded-2xl border border-accent/30 bg-accent-soft/40 p-5 sm:flex-row sm:items-center sm:justify-between"
     >
       <div className="flex items-start gap-3">
         <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent">
           <BellRing className="h-4 w-4" />
         </span>
         <div>
-          <p className="text-sm font-semibold text-ink">Get new-listing alerts</p>
+          <p className="text-sm font-semibold text-ink">Save this search</p>
           <p className="text-xs text-muted">
-            We&apos;ll email you when a home matching your current filters is added.
+            Get an email the moment we add{" "}
+            <span className="font-medium text-ink">{summary}</span>. Adjust the
+            filters above to change what you follow.
           </p>
           {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
         </div>
@@ -79,7 +109,7 @@ export default function SaveSearchForm() {
           disabled={busy}
           className="shrink-0 rounded-full bg-ink px-5 py-2 text-sm font-semibold text-background transition-colors hover:bg-accent active:translate-y-px disabled:opacity-60"
         >
-          {busy ? "Saving…" : "Notify me"}
+          {busy ? "Saving…" : "Save search"}
         </button>
       </div>
     </form>

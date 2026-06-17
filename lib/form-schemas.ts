@@ -176,6 +176,14 @@ export const savedSearchSchema = z.object({
 });
 export type SavedSearchInput = z.infer<typeof savedSearchSchema>;
 
+/** "Save this home" capture from a listing card. Becomes a warm buyer lead. */
+export const savePropertySchema = z.object({
+  email: z.string().email("Please enter a valid email address."),
+  name: z.string().max(120).optional().or(z.literal("")),
+  property_title: z.string().min(1).max(255),
+});
+export type SavePropertyInput = z.infer<typeof savePropertySchema>;
+
 /** A neighborhood / market area (dashboard-managed). */
 export const neighborhoodSchema = z.object({
   name: z.string().min(1, "Name is required."),

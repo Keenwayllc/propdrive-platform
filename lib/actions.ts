@@ -13,10 +13,12 @@ import {
   homeValuationSchema,
   scheduleShowingSchema,
   savedSearchSchema,
+  savePropertySchema,
   type LeadFormValues,
   type HomeValuationValues,
   type ScheduleShowingValues,
   type SavedSearchInput,
+  type SavePropertyInput,
 } from "@/lib/form-schemas";
 
 export interface ActionResult {
@@ -154,5 +156,39 @@ export async function submitSavedSearch(
     console.error("[actions] submitSavedSearch", error.message);
     return { ok: false, error: "Something went wrong. Please try again." };
   }
+  return { ok: true };
+}
+
+/** "Save this home" from a listing card. Becomes a warm buyer lead tied to the
+ *  specific property, and notifies the agent like any other lead. */
+export async function saveProperty(
+  values: SavePropertyInput
+): Promise<ActionResult> {
+  const parsed = savePropertySchema.safeParse(values);
+  if (!parsed.success) return { ok: false, error: "Please enter a valid email address." };
+  const v = parsed.data;
+  const fullName = v.name && v.name.trim() ? v.name.trim() : "Website visitor";
+
+  const supabase = await createServerSupabase();
+  const { error } = await supabase.from("leads").insert({
+    full_name: fullName,
+    email: v.email,
+    lead_type: "buyer",
+    property_interest: v.property_title,
+    message: `Saved "${v.property_title}" from the website and asked for updates.`,
+    preferred_contact: "email",
+  });
+
+  if (error) {
+    console.error("[actions] saveProperty", error.message);
+    return { ok: false, error: "Something went wrong. Please try again." };
+  }
+  await notifyNewLead({
+    full_name: fullName,
+    email: v.email,
+    lead_type: "buyer",
+    property_interest: v.property_title,
+    message: `Saved "${v.property_title}" and asked for updates.`,
+  });
   return { ok: true };
 }
