@@ -2,7 +2,7 @@
 
 @AGENTS.md
 
-Realtor lead-gen SaaS built for Flippa resale. White-label site + agent dashboard for the LA County market (Beverly Hills, Bel Air, Santa Monica, Malibu, Westwood, Pacific Palisades, Calabasas, Brentwood, Encino). **No San Diego content.**
+Realtor lead-gen SaaS for Flippa resale. White-label site + agent dashboard, LA County market (Beverly Hills, Bel Air, Santa Monica, Malibu, Westwood, Pacific Palisades, Calabasas, Brentwood, Encino). **No San Diego content.**
 
 Live domain: getpropdrive.com
 
@@ -15,9 +15,9 @@ Live domain: getpropdrive.com
 
 ## Database — critical rules
 
-**Never run `prisma migrate deploy` or `supabase db push` against prod.** The DB is not tracked by Prisma migrations. Blind ORM diffs will drop or rewrite live columns.
+**Never run `prisma migrate deploy` or `supabase db push` on prod.** DB not tracked by Prisma migrations. Blind ORM diffs drop/rewrite live columns.
 
-**All schema changes must be additive SQL files:**
+**All schema changes = additive SQL files:**
 
 ```
 schema/
@@ -27,13 +27,13 @@ schema/
   004_blog_map_saved_searches.sql
 ```
 
-To apply a change:
-1. Write a new file: `schema/005_<description>.sql`
-2. Use `IF NOT EXISTS` and `ADD COLUMN IF NOT EXISTS` guards so it's idempotent
+Apply change:
+1. New file: `schema/005_<description>.sql`
+2. Use `IF NOT EXISTS` + `ADD COLUMN IF NOT EXISTS` guards → idempotent
 3. Apply: `supabase db execute --file schema/005_<description>.sql`
-4. Commit the file — this IS the migration history
+4. Commit file — file IS migration history
 
-**Every new table must immediately enable RLS** and define explicit policies before the migration is complete. No exceptions.
+**Every new table: enable RLS immediately** + define explicit policies before migration done. No exceptions.
 
 ## Key files
 
@@ -50,12 +50,12 @@ To apply a change:
 
 ## Design
 
-Crisp, high-contrast real estate aesthetic: cool-white canvas, deep slate ink, a vivid blue accent (`#006aff`), Zillow-inspired but with PropDrive's editorial serif headlines (Fraunces). Tokens live in `app/globals.css`; the public site's accent/ink come from `brand_settings` (white-label). Use the `impeccable` skill for all UI work.
+Crisp high-contrast real estate look: cool-white canvas, deep slate ink, vivid blue accent (`#006aff`), Zillow-inspired but with PropDrive editorial serif headlines (Fraunces). Tokens in `app/globals.css`; public site accent/ink from `brand_settings` (white-label). Use `impeccable` skill for all UI work.
 
 ## Auth & roles
 
-Three roles in `profiles.role`: `agent`, `admin`, `staff`. Dashboard access requires `authenticated`. Integration settings (API keys) require `admin` via the `is_admin()` function.
+Three roles in `profiles.role`: `agent`, `admin`, `staff`. Dashboard access needs `authenticated`. Integration settings (API keys) need `admin` via `is_admin()` function.
 
 ## What this is built to resell
 
-A buyer on Flippa gets a white-label real estate site + admin dashboard they can deploy in a day. The first thing they'll do is update `brand_settings` and `site_settings`. Keep those two tables as the source of truth for all visual identity and copy — never hardcode the agent name, brand colors, or company name anywhere in components.
+Flippa buyer gets white-label real estate site + admin dashboard, deployable in a day. First thing they do: update `brand_settings` and `site_settings`. Keep those two tables as source of truth for all visual identity + copy — never hardcode agent name, brand colors, or company name in components.

@@ -5,6 +5,7 @@
  * Persists to brand_settings via updateBrandSettings; revalidates the site.
  */
 import { useState } from "react";
+import { HelpCircle, ExternalLink } from "lucide-react";
 import ColorPicker from "@/components/color-picker";
 import ImageUpload from "@/components/image-upload";
 import { updateBrandSettings } from "@/lib/admin-actions";
@@ -59,7 +60,18 @@ export default function BrandingForm({
     <div className="space-y-6">
       <div className="space-y-4 rounded-[1.5rem] border border-line bg-white p-6 shadow-sm">
         <div>
-          <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-faint">Colors</h2>
+          <div className="flex items-center gap-1.5">
+            <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-faint">Colors</h2>
+            {/* Tooltip: how to see the change live */}
+            <span className="group relative inline-flex">
+              <HelpCircle className="h-3.5 w-3.5 cursor-help text-faint" tabIndex={0} aria-label="How to see your color changes" />
+              <span className="pointer-events-none absolute left-1/2 top-5 z-20 w-64 -translate-x-1/2 rounded-xl bg-ink px-3 py-2 text-xs font-normal normal-case leading-relaxed tracking-normal text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">
+                After you pick colors, click Save branding. Then open your live
+                site (use View site, top right) and hard-refresh the page to see
+                the new colors: press Ctrl+F5 on Windows, or Cmd+Shift+R on Mac.
+              </span>
+            </span>
+          </div>
           <p className="mt-1.5 text-xs leading-relaxed text-muted">
             Your brand colors, applied across your public website.
           </p>
@@ -75,8 +87,9 @@ export default function BrandingForm({
           <strong className="font-semibold text-muted">Ink</strong> is the dark
           color for headings and body text.{" "}
           <strong className="font-semibold text-muted">Secondary accent</strong> is
-          used for section titles, emphasis, and hover states. All three update
-          your public site instantly when you save.
+          used for section titles, emphasis, and hover states. After you save,
+          open your live site and hard-refresh it (Ctrl+F5 on Windows, or
+          Cmd+Shift+R on Mac) to see the new colors.
         </p>
       </div>
 
@@ -162,17 +175,37 @@ export default function BrandingForm({
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        <button
-          type="button"
-          onClick={save}
-          disabled={saving}
-          className="rounded-full bg-ink px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent active:translate-y-px disabled:opacity-60"
-        >
-          {saving ? "Saving…" : "Save branding"}
-        </button>
-        {status === "saved" && <span className="text-sm font-medium text-green-600">Saved.</span>}
-        {status === "error" && <span className="text-sm text-red-600">{error}</span>}
+      <div className="space-y-3">
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={save}
+            disabled={saving}
+            className="rounded-full bg-ink px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent active:translate-y-px disabled:opacity-60"
+          >
+            {saving ? "Saving…" : "Save branding"}
+          </button>
+          {status === "saved" && <span className="text-sm font-medium text-green-600">Saved.</span>}
+          {status === "error" && <span className="text-sm text-red-600">{error}</span>}
+        </div>
+
+        {status === "saved" && (
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border border-accent/30 bg-accent-soft/50 p-3 text-sm text-ink">
+            <span>
+              Saved. To see it, open your live site and hard-refresh:{" "}
+              <strong className="font-semibold">Ctrl+F5</strong> on Windows, or{" "}
+              <strong className="font-semibold">Cmd+Shift+R</strong> on Mac.
+            </span>
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-semibold text-accent hover:underline"
+            >
+              Open live site <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );
