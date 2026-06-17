@@ -159,7 +159,13 @@ export const bannerSchema = z.object({
   title: z.string().default(""),
   subtitle: z.string().default(""),
   cta_text: z.string().default(""),
-  cta_link: z.string().default("/properties"),
+  // Only relative paths or http(s) URLs — blocks javascript:/data: URIs.
+  cta_link: z
+    .string()
+    .default("/properties")
+    .refine((v) => v === "" || /^\//.test(v) || /^https?:\/\//i.test(v), {
+      message: "Link must be a relative path (/...) or an http(s) URL.",
+    }),
   sort_order: z.coerce.number().int().default(0),
   active: z.boolean().default(true),
 });

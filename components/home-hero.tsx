@@ -69,6 +69,10 @@ export default function HomeHero({
 
   if (!list.length) return null;
   const slide = list[Math.min(index, list.length - 1)];
+  // Defense in depth: never render an unsafe href (e.g. javascript:) on the CTA.
+  const safeHref = /^(\/|https?:\/\/)/i.test(slide.ctaLink || "")
+    ? slide.ctaLink
+    : "/properties";
 
   return (
     <section ref={ref} className="relative isolate overflow-hidden">
@@ -142,7 +146,7 @@ export default function HomeHero({
           >
             <Magnetic strength={0.4}>
               <Link
-                href={slide.ctaLink || "/properties"}
+                href={safeHref}
                 className="group inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-semibold text-background transition-colors hover:bg-accent active:translate-y-px"
               >
                 {slide.ctaText || "Browse listings"}

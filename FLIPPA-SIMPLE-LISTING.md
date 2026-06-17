@@ -30,6 +30,7 @@ one clean backend. No code required to run it day to day.
 ## Admin dashboard
 
 - Overview: total leads, active listings, upcoming appointments, recent leads, quick actions
+- Banners: a rotating homepage hero slideshow you control (image, headline, button)
 - Leads: name, email, phone, lead type, message, property interested in, status
 - Appointments: name, email, phone, property, date, time, notes, status
 - Properties: add, edit, delete, photo uploads, price, address, beds, baths, square feet, description, status
