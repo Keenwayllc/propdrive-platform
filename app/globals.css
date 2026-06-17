@@ -11,10 +11,22 @@
   --foreground: #15181f; /* cool near-black */
 }
 
+/* Fonts and alias tokens reference other variables, so they need `inline` to
+ * resolve correctly (see Tailwind v4 docs). */
 @theme inline {
-  /* Palette */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+}
+
+/* Colors are NON-inline on purpose: utilities compile to var(--color-*), so the
+ * marketing layout can override brand colors at runtime (white-label theming).
+ * With `inline`, the literals get baked into the utilities and the per-site
+ * brand colors set on the Branding page would never apply. */
+@theme {
   --color-surface: #ffffff;
   --color-ink: #15181f;
   --color-muted: #5a6477; /* cool gray for body copy */
@@ -23,11 +35,6 @@
   --color-accent: #006aff; /* vivid blue */
   --color-accent-strong: #0a53c2;
   --color-accent-soft: #e6f0ff;
-
-  /* Fonts */
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
 }
 
 html {
