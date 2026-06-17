@@ -12,6 +12,16 @@ import ImageUpload from "@/components/image-upload";
 import { createBanner, updateBanner, deleteBanner } from "@/lib/admin-actions";
 import type { Banner } from "@/lib/types";
 
+/** Where a banner button can point. Friendly labels, safe relative paths. */
+const LINK_OPTIONS: Array<{ label: string; value: string }> = [
+  { label: "All Properties", value: "/properties" },
+  { label: "Home Valuation", value: "/home-valuation" },
+  { label: "Mortgage Calculator", value: "/mortgage-calculator" },
+  { label: "Open Houses", value: "/open-houses" },
+  { label: "Contact", value: "/contact" },
+  { label: "About", value: "/about" },
+];
+
 export default function BannersManager({ initial }: { initial: Banner[] }) {
   const router = useRouter();
   const refresh = () => router.refresh();
@@ -244,7 +254,17 @@ function Fields(p: {
         </label>
         <label className="block">
           <span className="mb-1 block text-sm font-medium text-ink">Button link</span>
-          <input value={p.ctaLink} onChange={(e) => p.setCtaLink(e.target.value)} className="form-input" placeholder="/properties" />
+          <select
+            value={LINK_OPTIONS.some((o) => o.value === p.ctaLink) ? p.ctaLink : "/properties"}
+            onChange={(e) => p.setCtaLink(e.target.value)}
+            className="form-input"
+          >
+            {LINK_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
         </label>
       </div>
     </>
