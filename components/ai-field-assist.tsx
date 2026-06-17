@@ -61,8 +61,8 @@ export default function AiFieldAssist({
   if (!aiConnected) {
     return (
       <Link
-        href="/dashboard/ai-tools"
-        title="Connect your OpenAI key under AI Tools to turn this on"
+        href="/dashboard/ai-assistant"
+        title="Connect your OpenAI key under AI Assistant to turn this on"
         className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 transition-colors hover:bg-amber-100"
       >
         <Sparkles className="h-3.5 w-3.5" /> AI off

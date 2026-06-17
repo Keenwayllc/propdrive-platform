@@ -83,8 +83,9 @@ export default function OpenAiKeyForm({
             )}
           </div>
           <p className="mt-1 text-sm text-muted">
-            Paste your OpenAI key to power the AI tools below — no Vercel needed.
-            Stored securely; we only ever show a masked preview.
+            Paste your OpenAI key to turn on the AI writing assistant across your
+            dashboard. No Vercel needed. Stored securely; we only ever show a
+            masked preview.
           </p>
 
           {source && masked && (

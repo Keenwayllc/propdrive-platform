@@ -22,6 +22,7 @@ import {
   Palette,
   Images,
   Quote,
+  Sparkles,
   Settings,
   LogOut,
   Menu,
@@ -61,6 +62,7 @@ const NAV: ReadonlyArray<{ href: string; label: string; icon: LucideIcon }> = [
   { href: "/dashboard/banners", label: "Banners", icon: Images },
   { href: "/dashboard/branding", label: "Branding", icon: Palette },
   { href: "/dashboard/testimonials", label: "Testimonials", icon: Quote },
+  { href: "/dashboard/ai-assistant", label: "AI Assistant", icon: Sparkles },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
