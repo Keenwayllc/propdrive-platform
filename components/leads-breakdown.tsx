@@ -23,7 +23,7 @@ export interface Slice {
 }
 
 const TYPE_COLORS: Record<string, string> = {
-  Buyer: "#006aff",
+  Buyer: "#b85c38",
   Seller: "#0d9488",
   Valuation: "#d97706",
   General: "#94a3b8",
@@ -87,7 +87,7 @@ export default function LeadsBreakdown({
                 />
                 <Bar dataKey="count" radius={[0, 6, 6, 0]}>
                   {byType.map((d) => (
-                    <Cell key={d.label} fill={TYPE_COLORS[d.label] ?? "#006aff"} />
+                    <Cell key={d.label} fill={TYPE_COLORS[d.label] ?? "#b85c38"} />
                   ))}
                 </Bar>
               </BarChart>

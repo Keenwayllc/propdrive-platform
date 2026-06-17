@@ -253,11 +253,11 @@ export default function PropertyForm({ property }: PropertyFormProps) {
 
       <div className="flex flex-wrap gap-6">
         <label className="flex items-center gap-2 text-sm font-medium text-ink">
-          <input type="checkbox" {...register("featured")} className="h-4 w-4 accent-[#006aff]" />
+          <input type="checkbox" {...register("featured")} className="h-4 w-4 accent-[#b85c38]" />
           Featured
         </label>
         <label className="flex items-center gap-2 text-sm font-medium text-ink">
-          <input type="checkbox" {...register("active")} className="h-4 w-4 accent-[#006aff]" />
+          <input type="checkbox" {...register("active")} className="h-4 w-4 accent-[#b85c38]" />
           Active (visible on the public site)
         </label>
       </div>

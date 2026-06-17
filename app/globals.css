@@ -32,9 +32,9 @@
   --color-muted: #5a6477; /* cool gray for body copy */
   --color-faint: #98a2b3;
   --color-line: #e3e8ef; /* cool hairline */
-  --color-accent: #006aff; /* vivid blue */
-  --color-accent-strong: #0a53c2;
-  --color-accent-soft: #e6f0ff;
+  --color-accent: #b85c38; /* PropDrive clay (dashboard accent) */
+  --color-accent-strong: #9e4a2c;
+  --color-accent-soft: #f4e7df;
 }
 
 html {
