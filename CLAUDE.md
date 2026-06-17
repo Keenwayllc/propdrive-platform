@@ -50,7 +50,7 @@ To apply a change:
 
 ## Design
 
-"Coastal Luxe" — premium LA real estate aesthetic. Clean, high-contrast, aspirational. Use the `impeccable` skill for all UI work. Avoid generic card grids and flat blue buttons.
+Crisp, high-contrast real estate aesthetic: cool-white canvas, deep slate ink, a vivid blue accent (`#006aff`), Zillow-inspired but with PropDrive's editorial serif headlines (Fraunces). Tokens live in `app/globals.css`; the public site's accent/ink come from `brand_settings` (white-label). Use the `impeccable` skill for all UI work.
 
 ## Auth & roles
 

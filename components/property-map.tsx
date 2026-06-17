@@ -60,7 +60,7 @@ export default function PropertyMap({ properties }: { properties: MapProperty[] 
       const icon = L.divIcon({
         className: "",
         html:
-          '<div style="width:18px;height:18px;border-radius:9999px;background:#b85c38;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>',
+          '<div style="width:18px;height:18px;border-radius:9999px;background:#006aff;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>',
         iconSize: [18, 18],
         iconAnchor: [9, 9],
       });
@@ -68,7 +68,7 @@ export default function PropertyMap({ properties }: { properties: MapProperty[] 
       const markers = pts.map((p) => {
         const m = L.marker([p.lat, p.lng], { icon }).addTo(map);
         m.bindPopup(
-          `<a href="/properties/${p.id}" style="font-weight:600;color:#1a1714;text-decoration:none">${esc(
+          `<a href="/properties/${p.id}" style="font-weight:600;color:#15181f;text-decoration:none">${esc(
             p.title
           )}</a><br/><span style="color:#75695b">${currency.format(
             p.price

@@ -200,9 +200,9 @@ export type NeighborhoodInput = z.infer<typeof neighborhoodSchema>;
 
 /** Editable visual identity (brand_settings). */
 export const brandSettingsSchema = z.object({
-  primary_color: z.string().default("#b85c38"),
-  secondary_color: z.string().default("#1a1714"),
-  accent_color: z.string().default("#b85c38"),
+  primary_color: z.string().default("#006aff"),
+  secondary_color: z.string().default("#15181f"),
+  accent_color: z.string().default("#0a53c2"),
   company_name: z.string().default(""),
   agent_name: z.string().default(""),
   license_number: z.string().default(""),

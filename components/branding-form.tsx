@@ -13,9 +13,9 @@ import type { BrandSettings } from "@/lib/types";
 
 function toInput(b: BrandSettings | null): BrandSettingsInput {
   return {
-    primary_color: b?.primary_color ?? "#b85c38",
-    secondary_color: b?.secondary_color ?? "#1a1714",
-    accent_color: b?.accent_color ?? "#b85c38",
+    primary_color: b?.primary_color ?? "#006aff",
+    secondary_color: b?.secondary_color ?? "#15181f",
+    accent_color: b?.accent_color ?? "#0a53c2",
     company_name: b?.company_name ?? "",
     agent_name: b?.agent_name ?? "",
     license_number: b?.license_number ?? "",

@@ -24,9 +24,9 @@ export default async function MarketingLayout({
   ]);
 
   const companyName = site?.company_name || brand?.company_name || "PropDrive";
-  const accent = brand?.primary_color || "#b85c38";
-  const accentStrong = brand?.accent_color || "#9e4a2c";
-  const ink = brand?.secondary_color || "#1a1714";
+  const accent = brand?.primary_color || "#006aff";
+  const accentStrong = brand?.accent_color || "#0a53c2";
+  const ink = brand?.secondary_color || "#15181f";
   const brandStyle = {
     "--color-accent": accent,
     "--color-accent-strong": accentStrong,

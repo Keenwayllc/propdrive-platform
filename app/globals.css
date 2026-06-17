@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 /*
- * PropDrive — "Coastal Luxe" design system.
- * Warm cream canvas, deep charcoal ink, a single muted clay accent.
+ * PropDrive design system.
+ * Crisp cool-white canvas, deep slate ink, a vivid blue accent.
  * Geist for UI, Fraunces for editorial marketing headlines.
  */
 
 :root {
-  --background: #faf7f2; /* warm cream */
-  --foreground: #1a1714; /* warm near-black */
+  --background: #f5f7fb; /* light cool gray */
+  --foreground: #15181f; /* cool near-black */
 }
 
 @theme inline {
@@ -16,13 +16,13 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-surface: #ffffff;
-  --color-ink: #1a1714;
-  --color-muted: #75695b; /* warm stone for body copy */
-  --color-faint: #9c9286;
-  --color-line: #e8e1d6; /* warm hairline */
-  --color-accent: #b85c38; /* muted clay / terracotta */
-  --color-accent-strong: #9e4a2c;
-  --color-accent-soft: #f4e7df;
+  --color-ink: #15181f;
+  --color-muted: #5a6477; /* cool gray for body copy */
+  --color-faint: #98a2b3;
+  --color-line: #e3e8ef; /* cool hairline */
+  --color-accent: #006aff; /* vivid blue */
+  --color-accent-strong: #0a53c2;
+  --color-accent-soft: #e6f0ff;
 
   /* Fonts */
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
@@ -66,7 +66,7 @@ body {
   font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
 }
 
-/* Reusable form control — warm-tinted, clay focus ring. */
+/* Reusable form control — cool-tinted, blue focus ring. */
 @layer components {
   .form-input {
     @apply w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink

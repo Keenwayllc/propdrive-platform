@@ -58,7 +58,7 @@ async function brandHeader(): Promise<string> {
   }
   const inner = logo
     ? `<img src="${esc(logo)}" alt="${esc(company)}" style="height:40px;max-width:220px;object-fit:contain" />`
-    : `<span style="font-size:20px;font-weight:600;color:#1a1714">${esc(company)}</span>`;
+    : `<span style="font-size:20px;font-weight:600;color:#15181f">${esc(company)}</span>`;
   return `<div style="padding:0 0 16px;margin:0 0 16px;border-bottom:1px solid #e8e1d6">${inner}</div>`;
 }
 
@@ -77,7 +77,7 @@ async function send(subject: string, rows: Array<[string, string | null]>) {
         ([label, v]) =>
           `<tr><td style="padding:4px 12px 4px 0;color:#75695b">${esc(
             label
-          )}</td><td style="padding:4px 0;color:#1a1714"><strong>${esc(
+          )}</td><td style="padding:4px 0;color:#15181f"><strong>${esc(
             v
           )}</strong></td></tr>`
       )
@@ -87,7 +87,7 @@ async function send(subject: string, rows: Array<[string, string | null]>) {
     const html = `
       <div style="font-family:system-ui,sans-serif;max-width:520px">
         ${header}
-        <h2 style="color:#1a1714;margin:0 0 4px">${esc(subject)}</h2>
+        <h2 style="color:#15181f;margin:0 0 4px">${esc(subject)}</h2>
         <p style="color:#75695b;margin:0 0 16px">Sign in to your dashboard to follow up.</p>
         <table style="border-collapse:collapse;font-size:14px">${body}</table>
       </div>`;
@@ -170,7 +170,7 @@ export async function sendListingAlert(
       .map(
         (l) =>
           `<tr><td style="padding:8px 0;border-bottom:1px solid #e8e1d6">` +
-          `<a href="${baseUrl}/properties/${l.id}" style="color:#1a1714;font-weight:600;text-decoration:none">${esc(
+          `<a href="${baseUrl}/properties/${l.id}" style="color:#15181f;font-weight:600;text-decoration:none">${esc(
             l.title
           )}</a><br>` +
           `<span style="color:#75695b">${esc(currency.format(l.price))} · ${esc(
@@ -188,10 +188,10 @@ export async function sendListingAlert(
     const html = `
       <div style="font-family:system-ui,sans-serif;max-width:520px">
         ${header}
-        <h2 style="color:#1a1714;margin:0 0 4px">${esc(subject)}</h2>
+        <h2 style="color:#15181f;margin:0 0 4px">${esc(subject)}</h2>
         <p style="color:#75695b;margin:0 0 16px">Here's what just came on the market for you.</p>
         <table style="border-collapse:collapse;width:100%;font-size:14px">${rows}</table>
-        <p style="margin:18px 0 0"><a href="${baseUrl}/properties" style="color:#b85c38">Browse all listings</a></p>
+        <p style="margin:18px 0 0"><a href="${baseUrl}/properties" style="color:#006aff">Browse all listings</a></p>
       </div>`;
 
     const res = await fetch("https://api.resend.com/emails", {

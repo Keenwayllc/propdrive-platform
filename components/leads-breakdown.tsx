@@ -23,7 +23,7 @@ export interface Slice {
 }
 
 const TYPE_COLORS: Record<string, string> = {
-  Buyer: "#b85c38",
+  Buyer: "#006aff",
   Seller: "#0d9488",
   Valuation: "#d97706",
   General: "#94a3b8",
@@ -83,11 +83,11 @@ export default function LeadsBreakdown({
                 />
                 <Tooltip
                   formatter={(value) => [`${value} lead${Number(value) === 1 ? "" : "s"}`, "Leads"]}
-                  cursor={{ fill: "#faf7f2" }}
+                  cursor={{ fill: "#f5f7fb" }}
                 />
                 <Bar dataKey="count" radius={[0, 6, 6, 0]}>
                   {byType.map((d) => (
-                    <Cell key={d.label} fill={TYPE_COLORS[d.label] ?? "#b85c38"} />
+                    <Cell key={d.label} fill={TYPE_COLORS[d.label] ?? "#006aff"} />
                   ))}
                 </Bar>
               </BarChart>
