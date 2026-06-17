@@ -40,15 +40,15 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "PropDrive — The real estate lead platform built for agents",
+    default: "PropDrive — Realtor Website With Admin Dashboard",
     template: "%s | PropDrive",
   },
   description:
-    "PropDrive helps real estate agents capture, manage, and convert leads with property listings, a built-in CRM, branding tools, and AI-powered features.",
+    "Launch a professional realtor website with a built-in admin dashboard. Manage listings, leads, appointments, branding, testimonials, and website content from one clean backend.",
   openGraph: {
-    title: "PropDrive — The real estate lead platform built for agents",
+    title: "PropDrive — Realtor Website With Admin Dashboard",
     description:
-      "Property listings, lead CRM, branding editor, and AI tools for modern real estate agents.",
+      "A professional realtor website with a built-in admin dashboard for listings, leads, appointments, branding, and content.",
     url: SITE_URL,
     siteName: "PropDrive",
     type: "website",
@@ -63,9 +63,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "PropDrive — The real estate lead platform built for agents",
+    title: "PropDrive — Realtor Website With Admin Dashboard",
     description:
-      "Property listings, lead CRM, branding editor, and AI tools for modern real estate agents.",
+      "A professional realtor website with a built-in admin dashboard for listings, leads, appointments, branding, and content.",
     images: ["/hero/hero-banner.png"],
   },
 };

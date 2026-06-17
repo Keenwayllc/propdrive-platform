@@ -76,20 +76,17 @@ export default function BrandingForm({
             Your brand colors, applied across your public website.
           </p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <ColorPicker label="Primary (brand accent)" value={form.primary_color} onChange={(v) => set("primary_color", v)} />
-          <ColorPicker label="Ink (headings & text)" value={form.secondary_color} onChange={(v) => set("secondary_color", v)} />
-          <ColorPicker label="Secondary accent" value={form.accent_color} onChange={(v) => set("accent_color", v)} />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <ColorPicker label="Primary color" value={form.primary_color} onChange={(v) => set("primary_color", v)} />
+          <ColorPicker label="Accent color" value={form.accent_color} onChange={(v) => set("accent_color", v)} />
         </div>
         <p className="text-xs leading-relaxed text-faint">
           <strong className="font-semibold text-muted">Primary</strong> is the main
           color for buttons, links, and icons.{" "}
-          <strong className="font-semibold text-muted">Ink</strong> is the dark
-          color for headings and body text.{" "}
-          <strong className="font-semibold text-muted">Secondary accent</strong> is
-          used for section titles, emphasis, and hover states. After you save,
-          open your live site and hard-refresh it (Ctrl+F5 on Windows, or
-          Cmd+Shift+R on Mac) to see the new colors.
+          <strong className="font-semibold text-muted">Accent</strong> is used for
+          section titles, emphasis, and hover states. After you save, open your
+          live site and hard-refresh it (Ctrl+F5 on Windows, or Cmd+Shift+R on
+          Mac) to see the new colors.
         </p>
       </div>
 
@@ -101,20 +98,11 @@ export default function BrandingForm({
           </p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field
-            label="Company name"
-            hint="Used as a fallback if you haven't set one in the Website Editor."
-          >
-            <input value={form.company_name} onChange={(e) => set("company_name", e.target.value)} className="form-input" placeholder="e.g. California Realty Group" />
-          </Field>
           <Field label="Agent name" hint="Shown in the homepage agent section and on listings.">
             <input value={form.agent_name} onChange={(e) => set("agent_name", e.target.value)} className="form-input" placeholder="e.g. Marcus Rivera" />
           </Field>
           <Field label="Brokerage name" hint="Your brokerage, shown alongside your license.">
             <input value={form.brokerage_name} onChange={(e) => set("brokerage_name", e.target.value)} className="form-input" />
-          </Field>
-          <Field label="License number" hint="Your DRE / real estate license number, shown in the footer.">
-            <input value={form.license_number} onChange={(e) => set("license_number", e.target.value)} className="form-input" placeholder="DRE# 02145789" />
           </Field>
         </div>
       </div>
@@ -139,19 +127,6 @@ export default function BrandingForm({
         </div>
         <div>
           <ImageUpload
-            label="Logo — light version (for dark backgrounds)"
-            multiple={false}
-            value={form.logo_light_url ? [form.logo_light_url] : []}
-            onChange={(urls) => set("logo_light_url", urls[urls.length - 1] ?? null)}
-          />
-          <p className="mt-2 text-xs leading-relaxed text-faint">
-            Optional. A white or light version of your logo, shown on dark
-            sections like the footer. If you skip this, we automatically place
-            your main logo on a light background so it stays legible.
-          </p>
-        </div>
-        <div>
-          <ImageUpload
             label="Agent photo"
             multiple={false}
             value={form.agent_photo_url ? [form.agent_photo_url] : []}
@@ -159,18 +134,6 @@ export default function BrandingForm({
           />
           <p className="mt-2 text-xs leading-relaxed text-faint">
             A headshot shown in the agent section of your homepage.
-          </p>
-        </div>
-        <div>
-          <ImageUpload
-            label="Homepage hero image"
-            multiple={false}
-            value={form.hero_image_url ? [form.hero_image_url] : []}
-            onChange={(urls) => set("hero_image_url", urls[urls.length - 1] ?? null)}
-          />
-          <p className="mt-2 text-xs leading-relaxed text-faint">
-            The large background photo at the top of your homepage. Use a wide,
-            high-resolution image. If you skip this, the default banner is used.
           </p>
         </div>
       </div>

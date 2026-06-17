@@ -15,9 +15,8 @@ const FOOTER_COLUMNS: ReadonlyArray<{
     title: "Explore",
     links: [
       { href: "/properties", label: "All Properties" },
-      { href: "/neighborhoods", label: "Neighborhoods" },
       { href: "/open-houses", label: "Open Houses" },
-      { href: "/insights", label: "Market Insights" },
+      { href: "/home-valuation", label: "Home Valuation" },
     ],
   },
   {
@@ -50,7 +49,7 @@ export default function Footer({ site, brand }: FooterProps) {
   const logoUrl = brand?.logo_url ?? null;
   const logoLightUrl = brand?.logo_light_url ?? null;
   const tagline =
-    site?.footer_text || "The real estate lead platform built for agents.";
+    site?.footer_text || "A professional realtor website with a built-in admin dashboard.";
   const license = brand?.license_number || "DRE License #00000000";
   const social = site?.social_links ?? {};
 

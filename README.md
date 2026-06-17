@@ -1,42 +1,48 @@
 # PropDrive
 
-**The real estate lead platform built for agents.**
+**Realtor Website With Admin Dashboard.**
 
-PropDrive is a launch-ready real estate website + lead-generation platform:
-a polished public site (listings, neighborhoods, home valuation, mortgage
-calculator) paired with an agent dashboard (lead CRM, appointments, property
-manager, website & branding editors, AI tools). Built to be cloned, re-branded,
-and resold.
+PropDrive is a launch-ready realtor website with a built-in admin dashboard:
+a polished public site (listings, home valuation, mortgage calculator) paired
+with a clean dashboard to manage listings, leads, appointments, branding,
+testimonials, and website content. Built to be rebranded and launched for any
+agent in a day.
 
 - **Live:** [getpropdrive.com](https://getpropdrive.com)
 - **Stack:** Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 ·
-  Supabase (Postgres, Auth, Storage) · OpenAI · Resend · Leaflet/OpenStreetMap ·
-  react-hook-form + Zod · recharts · qrcode · framer-motion · lucide-react
+  Supabase (Postgres, Auth, Storage) · Leaflet/OpenStreetMap · react-hook-form +
+  Zod · framer-motion · lucide-react
 
 ## What's included
 
-**Public site:** homepage, property listings with live search/filter and address
-autocomplete, property detail pages with photo galleries and an interactive map,
-LA County neighborhood pages with market stats, a Market Insights blog,
-home-valuation request, mortgage calculator, about, contact, privacy & terms.
-Per-listing SEO (schema.org rich-result data) and social share images, plus a
-printable property flyer with a scan-to-view QR code.
+**Public site:** homepage, property listings with search, filter, and an
+interactive map, property detail pages with photo galleries, home-valuation
+request, mortgage calculator, about, contact (with lead capture and a
+schedule-a-showing form), privacy and terms.
 
-**Agent dashboard:** overview with lead analytics (leads over time, by type, and
-a status pipeline), lead CRM with status tracking, appointments manager, full
-property CRUD with image uploads and automatic map pins, CSV lead export, and a
-full AI tool suite (8 tools: listing descriptions, social posts, follow-up
-emails, neighborhood highlights, an advisor, an objection handler, an open-house
-planner, and price positioning), plus an AI article writer in the blog.
+**Admin dashboard:**
+- Overview: total leads, active listings, upcoming appointments, recent leads, quick actions
+- Leads: name, email, phone, type, message, property interest, status
+- Appointments: name, email, phone, property, date, time, notes, status
+- Properties: add / edit / delete with photo uploads (price, address, beds, baths, sqft, description, status)
+- Website Editor: company name, hero title and subtitle, phone, email, about, footer, social links
+- Branding: logo, primary color, accent color, agent name, agent photo, brokerage name
+- Testimonials: manage the client quotes shown on the homepage
+- Settings: account and security
 
 **White-label, owner-editable:** company name, logo, colors, agent details,
-homepage stats, hero image, testimonials, neighborhoods, blog, and all marketing
-copy, edited from the dashboard with AI assist and one-click clear/reset.
+testimonials, and all marketing copy, edited from the dashboard. The public site
+accent and headings follow the brand colors.
 
-**Growth & built-ins:** buyer/seller/valuation/general lead forms, schedule a
-showing, saved-search email alerts (cron), auth with password reset, email
-notifications on new leads, address autocomplete and geocoding with no paid API
-key (OpenStreetMap), and RLS on every table.
+**Built-ins:** lead capture forms, schedule-a-showing, auth with password reset,
+optional email notifications on new leads, address autocomplete and map pins with
+no paid API key (OpenStreetMap), and RLS on every table.
+
+> Note: this is the simplified "realtor website" build. Some advanced modules
+> (saved searches, market insights blog, neighborhoods, AI tools, integrations,
+> and the custom-domain guide) remain in the codebase but are hidden from the UI
+> for a cleaner product. Re-enable them by restoring the sidebar links in
+> `app/dashboard/layout.tsx` and the corresponding dashboard pages.
 
 ## Quick start
 

@@ -93,6 +93,16 @@ function LoginForm() {
             </Link>
           </p>
         </form>
+
+        <div className="mt-4 rounded-xl border border-line bg-surface p-4 text-center text-sm text-muted">
+          <p className="font-medium text-ink">Demo access</p>
+          <p className="mt-1">
+            Email: <span className="font-medium text-ink">demo@getpropdrive.com</span>
+          </p>
+          <p className="mt-0.5 text-xs text-faint">
+            Password provided on request, so the live demo stays clean.
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -1,33 +1,20 @@
 /**
- * Dashboard overview — summary stats, analytics chart, and a recent-leads feed.
+ * Dashboard overview — summary stats, quick actions, and a recent-leads feed.
  */
 import Link from "next/link";
-import { Users, CalendarCheck, Building2, TrendingUp, Inbox } from "lucide-react";
+import {
+  Users,
+  CalendarCheck,
+  Building2,
+  TrendingUp,
+  Inbox,
+  Plus,
+  Pencil,
+  Palette,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import DashboardCard from "@/components/dashboard-card";
-import LeadsChart, { type ChartPoint } from "@/components/leads-chart";
-import LeadsBreakdown, { type Slice } from "@/components/leads-breakdown";
 import { getDashboardStats, getLeads } from "@/lib/queries";
-import type { Lead, LeadStatus, LeadType } from "@/lib/types";
-
-/** Real monthly lead counts for the last `months` calendar months. */
-function buildLeadsSeries(leads: Lead[], months = 6): ChartPoint[] {
-  const now = new Date();
-  const buckets = Array.from({ length: months }, (_, i) => {
-    const d = new Date(now.getFullYear(), now.getMonth() - (months - 1 - i), 1);
-    return {
-      key: `${d.getFullYear()}-${d.getMonth()}`,
-      month: d.toLocaleString("en-US", { month: "short" }),
-      leads: 0,
-    };
-  });
-  const index = new Map(buckets.map((b, i) => [b.key, i]));
-  for (const lead of leads) {
-    const d = new Date(lead.created_at);
-    const i = index.get(`${d.getFullYear()}-${d.getMonth()}`);
-    if (i !== undefined) buckets[i].leads += 1;
-  }
-  return buckets.map(({ month, leads }) => ({ month, leads }));
-}
 
 const TYPE_STYLES: Record<string, string> = {
   buyer: "bg-accent-soft text-accent",
@@ -36,92 +23,92 @@ const TYPE_STYLES: Record<string, string> = {
   general: "bg-line text-muted",
 };
 
-const LEAD_TYPES: LeadType[] = ["buyer", "seller", "valuation", "general"];
-const LEAD_STATUSES: LeadStatus[] = ["new", "contacted", "qualified", "closed", "lost"];
-
-const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
-/** Count leads by type and by status for the breakdown panel. */
-function buildBreakdown(leads: Lead[]): { byType: Slice[]; byStatus: Slice[] } {
-  const typeCounts = new Map<string, number>();
-  const statusCounts = new Map<string, number>();
-  for (const lead of leads) {
-    typeCounts.set(lead.lead_type, (typeCounts.get(lead.lead_type) ?? 0) + 1);
-    statusCounts.set(lead.status, (statusCounts.get(lead.status) ?? 0) + 1);
-  }
-  return {
-    byType: LEAD_TYPES.map((t) => ({ label: cap(t), count: typeCounts.get(t) ?? 0 })),
-    byStatus: LEAD_STATUSES.map((s) => ({ label: cap(s), count: statusCounts.get(s) ?? 0 })),
-  };
-}
+const QUICK_ACTIONS: Array<{ href: string; label: string; icon: LucideIcon }> = [
+  { href: "/dashboard/properties/new", label: "Add Property", icon: Plus },
+  { href: "/dashboard/leads", label: "View Leads", icon: Users },
+  { href: "/dashboard/website-editor", label: "Edit Website", icon: Pencil },
+  { href: "/dashboard/branding", label: "Update Branding", icon: Palette },
+];
 
 export default async function DashboardOverviewPage() {
   const [stats, leads] = await Promise.all([getDashboardStats(), getLeads()]);
   const recent = leads.slice(0, 5);
-  const leadsSeries = buildLeadsSeries(leads);
-  const { byType, byStatus } = buildBreakdown(leads);
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-ink">Overview</h1>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <DashboardCard label="New leads" value={stats.newLeads} icon={Users} />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <DashboardCard label="Total leads" value={leads.length} icon={TrendingUp} />
+        <DashboardCard label="Active listings" value={stats.activeListings} icon={Building2} />
         <DashboardCard
-          label="Appointments"
+          label="Upcoming appointments"
           value={stats.upcomingAppointments}
           icon={CalendarCheck}
-          trend={`${stats.upcomingAppointments} upcoming`}
         />
-        <DashboardCard label="Active listings" value={stats.activeListings} icon={Building2} />
-        <DashboardCard label="Total leads" value={leads.length} icon={TrendingUp} />
       </div>
 
-      <LeadsBreakdown byType={byType} byStatus={byStatus} />
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        <LeadsChart data={leadsSeries} />
-
-        <div className="rounded-2xl border border-line bg-white p-5 shadow-[0_12px_30px_-22px_rgba(26,23,20,0.4)]">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-ink">Recent leads</h3>
-            <Link href="/dashboard/leads" className="text-xs font-medium text-accent hover:underline">
-              View all
+      {/* Quick actions */}
+      <div>
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-faint">
+          Quick actions
+        </h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {QUICK_ACTIONS.map((a) => (
+            <Link
+              key={a.href}
+              href={a.href}
+              className="flex items-center gap-3 rounded-2xl border border-line bg-white p-4 shadow-sm transition-colors hover:border-accent/40 hover:bg-surface"
+            >
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent">
+                <a.icon className="h-5 w-5" />
+              </span>
+              <span className="text-sm font-semibold text-ink">{a.label}</span>
             </Link>
-          </div>
-
-          {recent.length === 0 ? (
-            <div className="mt-6 flex flex-col items-center py-8 text-center">
-              <Inbox className="h-8 w-8 text-faint" />
-              <p className="mt-3 text-sm text-muted">
-                No leads yet. New enquiries from your site land here.
-              </p>
-            </div>
-          ) : (
-            <ul className="mt-4 divide-y divide-line">
-              {recent.map((lead) => (
-                <li key={lead.id} className="flex items-center justify-between gap-3 py-3">
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-ink">{lead.full_name}</p>
-                    <p className="truncate text-xs text-muted">{lead.email}</p>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-3">
-                    <span
-                      className={`rounded-full px-2.5 py-1 text-xs font-medium capitalize ${
-                        TYPE_STYLES[lead.lead_type] ?? TYPE_STYLES.general
-                      }`}
-                    >
-                      {lead.lead_type}
-                    </span>
-                    <span className="text-xs text-faint">
-                      {new Date(lead.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
+          ))}
         </div>
+      </div>
+
+      {/* Recent leads */}
+      <div className="rounded-2xl border border-line bg-white p-5 shadow-[0_12px_30px_-22px_rgba(26,23,20,0.4)]">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-ink">Recent leads</h3>
+          <Link href="/dashboard/leads" className="text-xs font-medium text-accent hover:underline">
+            View all
+          </Link>
+        </div>
+
+        {recent.length === 0 ? (
+          <div className="mt-6 flex flex-col items-center py-8 text-center">
+            <Inbox className="h-8 w-8 text-faint" />
+            <p className="mt-3 text-sm text-muted">
+              No leads yet. New enquiries from your site land here.
+            </p>
+          </div>
+        ) : (
+          <ul className="mt-4 divide-y divide-line">
+            {recent.map((lead) => (
+              <li key={lead.id} className="flex items-center justify-between gap-3 py-3">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-ink">{lead.full_name}</p>
+                  <p className="truncate text-xs text-muted">{lead.email}</p>
+                </div>
+                <div className="flex shrink-0 items-center gap-3">
+                  <span
+                    className={`rounded-full px-2.5 py-1 text-xs font-medium capitalize ${
+                      TYPE_STYLES[lead.lead_type] ?? TYPE_STYLES.general
+                    }`}
+                  >
+                    {lead.lead_type}
+                  </span>
+                  <span className="text-xs text-faint">
+                    {new Date(lead.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

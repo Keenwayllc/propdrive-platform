@@ -8,7 +8,6 @@ import Link from "next/link";
 import PropertyFilter from "@/components/property-filter";
 import PropertyCard from "@/components/property-card";
 import PropertyMap from "@/components/property-map";
-import SaveSearchForm from "@/components/save-search-form";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { getActiveProperties } from "@/lib/queries";
 import type { PropertyType } from "@/lib/types";
@@ -52,10 +51,6 @@ export default async function PropertiesPage({
 
       <div className="sticky top-20 z-30">
         <PropertyFilter />
-      </div>
-
-      <div className="mt-6">
-        <SaveSearchForm />
       </div>
 
       {properties.some((p) => p.lat != null && p.lng != null) && (
