@@ -30,6 +30,8 @@ export interface SiteSettings {
   company_name: string;
   hero_title: string;
   hero_subtitle: string;
+  cta_text: string;
+  service_area: string;
   primary_cta: string;
   secondary_cta: string;
   about_title: string;

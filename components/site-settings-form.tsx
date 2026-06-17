@@ -16,6 +16,8 @@ function toInput(s: SiteSettings | null): SiteSettingsInput {
     company_name: s?.company_name ?? "",
     hero_title: s?.hero_title ?? "",
     hero_subtitle: s?.hero_subtitle ?? "",
+    cta_text: s?.cta_text ?? "",
+    service_area: s?.service_area ?? "",
     about_title: s?.about_title ?? "",
     about_text: s?.about_text ?? "",
     footer_text: s?.footer_text ?? "",
@@ -95,6 +97,20 @@ export default function SiteSettingsForm({
         >
           <textarea rows={2} value={form.hero_subtitle} onChange={(e) => set("hero_subtitle", e.target.value)} className="form-input" />
         </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field
+            label="Main CTA text"
+            hint="The main homepage button. Leave blank for 'Browse listings'."
+          >
+            <input value={form.cta_text} onChange={(e) => set("cta_text", e.target.value)} className="form-input" placeholder="e.g. Browse listings" />
+          </Field>
+          <Field
+            label="Service area"
+            hint="The area you serve, shown as a label above the hero headline."
+          >
+            <input value={form.service_area} onChange={(e) => set("service_area", e.target.value)} className="form-input" placeholder="e.g. Los Angeles County, California" />
+          </Field>
+        </div>
       </Section>
 
       <Section

@@ -124,6 +124,8 @@ export const siteSettingsSchema = z.object({
   company_name: z.string().min(1, "Company name is required."),
   hero_title: z.string().default(""),
   hero_subtitle: z.string().default(""),
+  cta_text: z.string().default(""),
+  service_area: z.string().default(""),
   about_title: z.string().default(""),
   about_text: z.string().default(""),
   footer_text: z.string().default(""),

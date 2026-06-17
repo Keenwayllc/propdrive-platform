@@ -32,11 +32,15 @@ export default function HomeHero({
   subtitle,
   stats,
   heroImage = "/hero/hero-banner.png",
+  ctaText = "Browse listings",
+  serviceArea = "Los Angeles County, California",
 }: {
   title: string;
   subtitle: string;
   stats?: SiteStat[];
   heroImage?: string;
+  ctaText?: string;
+  serviceArea?: string;
 }) {
   const statList = stats && stats.length ? stats : FALLBACK_STATS;
   const reduce = useReducedMotion();
@@ -88,7 +92,7 @@ export default function HomeHero({
             className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/80 px-3.5 py-1.5 text-xs font-medium text-muted backdrop-blur"
           >
             <MapPin className="h-3.5 w-3.5 text-accent" />
-            Los Angeles County, California
+            {serviceArea}
           </motion.span>
 
           <h1 className="mt-6 font-display text-5xl font-medium leading-[0.98] tracking-tight text-ink sm:text-6xl lg:text-[4.75rem]">
@@ -115,7 +119,7 @@ export default function HomeHero({
                 href="/properties"
                 className="group inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-semibold text-background transition-colors hover:bg-accent active:translate-y-px"
               >
-                Browse listings
+                {ctaText}
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Link>
             </Magnetic>

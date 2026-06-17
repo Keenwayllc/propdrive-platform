@@ -21,15 +21,6 @@ import {
 } from "@/lib/queries";
 import { DEFAULT_STATS } from "@/lib/form-schemas";
 
-const FALLBACK_TILES = [
-  { name: "Beverly Hills", slug: "beverly-hills", image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80" },
-  { name: "Malibu", slug: "malibu", image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80" },
-  { name: "Santa Monica", slug: "santa-monica", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" },
-  { name: "Bel Air", slug: "bel-air", image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80" },
-  { name: "Pacific Palisades", slug: "pacific-palisades", image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80" },
-  { name: "Calabasas", slug: "calabasas", image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80" },
-];
-
 const FALLBACK_TESTIMONIALS = [
   {
     quote:
@@ -90,14 +81,6 @@ export default async function HomePage() {
       }))
     : FALLBACK_TESTIMONIALS;
 
-  const tiles = hoodRows.length
-    ? hoodRows.slice(0, 6).map((n) => ({
-        name: n.name,
-        slug: n.slug,
-        image: n.image_url,
-      }))
-    : FALLBACK_TILES;
-
   const marqueeNames = hoodRows.length
     ? hoodRows.map((n) => n.name)
     : NEIGHBORHOODS;
@@ -119,6 +102,8 @@ export default async function HomePage() {
         subtitle={heroSubtitle}
         stats={stats}
         heroImage={heroImage}
+        ctaText={site?.cta_text || "Browse listings"}
+        serviceArea={site?.service_area || "Los Angeles County, California"}
       />
 
       {/* Kinetic neighborhood marquee */}
@@ -247,54 +232,6 @@ export default async function HomePage() {
             />
           </StaggerItem>
         </Stagger>
-      </section>
-
-      {/* ------------------------------------------------------- Neighborhoods */}
-      <section className="border-t border-line bg-background">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28">
-          <Reveal>
-            <div className="flex items-end justify-between gap-4">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-                  Where you&apos;ll live
-                </p>
-                <h2 className="mt-3 font-display text-3xl font-medium tracking-tight text-ink sm:text-4xl">
-                  Explore LA by neighborhood
-                </h2>
-              </div>
-              <Link
-                href="/neighborhoods"
-                className="hidden shrink-0 items-center gap-1.5 text-sm font-semibold text-accent hover:underline sm:inline-flex"
-              >
-                All neighborhoods
-                <ArrowUpRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </Reveal>
-
-          <Stagger className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-            {tiles.map((n) => (
-              <StaggerItem key={n.slug}>
-                <Link
-                  href={`/neighborhoods/${n.slug}`}
-                  className="group relative block aspect-[3/4] overflow-hidden rounded-2xl border border-line bg-ink"
-                >
-                  <Image
-                    src={n.image}
-                    alt={n.name}
-                    fill
-                    sizes="(max-width: 768px) 50vw, 16vw"
-                    className="object-cover opacity-80 transition-transform duration-[600ms] ease-out group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/20 to-transparent" />
-                  <span className="absolute inset-x-3 bottom-3 font-display text-sm font-medium leading-tight text-white">
-                    {n.name}
-                  </span>
-                </Link>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </div>
       </section>
 
       {/* ----------------------------------------------------- Featured listings */}
