@@ -10,6 +10,7 @@ import { createServerSupabase } from "@/lib/supabase-server";
 import { createServiceClient } from "@/lib/supabase-admin";
 import type {
   Appointment,
+  Banner,
   BrandSettings,
   Lead,
   Neighborhood,
@@ -160,6 +161,37 @@ export async function getBrandSettings(): Promise<BrandSettings | null> {
     return null;
   }
   return (data as BrandSettings | null) ?? null;
+}
+
+/** Active hero banner slides for the homepage, ordered. */
+export async function getBanners(): Promise<Banner[]> {
+  const supabase = await createServerSupabase();
+  const { data, error } = await supabase
+    .from("banners")
+    .select("*")
+    .eq("active", true)
+    .order("sort_order", { ascending: true });
+
+  if (error) {
+    console.error("[queries] getBanners", error.message);
+    return [];
+  }
+  return (data ?? []) as Banner[];
+}
+
+/** All banner slides for the dashboard manager, ordered. */
+export async function getAllBanners(): Promise<Banner[]> {
+  const supabase = await createServerSupabase();
+  const { data, error } = await supabase
+    .from("banners")
+    .select("*")
+    .order("sort_order", { ascending: true });
+
+  if (error) {
+    console.error("[queries] getAllBanners", error.message);
+    return [];
+  }
+  return (data ?? []) as Banner[];
 }
 
 /** Active testimonials for the homepage, ordered. */

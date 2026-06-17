@@ -153,6 +153,18 @@ export const siteSettingsSchema = z.object({
 });
 export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;
 
+/** A rotating hero banner slide (dashboard-managed). */
+export const bannerSchema = z.object({
+  image_url: z.string().default(""),
+  title: z.string().default(""),
+  subtitle: z.string().default(""),
+  cta_text: z.string().default(""),
+  cta_link: z.string().default("/properties"),
+  sort_order: z.coerce.number().int().default(0),
+  active: z.boolean().default(true),
+});
+export type BannerInput = z.infer<typeof bannerSchema>;
+
 /** A homepage testimonial (dashboard-managed). */
 export const testimonialSchema = z.object({
   quote: z.string().min(1, "Quote is required."),

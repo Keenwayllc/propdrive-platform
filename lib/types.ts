@@ -48,6 +48,20 @@ export interface SiteSettings {
   updated_at: string;
 }
 
+/** A rotating hero banner slide shown at the top of the homepage. */
+export interface Banner {
+  id: string;
+  image_url: string;
+  title: string;
+  subtitle: string;
+  cta_text: string;
+  cta_link: string;
+  sort_order: number;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 /** A client testimonial shown on the homepage. */
 export interface Testimonial {
   id: string;

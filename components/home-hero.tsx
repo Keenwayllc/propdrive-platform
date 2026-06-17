@@ -1,16 +1,17 @@
 "use client";
 
 /**
- * Cinematic homepage hero. Slow Ken-Burns + parallax on the banner, a
- * word-by-word masked headline reveal, count-up stats, and a scroll cue.
- * Content (title / subtitle) comes from the server (site_settings). All motion
- * respects prefers-reduced-motion via the shared primitives.
+ * Cinematic homepage hero, now a rotating slideshow. Each slide crossfades with
+ * a slow Ken Burns zoom; the headline reveals word by word and the stats count
+ * up. Slides come from the dashboard Banners section; with a single slide it
+ * behaves exactly like the original hero. Honors prefers-reduced-motion.
  */
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, MapPin } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+  AnimatePresence,
   motion,
   useReducedMotion,
   useScroll,
@@ -20,6 +21,15 @@ import { Magnetic, WordReveal, CountUp } from "@/components/motion";
 import type { SiteStat } from "@/lib/types";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+const ROTATE_MS = 6500;
+
+export interface HeroSlide {
+  image: string;
+  title: string;
+  subtitle: string;
+  ctaText: string;
+  ctaLink: string;
+}
 
 const FALLBACK_STATS: SiteStat[] = [
   { value: 127, suffix: "", label: "Homes closed" },
@@ -28,54 +38,68 @@ const FALLBACK_STATS: SiteStat[] = [
 ];
 
 export default function HomeHero({
-  title,
-  subtitle,
+  slides,
   stats,
-  heroImage = "/hero/hero-banner.png",
-  ctaText = "Browse listings",
   serviceArea = "Los Angeles County, California",
 }: {
-  title: string;
-  subtitle: string;
+  slides: HeroSlide[];
   stats?: SiteStat[];
-  heroImage?: string;
-  ctaText?: string;
   serviceArea?: string;
 }) {
+  const list = slides.length ? slides : [];
   const statList = stats && stats.length ? stats : FALLBACK_STATS;
   const reduce = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
+  const [index, setIndex] = useState(0);
 
-  // Parallax: the banner drifts up and fades slightly as you scroll past.
+  // Auto-rotate when there's more than one slide. Restarts on manual change.
+  useEffect(() => {
+    if (list.length < 2) return;
+    const t = setTimeout(() => setIndex((i) => (i + 1) % list.length), ROTATE_MS);
+    return () => clearTimeout(t);
+  }, [index, list.length]);
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
   const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
-  const bgScale = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
   const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
+  if (!list.length) return null;
+  const slide = list[Math.min(index, list.length - 1)];
+
   return (
     <section ref={ref} className="relative isolate overflow-hidden">
-      {/* Generated banner — Ken Burns intro + scroll parallax */}
+      {/* Crossfading slide images + Ken Burns */}
       <motion.div className="absolute inset-0 -z-10" style={reduce ? undefined : { y: bgY }}>
-        <motion.div
-          className="absolute inset-0"
-          style={reduce ? undefined : { scale: bgScale }}
-          initial={reduce ? false : { scale: 1.15, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.6, ease: EASE }}
-        >
-          <Image
-            src={heroImage}
-            alt="Modern luxury estate overlooking Los Angeles at golden hour"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-[60%_center]"
-          />
-        </motion.div>
+        <AnimatePresence initial={false}>
+          <motion.div
+            key={index}
+            className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.1, ease: EASE }}
+          >
+            <motion.div
+              className="absolute inset-0"
+              initial={reduce ? false : { scale: 1.12 }}
+              animate={reduce ? undefined : { scale: 1 }}
+              transition={{ duration: ROTATE_MS / 1000 + 1.5, ease: "linear" }}
+            >
+              <Image
+                src={slide.image}
+                alt={slide.title || "Featured property"}
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover object-[60%_center]"
+              />
+            </motion.div>
+          </motion.div>
+        </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/75 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
       </motion.div>
@@ -95,31 +119,33 @@ export default function HomeHero({
             {serviceArea}
           </motion.span>
 
+          {/* Keyed by index so the headline + copy re-animate per slide */}
           <h1 className="mt-6 font-display text-5xl font-medium leading-[0.98] tracking-tight text-ink sm:text-6xl lg:text-[4.75rem]">
-            <WordReveal text={title} delay={0.25} stagger={0.07} />
+            <WordReveal key={`t-${index}`} text={slide.title} delay={0.15} stagger={0.07} />
           </h1>
 
           <motion.p
+            key={`s-${index}`}
             initial={reduce ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.55 }}
+            transition={{ duration: 0.8, ease: EASE, delay: 0.45 }}
             className="mt-6 max-w-md text-lg leading-relaxed text-muted"
           >
-            {subtitle}
+            {slide.subtitle}
           </motion.p>
 
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.68 }}
+            transition={{ duration: 0.8, ease: EASE, delay: 0.58 }}
             className="mt-8 flex flex-wrap items-center gap-3"
           >
             <Magnetic strength={0.4}>
               <Link
-                href="/properties"
+                href={slide.ctaLink || "/properties"}
                 className="group inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-semibold text-background transition-colors hover:bg-accent active:translate-y-px"
               >
-                {ctaText}
+                {slide.ctaText || "Browse listings"}
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Link>
             </Magnetic>
@@ -131,10 +157,28 @@ export default function HomeHero({
             </Link>
           </motion.div>
 
+          {/* Slide dots */}
+          {list.length > 1 && (
+            <div className="mt-8 flex items-center gap-2">
+              {list.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setIndex(i)}
+                  aria-label={`Go to slide ${i + 1}`}
+                  aria-current={i === index}
+                  className={`h-2 rounded-full transition-all ${
+                    i === index ? "w-6 bg-accent" : "w-2 bg-ink/20 hover:bg-ink/40"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+
           <motion.dl
             initial={reduce ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.82 }}
+            transition={{ duration: 0.8, ease: EASE, delay: 0.72 }}
             className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-line/80 pt-6"
           >
             {statList.map((s, i) => (
@@ -152,18 +196,6 @@ export default function HomeHero({
             ))}
           </motion.dl>
         </div>
-      </motion.div>
-
-      {/* Floating listing badge over the architecture (large screens) */}
-      <motion.div
-        initial={reduce ? false : { opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, ease: EASE, delay: 1 }}
-        className="pd-float absolute bottom-10 right-8 hidden rounded-2xl border border-line bg-surface/90 p-4 shadow-[0_20px_40px_-20px_rgba(26,23,20,0.45)] backdrop-blur xl:block"
-      >
-        <p className="text-xs font-medium text-faint">Featured · Beverly Hills</p>
-        <p className="mt-0.5 font-mono text-lg font-semibold text-ink">$6,450,000</p>
-        <p className="text-xs text-muted">5 bd · 6 ba · canyon view</p>
       </motion.div>
 
       {/* Scroll cue */}

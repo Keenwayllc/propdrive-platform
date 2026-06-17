@@ -7,7 +7,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, MapPin, TrendingUp, Sparkles, Star, Quote, Handshake } from "lucide-react";
-import HomeHero from "@/components/home-hero";
+import HomeHero, { type HeroSlide } from "@/components/home-hero";
 import HomeHighlights from "@/components/home-highlights";
 import LeadForm from "@/components/lead-form";
 import PropertyCard from "@/components/property-card";
@@ -18,6 +18,7 @@ import {
   getBrandSettings,
   getTestimonials,
   getNeighborhoods,
+  getBanners,
 } from "@/lib/queries";
 import { DEFAULT_STATS } from "@/lib/form-schemas";
 
@@ -56,12 +57,13 @@ const NEIGHBORHOODS = [
 ];
 
 export default async function HomePage() {
-  const [featured, site, brand, testimonialRows, hoodRows] = await Promise.all([
+  const [featured, site, brand, testimonialRows, hoodRows, bannerRows] = await Promise.all([
     getFeaturedProperties(3),
     getSiteSettings(),
     getBrandSettings(),
     getTestimonials(),
     getNeighborhoods(),
+    getBanners(),
   ]);
   const heroTitle = site?.hero_title || "Find the home that feels like arrival.";
   const heroSubtitle =
@@ -72,6 +74,28 @@ export default async function HomePage() {
   const stat = (i: number) =>
     stats[i] ? `${stats[i].value}${stats[i].suffix}` : "";
   const heroImage = brand?.hero_image_url || "/hero/hero-banner.png";
+  const ctaText = site?.cta_text || "Browse listings";
+  const serviceArea = site?.service_area || "Los Angeles County, California";
+
+  // Hero slideshow: use the dashboard banner slides if any, else a single slide
+  // built from the site/brand settings so the hero always renders.
+  const heroSlides: HeroSlide[] = bannerRows.length
+    ? bannerRows.map((b) => ({
+        image: b.image_url || heroImage,
+        title: b.title || heroTitle,
+        subtitle: b.subtitle || heroSubtitle,
+        ctaText: b.cta_text || ctaText,
+        ctaLink: b.cta_link || "/properties",
+      }))
+    : [
+        {
+          image: heroImage,
+          title: heroTitle,
+          subtitle: heroSubtitle,
+          ctaText,
+          ctaLink: "/properties",
+        },
+      ];
 
   const testimonials = testimonialRows.length
     ? testimonialRows.map((t) => ({
@@ -97,14 +121,7 @@ export default async function HomePage() {
   return (
     <>
       {/* ----------------------------------------------------- Hero banner */}
-      <HomeHero
-        title={heroTitle}
-        subtitle={heroSubtitle}
-        stats={stats}
-        heroImage={heroImage}
-        ctaText={site?.cta_text || "Browse listings"}
-        serviceArea={site?.service_area || "Los Angeles County, California"}
-      />
+      <HomeHero slides={heroSlides} stats={stats} serviceArea={serviceArea} />
 
       {/* Kinetic neighborhood marquee */}
       <div className="border-y border-line bg-surface/60 py-4">

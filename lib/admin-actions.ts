@@ -21,7 +21,9 @@ import {
   testimonialSchema,
   neighborhoodSchema,
   postSchema,
+  bannerSchema,
   type PropertyInput,
+  type BannerInput,
   type SiteSettingsInput,
   type BrandSettingsInput,
   type ProfileUpdateInput,
@@ -445,6 +447,67 @@ export async function setAppointmentStatus(
 }
 
 /* --------------------------------------------------------- Testimonials */
+
+/* ----------------------------------------------------------------- Banners */
+
+function revalidateBanners() {
+  revalidatePath("/");
+  revalidatePath("/dashboard/banners");
+}
+
+export async function createBanner(input: BannerInput): Promise<MutationResult> {
+  const parsed = bannerSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Please check the fields." };
+  }
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { data, error } = await supabase
+    .from("banners")
+    .insert(parsed.data)
+    .select("id")
+    .single();
+  if (error) {
+    console.error("[admin] createBanner", error.message);
+    return { ok: false, error: "Could not add the banner." };
+  }
+  revalidateBanners();
+  return { ok: true, id: data.id as string };
+}
+
+export async function updateBanner(
+  id: string,
+  input: BannerInput
+): Promise<MutationResult> {
+  const parsed = bannerSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Please check the fields." };
+  }
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { error } = await supabase.from("banners").update(parsed.data).eq("id", id);
+  if (error) {
+    console.error("[admin] updateBanner", error.message);
+    return { ok: false, error: "Could not update the banner." };
+  }
+  revalidateBanners();
+  return { ok: true, id };
+}
+
+export async function deleteBanner(id: string): Promise<MutationResult> {
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { error } = await supabase.from("banners").delete().eq("id", id);
+  if (error) {
+    console.error("[admin] deleteBanner", error.message);
+    return { ok: false, error: "Could not delete the banner." };
+  }
+  revalidateBanners();
+  return { ok: true };
+}
 
 function revalidateTestimonials() {
   revalidatePath("/");
