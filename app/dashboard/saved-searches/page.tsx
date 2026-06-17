@@ -2,6 +2,8 @@
  * Saved searches — buyers who asked to be alerted when new matching listings
  * appear. Read-only list (a warm lead list the owner can follow up on).
  */
+import Link from "next/link";
+import { Info } from "lucide-react";
 import { getSavedSearches } from "@/lib/queries";
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -41,6 +43,20 @@ export default async function SavedSearchesPage() {
           Buyers who asked to be emailed when a new matching listing is added.
           They are alerted automatically, and this is a warm list you can follow
           up on directly.
+        </p>
+      </div>
+
+      <div className="flex items-start gap-3 rounded-xl border border-accent/20 bg-accent-soft/40 p-4 text-sm text-ink">
+        <Info className="mt-0.5 h-5 w-5 shrink-0 text-accent-strong" />
+        <p className="leading-relaxed">
+          This page is for buyers who saved a <span className="font-medium">search</span>{" "}
+          (ongoing alerts). When someone clicks{" "}
+          <span className="font-medium">Save this home</span> on a specific
+          listing, that is a hotter, direct lead, so it appears under{" "}
+          <Link href="/dashboard/leads" className="font-medium text-accent hover:underline">
+            Leads
+          </Link>{" "}
+          instead, tagged with the property they saved.
         </p>
       </div>
 
