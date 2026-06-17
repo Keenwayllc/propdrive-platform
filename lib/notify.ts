@@ -31,6 +31,37 @@ async function recipient(): Promise<string | null> {
   return (data?.contact_email as string | null) ?? null;
 }
 
+/**
+ * Branded email header: the owner's uploaded logo when set, otherwise their
+ * company name. Keeps every notification on-brand for the agent.
+ */
+async function brandHeader(): Promise<string> {
+  let logo: string | null = null;
+  let company = "PropDrive";
+  const admin = createServiceClient();
+  if (admin) {
+    const { data: b } = await admin
+      .from("brand_settings")
+      .select("logo_url, company_name")
+      .limit(1)
+      .maybeSingle();
+    logo = (b?.logo_url as string | null) ?? null;
+    if (b?.company_name) company = b.company_name as string;
+    if (company === "PropDrive") {
+      const { data: s } = await admin
+        .from("site_settings")
+        .select("company_name")
+        .limit(1)
+        .maybeSingle();
+      if (s?.company_name) company = s.company_name as string;
+    }
+  }
+  const inner = logo
+    ? `<img src="${esc(logo)}" alt="${esc(company)}" style="height:40px;max-width:220px;object-fit:contain" />`
+    : `<span style="font-size:20px;font-weight:600;color:#1a1714">${esc(company)}</span>`;
+  return `<div style="padding:0 0 16px;margin:0 0 16px;border-bottom:1px solid #e8e1d6">${inner}</div>`;
+}
+
 async function send(subject: string, rows: Array<[string, string | null]>) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return; // not configured — silent no-op
@@ -52,8 +83,10 @@ async function send(subject: string, rows: Array<[string, string | null]>) {
       )
       .join("");
 
+    const header = await brandHeader();
     const html = `
       <div style="font-family:system-ui,sans-serif;max-width:520px">
+        ${header}
         <h2 style="color:#1a1714;margin:0 0 4px">${esc(subject)}</h2>
         <p style="color:#75695b;margin:0 0 16px">Sign in to your dashboard to follow up.</p>
         <table style="border-collapse:collapse;font-size:14px">${body}</table>
@@ -151,8 +184,10 @@ export async function sendListingAlert(
         ? "A new listing matches your search"
         : `${listings.length} new listings match your search`;
 
+    const header = await brandHeader();
     const html = `
       <div style="font-family:system-ui,sans-serif;max-width:520px">
+        ${header}
         <h2 style="color:#1a1714;margin:0 0 4px">${esc(subject)}</h2>
         <p style="color:#75695b;margin:0 0 16px">Here's what just came on the market for you.</p>
         <table style="border-collapse:collapse;width:100%;font-size:14px">${rows}</table>

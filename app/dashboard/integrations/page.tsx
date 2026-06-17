@@ -65,7 +65,7 @@ function buildIntegrations(openaiConfigured: boolean): Integration[] {
     docsLabel: "Resend API keys",
     envVars: ["RESEND_API_KEY", "NOTIFY_TO", "NOTIFY_FROM"],
     note:
-      "For a quick test, add RESEND_API_KEY and set NOTIFY_TO to the email you signed up to Resend with (the shared test sender only delivers to the account owner). To send from your own address in production, verify your domain in Resend and set NOTIFY_FROM. NOTIFY_FROM is optional.",
+      "Your logo appears on these emails automatically once you upload it under Branding. For a quick test, add RESEND_API_KEY and set NOTIFY_TO to the email you signed up to Resend with (the shared test sender only delivers to the account owner). To send from your own address in production (like alerts@yourdomain.com), you verify your domain in Resend and set NOTIFY_FROM. Not sure how? We can set up branded email on your domain for you, just reach out.",
   },
   {
     icon: MessageSquare,
