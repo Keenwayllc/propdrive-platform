@@ -2,10 +2,13 @@
  * Banners manager — the rotating hero slides shown at the top of the homepage.
  */
 import BannersManager from "@/components/banners-manager";
-import { getAllBanners } from "@/lib/queries";
+import { getAllBanners, getOpenAiKeyStatus } from "@/lib/queries";
 
 export default async function BannersPage() {
-  const banners = await getAllBanners();
+  const [banners, ai] = await Promise.all([
+    getAllBanners(),
+    getOpenAiKeyStatus(),
+  ]);
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -16,7 +19,7 @@ export default async function BannersPage() {
           immediately.
         </p>
       </div>
-      <BannersManager initial={banners} />
+      <BannersManager initial={banners} aiConnected={ai.source !== null} />
     </div>
   );
 }

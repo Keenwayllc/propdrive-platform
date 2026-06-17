@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2, Plus, Eraser, RotateCcw, Image as ImageIcon } from "lucide-react";
 import ImageUpload from "@/components/image-upload";
+import AiFieldAssist from "@/components/ai-field-assist";
 import { createBanner, updateBanner, deleteBanner } from "@/lib/admin-actions";
 import type { Banner } from "@/lib/types";
 
@@ -22,7 +23,13 @@ const LINK_OPTIONS: Array<{ label: string; value: string }> = [
   { label: "About", value: "/about" },
 ];
 
-export default function BannersManager({ initial }: { initial: Banner[] }) {
+export default function BannersManager({
+  initial,
+  aiConnected = false,
+}: {
+  initial: Banner[];
+  aiConnected?: boolean;
+}) {
   const router = useRouter();
   const refresh = () => router.refresh();
 
@@ -43,9 +50,9 @@ export default function BannersManager({ initial }: { initial: Banner[] }) {
         </p>
       )}
       {initial.map((b) => (
-        <Row key={b.id} item={b} onChanged={refresh} />
+        <Row key={b.id} item={b} onChanged={refresh} aiConnected={aiConnected} />
       ))}
-      <NewRow nextOrder={initial.length + 1} onChanged={refresh} />
+      <NewRow nextOrder={initial.length + 1} onChanged={refresh} aiConnected={aiConnected} />
     </div>
   );
 }
@@ -58,7 +65,15 @@ function Card({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Row({ item, onChanged }: { item: Banner; onChanged: () => void }) {
+function Row({
+  item,
+  onChanged,
+  aiConnected,
+}: {
+  item: Banner;
+  onChanged: () => void;
+  aiConnected: boolean;
+}) {
   const [image, setImage] = useState(item.image_url);
   const [title, setTitle] = useState(item.title);
   const [subtitle, setSubtitle] = useState(item.subtitle);
@@ -114,6 +129,7 @@ function Row({ item, onChanged }: { item: Banner; onChanged: () => void }) {
   return (
     <Card>
       <Fields
+        aiConnected={aiConnected}
         image={image}
         setImage={setImage}
         title={title}
@@ -147,7 +163,15 @@ function Row({ item, onChanged }: { item: Banner; onChanged: () => void }) {
   );
 }
 
-function NewRow({ nextOrder, onChanged }: { nextOrder: number; onChanged: () => void }) {
+function NewRow({
+  nextOrder,
+  onChanged,
+  aiConnected,
+}: {
+  nextOrder: number;
+  onChanged: () => void;
+  aiConnected: boolean;
+}) {
   const [image, setImage] = useState("");
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
@@ -192,6 +216,7 @@ function NewRow({ nextOrder, onChanged }: { nextOrder: number; onChanged: () => 
     <Card>
       <p className="text-sm font-semibold uppercase tracking-[0.14em] text-faint">Add a banner slide</p>
       <Fields
+        aiConnected={aiConnected}
         image={image}
         setImage={setImage}
         title={title}
@@ -218,8 +243,57 @@ function NewRow({ nextOrder, onChanged }: { nextOrder: number; onChanged: () => 
   );
 }
 
+/** A labeled text input with an optional "Write with AI" button and a quick
+ *  per-field eraser (shown only when there's text to clear). */
+function TextField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  aiConnected,
+  aiInstruction,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  aiConnected?: boolean;
+  aiInstruction?: string;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1 flex items-center justify-between gap-2">
+        <span className="text-sm font-medium text-ink">{label}</span>
+        <span className="flex items-center gap-1.5">
+          {aiInstruction && (
+            <AiFieldAssist
+              aiConnected={Boolean(aiConnected)}
+              instruction={aiInstruction}
+              getCurrent={() => value}
+              onResult={onChange}
+            />
+          )}
+          {value && (
+            <button
+              type="button"
+              onClick={() => onChange("")}
+              title={`Clear ${label.toLowerCase()}`}
+              aria-label={`Clear ${label.toLowerCase()}`}
+              className="inline-flex items-center justify-center rounded-md p-1 text-faint transition-colors hover:bg-red-50 hover:text-red-600"
+            >
+              <Eraser className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </span>
+      </span>
+      <input value={value} onChange={(e) => onChange(e.target.value)} className="form-input" placeholder={placeholder} />
+    </label>
+  );
+}
+
 /** Shared field set for a banner slide. */
 function Fields(p: {
+  aiConnected: boolean;
   image: string;
   setImage: (v: string) => void;
   title: string;
@@ -240,18 +314,28 @@ function Fields(p: {
         onChange={(urls) => p.setImage(urls[urls.length - 1] ?? "")}
       />
       <div className="grid gap-3 sm:grid-cols-2">
-        <label className="block">
-          <span className="mb-1 block text-sm font-medium text-ink">Title</span>
-          <input value={p.title} onChange={(e) => p.setTitle(e.target.value)} className="form-input" placeholder="e.g. Find your place in LA" />
-        </label>
-        <label className="block">
-          <span className="mb-1 block text-sm font-medium text-ink">Subtitle</span>
-          <input value={p.subtitle} onChange={(e) => p.setSubtitle(e.target.value)} className="form-input" placeholder="A short supporting line" />
-        </label>
-        <label className="block">
-          <span className="mb-1 block text-sm font-medium text-ink">Button text</span>
-          <input value={p.ctaText} onChange={(e) => p.setCtaText(e.target.value)} className="form-input" placeholder="e.g. Browse listings" />
-        </label>
+        <TextField
+          label="Title"
+          value={p.title}
+          onChange={p.setTitle}
+          placeholder="e.g. Find your place in LA"
+          aiConnected={p.aiConnected}
+          aiInstruction="a short, punchy homepage banner headline for a real estate site (under 8 words, no period needed)"
+        />
+        <TextField
+          label="Subtitle"
+          value={p.subtitle}
+          onChange={p.setSubtitle}
+          placeholder="A short supporting line"
+          aiConnected={p.aiConnected}
+          aiInstruction="one short supporting sentence under a real estate banner headline"
+        />
+        <TextField
+          label="Button text"
+          value={p.ctaText}
+          onChange={p.setCtaText}
+          placeholder="e.g. Browse listings"
+        />
         <label className="block">
           <span className="mb-1 block text-sm font-medium text-ink">Button link</span>
           <select
