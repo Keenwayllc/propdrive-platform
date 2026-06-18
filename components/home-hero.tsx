@@ -124,7 +124,7 @@ export default function HomeHero({
           </motion.span>
 
           {/* Keyed by index so the headline + copy re-animate per slide */}
-          <h1 className="mt-6 font-display text-5xl font-medium leading-[0.98] tracking-tight text-ink sm:text-6xl lg:text-[4.75rem]">
+          <h1 className="mt-6 font-display text-5xl font-medium leading-[1.1] tracking-tight text-ink sm:text-6xl lg:text-[4.75rem]">
             <WordReveal key={`t-${index}`} text={slide.title} delay={0.15} stagger={0.07} />
           </h1>
 
@@ -153,6 +153,14 @@ export default function HomeHero({
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Link>
             </Magnetic>
+            {/* Secondary CTA — always-available home valuation. Sits beside the
+               primary in a wrapping, gapped row so the two never overlap. */}
+            <Link
+              href="/home-valuation"
+              className="inline-flex items-center rounded-full border border-line bg-surface/70 px-6 py-3.5 text-sm font-semibold text-ink backdrop-blur transition-colors hover:bg-surface active:translate-y-px"
+            >
+              What&apos;s my home worth?
+            </Link>
           </motion.div>
 
           {/* Slide dots */}

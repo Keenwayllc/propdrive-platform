@@ -252,12 +252,13 @@ export function WordReveal({
         <span
           key={`${word}-${i}`}
           aria-hidden
-          className="inline-block overflow-hidden align-bottom"
-          style={{ clipPath: "inset(0 0 -0.15em 0)" }}
+          // pb reserves room so descenders (g, y, p, q, j) are never clipped
+          // once the word settles; -mb keeps line spacing unchanged.
+          className="inline-block overflow-hidden align-bottom pb-[0.18em] -mb-[0.18em]"
         >
           <motion.span
             className="inline-block"
-            initial={{ y: "110%" }}
+            initial={{ y: "120%" }}
             animate={{ y: 0 }}
             transition={{ duration: 0.85, ease: EASE_OUT, delay: delay + i * stagger }}
           >

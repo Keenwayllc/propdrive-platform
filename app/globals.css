@@ -73,6 +73,32 @@ body {
   font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
 }
 
+/* ----------------------------------------------------------------------------
+ * Descender-safe display headings (GLOBAL)
+ *
+ * Large serif headlines (Fraunces) have deep descenders (g, y, p, q, j) and
+ * swash tails that drop well below the baseline. A line-height under ~1.1, an
+ * ancestor `overflow: hidden`, or a fixed height slices them off — e.g. the "g"
+ * in "selling" on the hero banner.
+ *
+ * These rules are UNLAYERED on purpose: unlayered declarations win over
+ * Tailwind's layered utilities, so this safe line-height beats the per-size
+ * line-heights baked into `text-5xl`/`text-6xl` at ANY size. Values are in `em`
+ * so they scale with the font automatically — future larger titles stay safe.
+ *
+ * Applies automatically to every heading using the display face, plus the
+ * opt-in `.display-heading` utility for non-heading display text and animation
+ * wrappers. Do not add one-off bottom padding to individual headlines. */
+h1.font-display,
+h2.font-display,
+h3.font-display,
+h4.font-display,
+.display-heading {
+  line-height: 1.12;      /* safe leading: never below ~1.1 */
+  padding-bottom: 0.16em; /* scales with size; room for descenders / tails */
+  overflow: visible;      /* never clip glyphs that drop below the line box */
+}
+
 /* Reusable form control — cool-tinted, blue focus ring. */
 @layer components {
   .form-input {
