@@ -29,6 +29,9 @@ export interface HeroSlide {
   subtitle: string;
   ctaText: string;
   ctaLink: string;
+  // Optional second button. Empty text => only the primary CTA shows.
+  secondaryCtaText?: string;
+  secondaryCtaLink?: string;
 }
 
 const FALLBACK_STATS: SiteStat[] = [
@@ -73,6 +76,11 @@ export default function HomeHero({
   const safeHref = /^(\/|https?:\/\/)/i.test(slide.ctaLink || "")
     ? slide.ctaLink
     : "/properties";
+  // The second button is optional per slide: only shown when it has text.
+  const secondaryText = slide.secondaryCtaText?.trim();
+  const safeSecondaryHref = /^(\/|https?:\/\/)/i.test(slide.secondaryCtaLink || "")
+    ? slide.secondaryCtaLink!
+    : "/home-valuation";
 
   return (
     <section ref={ref} className="relative isolate overflow-hidden">
@@ -153,14 +161,17 @@ export default function HomeHero({
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Link>
             </Magnetic>
-            {/* Secondary CTA — always-available home valuation. Sits beside the
-               primary in a wrapping, gapped row so the two never overlap. */}
-            <Link
-              href="/home-valuation"
-              className="inline-flex items-center rounded-full border border-line bg-surface/70 px-6 py-3.5 text-sm font-semibold text-ink backdrop-blur transition-colors hover:bg-surface active:translate-y-px"
-            >
-              What&apos;s my home worth?
-            </Link>
+            {/* Optional secondary CTA — only when this slide defines one.
+               Sits beside the primary in a wrapping, gapped row so the two
+               never overlap; wraps onto its own line on mobile. */}
+            {secondaryText && (
+              <Link
+                href={safeSecondaryHref}
+                className="inline-flex items-center rounded-full border border-line bg-surface/70 px-6 py-3.5 text-sm font-semibold text-ink backdrop-blur transition-colors hover:bg-surface active:translate-y-px"
+              >
+                {secondaryText}
+              </Link>
+            )}
           </motion.div>
 
           {/* Slide dots */}

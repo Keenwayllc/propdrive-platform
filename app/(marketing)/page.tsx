@@ -86,6 +86,9 @@ export default async function HomePage() {
         subtitle: b.subtitle || heroSubtitle,
         ctaText: b.cta_text || ctaText,
         ctaLink: b.cta_link || "/properties",
+        // Empty => single button on this slide.
+        secondaryCtaText: b.secondary_cta_text || "",
+        secondaryCtaLink: b.secondary_cta_link || "/home-valuation",
       }))
     : [
         {
@@ -94,6 +97,9 @@ export default async function HomePage() {
           subtitle: heroSubtitle,
           ctaText,
           ctaLink: "/properties",
+          // A fresh install (no banners yet) shows both buttons by default.
+          secondaryCtaText: "What's my home worth?",
+          secondaryCtaLink: "/home-valuation",
         },
       ];
 

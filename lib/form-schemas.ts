@@ -166,6 +166,14 @@ export const bannerSchema = z.object({
     .refine((v) => v === "" || /^\//.test(v) || /^https?:\/\//i.test(v), {
       message: "Link must be a relative path (/...) or an http(s) URL.",
     }),
+  // Optional second button. Empty text => the slide shows a single CTA.
+  secondary_cta_text: z.string().default(""),
+  secondary_cta_link: z
+    .string()
+    .default("/home-valuation")
+    .refine((v) => v === "" || /^\//.test(v) || /^https?:\/\//i.test(v), {
+      message: "Link must be a relative path (/...) or an http(s) URL.",
+    }),
   sort_order: z.coerce.number().int().default(0),
   active: z.boolean().default(true),
 });

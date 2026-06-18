@@ -56,6 +56,8 @@ export interface Banner {
   subtitle: string;
   cta_text: string;
   cta_link: string;
+  secondary_cta_text: string;
+  secondary_cta_link: string;
   sort_order: number;
   active: boolean;
   created_at: string;

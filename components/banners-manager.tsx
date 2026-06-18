@@ -79,6 +79,8 @@ function Row({
   const [subtitle, setSubtitle] = useState(item.subtitle);
   const [ctaText, setCtaText] = useState(item.cta_text);
   const [ctaLink, setCtaLink] = useState(item.cta_link);
+  const [secondaryText, setSecondaryText] = useState(item.secondary_cta_text);
+  const [secondaryLink, setSecondaryLink] = useState(item.secondary_cta_link);
   const [active, setActive] = useState(item.active);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -93,6 +95,8 @@ function Row({
       subtitle,
       cta_text: ctaText,
       cta_link: ctaLink,
+      secondary_cta_text: secondaryText,
+      secondary_cta_link: secondaryLink,
       sort_order: item.sort_order,
       active,
     });
@@ -108,6 +112,8 @@ function Row({
     setSubtitle(item.subtitle);
     setCtaText(item.cta_text);
     setCtaLink(item.cta_link);
+    setSecondaryText(item.secondary_cta_text);
+    setSecondaryLink(item.secondary_cta_link);
     setActive(item.active);
     setMsg(null);
     setErr(false);
@@ -140,6 +146,10 @@ function Row({
         setCtaText={setCtaText}
         ctaLink={ctaLink}
         setCtaLink={setCtaLink}
+        secondaryText={secondaryText}
+        setSecondaryText={setSecondaryText}
+        secondaryLink={secondaryLink}
+        setSecondaryLink={setSecondaryLink}
       />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <label className="flex items-center gap-2 text-sm text-muted">
@@ -177,6 +187,8 @@ function NewRow({
   const [subtitle, setSubtitle] = useState("");
   const [ctaText, setCtaText] = useState("");
   const [ctaLink, setCtaLink] = useState("/properties");
+  const [secondaryText, setSecondaryText] = useState("");
+  const [secondaryLink, setSecondaryLink] = useState("/home-valuation");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -189,6 +201,8 @@ function NewRow({
       subtitle,
       cta_text: ctaText,
       cta_link: ctaLink || "/properties",
+      secondary_cta_text: secondaryText,
+      secondary_cta_link: secondaryLink || "/home-valuation",
       sort_order: nextOrder,
       active: true,
     });
@@ -207,10 +221,12 @@ function NewRow({
     setSubtitle("");
     setCtaText("");
     setCtaLink("/properties");
+    setSecondaryText("");
+    setSecondaryLink("/home-valuation");
     setMsg(null);
   }
 
-  const hasInput = Boolean(image || title || subtitle || ctaText);
+  const hasInput = Boolean(image || title || subtitle || ctaText || secondaryText);
 
   return (
     <Card>
@@ -227,6 +243,10 @@ function NewRow({
         setCtaText={setCtaText}
         ctaLink={ctaLink}
         setCtaLink={setCtaLink}
+        secondaryText={secondaryText}
+        setSecondaryText={setSecondaryText}
+        secondaryLink={secondaryLink}
+        setSecondaryLink={setSecondaryLink}
       />
       <div className="flex items-center justify-end gap-3">
         {msg && <span className="text-sm text-red-600">{msg}</span>}
@@ -304,6 +324,10 @@ function Fields(p: {
   setCtaText: (v: string) => void;
   ctaLink: string;
   setCtaLink: (v: string) => void;
+  secondaryText: string;
+  setSecondaryText: (v: string) => void;
+  secondaryLink: string;
+  setSecondaryLink: (v: string) => void;
 }) {
   return (
     <>
@@ -350,6 +374,37 @@ function Fields(p: {
             ))}
           </select>
         </label>
+      </div>
+
+      {/* Optional second button — leave the text empty to show just one. */}
+      <div className="rounded-2xl border border-dashed border-line bg-surface/50 p-4">
+        <p className="text-sm font-medium text-ink">Second button (optional)</p>
+        <p className="mt-0.5 text-xs text-muted">
+          Add a second call-to-action beside the first. Leave the text empty to
+          show just one button on this slide.
+        </p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <TextField
+            label="Second button text"
+            value={p.secondaryText}
+            onChange={p.setSecondaryText}
+            placeholder="e.g. What's my home worth?"
+          />
+          <label className="block">
+            <span className="mb-1 block text-sm font-medium text-ink">Second button link</span>
+            <select
+              value={LINK_OPTIONS.some((o) => o.value === p.secondaryLink) ? p.secondaryLink : "/home-valuation"}
+              onChange={(e) => p.setSecondaryLink(e.target.value)}
+              className="form-input"
+            >
+              {LINK_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
       </div>
     </>
   );
