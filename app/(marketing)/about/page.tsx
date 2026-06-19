@@ -84,8 +84,7 @@ export default async function AboutPage() {
         className="absolute inset-0 -z-10"
         style={{
           background:
-            // Top wash keeps the transparent nav links legible regardless of the photo.
-            "linear-gradient(180deg, rgba(0,0,0,0.6) 0px, rgba(0,0,0,0) 150px), linear-gradient(90deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.58) 42%, rgba(0,0,0,0.25) 100%), linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 100%)",
+            "linear-gradient(90deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.58) 42%, rgba(0,0,0,0.25) 100%), linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 100%)",
         }}
       />
 
