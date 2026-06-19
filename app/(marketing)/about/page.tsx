@@ -55,6 +55,13 @@ export default async function AboutPage() {
       ? site.about_text.split(/\n{2,}/).filter(Boolean)
       : DEFAULT_BIO;
 
+  // CTA copy is owner-editable (Website Editor); blank falls back to agent-aware defaults.
+  const ctaTitle = site?.about_cta_title?.trim() || "Ready to make your move?";
+  const ctaText =
+    site?.about_cta_text?.trim() ||
+    `Connect with ${agentName} for a personal, no-pressure conversation about buying or selling in ${area}.`;
+  const ctaButton = site?.about_cta_button?.trim() || "Start a conversation";
+
   return (
     <section className="relative isolate min-h-screen w-full overflow-hidden text-white">
       {/* Full-section background image (the same headshot used on the homepage). */}
@@ -148,18 +155,17 @@ export default async function AboutPage() {
           >
             <div>
               <h2 className="font-display text-2xl font-medium tracking-tight text-white sm:text-3xl">
-                Ready to make your move?
+                {ctaTitle}
               </h2>
               <p className="mt-1.5 max-w-md text-sm leading-relaxed text-white/80">
-                Connect with {agentName} for a personal, no-pressure conversation
-                about buying or selling in {area}.
+                {ctaText}
               </p>
             </div>
             <Link
               href="/contact"
               className="shrink-0 rounded-full bg-white px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-white/90 active:translate-y-px"
             >
-              Start a conversation
+              {ctaButton}
             </Link>
           </div>
         </Reveal>

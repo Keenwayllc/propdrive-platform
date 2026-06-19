@@ -21,6 +21,9 @@ function toInput(s: SiteSettings | null): SiteSettingsInput {
     service_area: s?.service_area ?? "",
     about_title: s?.about_title ?? "",
     about_text: s?.about_text ?? "",
+    about_cta_title: s?.about_cta_title ?? "",
+    about_cta_text: s?.about_cta_text ?? "",
+    about_cta_button: s?.about_cta_button ?? "",
     footer_text: s?.footer_text ?? "",
     contact_phone: s?.contact_phone ?? "",
     contact_email: s?.contact_email ?? "",
@@ -187,6 +190,39 @@ export default function SiteSettingsForm({
           }
         >
           <textarea rows={4} value={form.about_text} onChange={(e) => set("about_text", e.target.value)} className="form-input" />
+        </Field>
+      </Section>
+
+      <Section
+        title="About page CTA"
+        description="The call-to-action card at the bottom of your About page. Leave a field blank to use the default."
+      >
+        <Field
+          label="CTA heading"
+          hint="The bold line on the card. Default: 'Ready to make your move?'"
+        >
+          <input value={form.about_cta_title} onChange={(e) => set("about_cta_title", e.target.value)} className="form-input" placeholder="Ready to make your move?" />
+        </Field>
+        <Field
+          label="CTA text"
+          hint="The supporting sentence under the heading. Default mentions your agent name and service area."
+          action={
+            <AiFieldAssist
+              aiConnected={aiConnected}
+              instruction="one warm, low-pressure call-to-action sentence inviting a visitor to reach out to a real estate agent (one sentence)"
+              getCurrent={() => form.about_cta_text}
+              getContext={brandContext}
+              onResult={(t) => set("about_cta_text", t)}
+            />
+          }
+        >
+          <textarea rows={2} value={form.about_cta_text} onChange={(e) => set("about_cta_text", e.target.value)} className="form-input" placeholder="Connect with us for a personal, no-pressure conversation about buying or selling." />
+        </Field>
+        <Field
+          label="Button text"
+          hint="The button label. It links to your contact page. Default: 'Start a conversation'."
+        >
+          <input value={form.about_cta_button} onChange={(e) => set("about_cta_button", e.target.value)} className="form-input" placeholder="Start a conversation" />
         </Field>
       </Section>
 

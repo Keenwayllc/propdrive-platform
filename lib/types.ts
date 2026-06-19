@@ -36,6 +36,9 @@ export interface SiteSettings {
   secondary_cta: string;
   about_title: string;
   about_text: string;
+  about_cta_title: string;
+  about_cta_text: string;
+  about_cta_button: string;
   buyer_text: string;
   seller_text: string;
   footer_text: string;
