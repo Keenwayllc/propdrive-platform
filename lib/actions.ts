@@ -10,11 +10,13 @@ import { createServerSupabase } from "@/lib/supabase-server";
 import { notifyNewLead, notifyNewAppointment } from "@/lib/notify";
 import {
   leadFormSchema,
+  mortgageLeadSchema,
   homeValuationSchema,
   scheduleShowingSchema,
   savedSearchSchema,
   savePropertySchema,
   type LeadFormValues,
+  type MortgageLeadValues,
   type HomeValuationValues,
   type ScheduleShowingValues,
   type SavedSearchInput,
@@ -25,6 +27,12 @@ export interface ActionResult {
   ok: boolean;
   error?: string;
 }
+
+const usd = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 0,
+});
 
 /** Turn empty strings into null so the DB stores clean values. */
 function nullify(value: string | undefined | null): string | null {
@@ -61,6 +69,54 @@ export async function submitLead(values: LeadFormValues): Promise<ActionResult> 
     lead_type: v.lead_type,
     message: v.message,
     property_interest: v.property_interest,
+  });
+  return { ok: true };
+}
+
+/**
+ * Mortgage-calculator enquiry — stored as a buyer lead. The live calculator
+ * snapshot (price / down payment / monthly estimate) is folded into the lead's
+ * budget, property_interest and message so the agent has full context.
+ */
+export async function submitMortgageLead(
+  values: MortgageLeadValues
+): Promise<ActionResult> {
+  const parsed = mortgageLeadSchema.safeParse(values);
+  if (!parsed.success) return { ok: false, error: "Please check the form and try again." };
+  const v = parsed.data;
+
+  const downPct =
+    v.home_price > 0 ? Math.round((v.down_payment / v.home_price) * 100) : 0;
+  const interest = `Mortgage estimate ~${usd.format(v.estimated_monthly)}/mo`;
+  const message =
+    `Mortgage calculator enquiry.\n` +
+    `Home price: ${usd.format(v.home_price)}\n` +
+    `Down payment: ${usd.format(v.down_payment)} (${downPct}%)\n` +
+    `Estimated monthly payment: ${usd.format(v.estimated_monthly)}`;
+
+  const supabase = await createServerSupabase();
+  const { error } = await supabase.from("leads").insert({
+    full_name: v.full_name,
+    email: v.email,
+    phone: nullify(v.phone),
+    lead_type: "buyer",
+    budget: usd.format(v.home_price),
+    property_interest: interest,
+    message,
+    preferred_contact: "email",
+  });
+
+  if (error) {
+    console.error("[actions] submitMortgageLead", error.message);
+    return { ok: false, error: "Something went wrong. Please try again." };
+  }
+  await notifyNewLead({
+    full_name: v.full_name,
+    email: v.email,
+    phone: v.phone,
+    lead_type: "buyer",
+    message,
+    property_interest: interest,
   });
   return { ok: true };
 }

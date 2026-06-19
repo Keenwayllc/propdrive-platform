@@ -31,6 +31,21 @@ export const leadFormSchema = z.object({
 });
 export type LeadFormValues = z.infer<typeof leadFormSchema>;
 
+/**
+ * Mortgage-calculator lead capture. The numeric fields are the live calculator
+ * snapshot (computed client-side); they're folded into a buyer lead so the agent
+ * sees the price range and estimate the visitor was looking at.
+ */
+export const mortgageLeadSchema = z.object({
+  full_name: z.string().min(2, "Please enter your full name."),
+  email: z.string().email("Please enter a valid email address."),
+  phone: requiredPhone.optional().or(z.literal("")),
+  home_price: z.number().nonnegative(),
+  down_payment: z.number().nonnegative(),
+  estimated_monthly: z.number().nonnegative(),
+});
+export type MortgageLeadValues = z.infer<typeof mortgageLeadSchema>;
+
 /** Schedule-a-showing form. */
 export const scheduleShowingSchema = z.object({
   lead_name: z.string().min(2, "Please enter your name."),
