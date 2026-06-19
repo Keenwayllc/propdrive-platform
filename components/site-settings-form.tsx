@@ -62,6 +62,14 @@ export default function SiteSettingsForm({
     setStatus("idle");
   }
 
+  function setStat(index: number, patch: Partial<SiteSettingsInput["stats"][number]>) {
+    setForm((prev) => ({
+      ...prev,
+      stats: prev.stats.map((s, i) => (i === index ? { ...s, ...patch } : s)),
+    }));
+    setStatus("idle");
+  }
+
   // Grounding context for the AI so generated copy matches the business.
   function brandContext(): string {
     const bits = [
@@ -180,6 +188,50 @@ export default function SiteSettingsForm({
         >
           <textarea rows={4} value={form.about_text} onChange={(e) => set("about_text", e.target.value)} className="form-input" />
         </Field>
+      </Section>
+
+      <Section
+        title="Highlight stats"
+        description="The three numbers shown on your homepage and About page. Use the value plus an optional suffix like % or +. For example: 127 / Homes closed, 12 / Years in LA, 4.97 / Client rating."
+      >
+        <div className="space-y-4">
+          {form.stats.map((stat, i) => (
+            <div key={i} className="grid gap-3 sm:grid-cols-[6.5rem_5rem_1fr]">
+              <label className="block">
+                <span className="mb-1.5 block text-xs font-medium text-faint">Value</span>
+                <input
+                  type="number"
+                  step="any"
+                  value={stat.value}
+                  onChange={(e) =>
+                    setStat(i, { value: e.target.value === "" ? 0 : Number(e.target.value) })
+                  }
+                  className="form-input"
+                  placeholder="127"
+                />
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-xs font-medium text-faint">Suffix</span>
+                <input
+                  value={stat.suffix}
+                  maxLength={8}
+                  onChange={(e) => setStat(i, { suffix: e.target.value })}
+                  className="form-input"
+                  placeholder="% / +"
+                />
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-xs font-medium text-faint">Label</span>
+                <input
+                  value={stat.label}
+                  onChange={(e) => setStat(i, { label: e.target.value })}
+                  className="form-input"
+                  placeholder="Homes closed"
+                />
+              </label>
+            </div>
+          ))}
+        </div>
       </Section>
 
       <Section
