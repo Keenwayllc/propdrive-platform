@@ -63,7 +63,7 @@ export default async function AboutPage() {
   const ctaButton = site?.about_cta_button?.trim() || "Start a conversation";
 
   return (
-    <section className="relative isolate min-h-screen w-full overflow-hidden text-white">
+    <section className="relative isolate -mt-[68px] min-h-screen w-full overflow-hidden text-white">
       {/* Full-section background image (the same headshot used on the homepage). */}
       {photo ? (
         // White-label: arbitrary Supabase-hosted URL, so a plain <img> avoids
@@ -84,11 +84,12 @@ export default async function AboutPage() {
         className="absolute inset-0 -z-10"
         style={{
           background:
-            "linear-gradient(90deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.58) 42%, rgba(0,0,0,0.25) 100%), linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 100%)",
+            // Top wash keeps the transparent nav links legible regardless of the photo.
+            "linear-gradient(180deg, rgba(0,0,0,0.6) 0px, rgba(0,0,0,0) 150px), linear-gradient(90deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.58) 42%, rgba(0,0,0,0.25) 100%), linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 100%)",
         }}
       />
 
-      <div className="relative z-10 mx-auto max-w-[1180px] px-5 pb-20 pt-36 sm:px-8 lg:pb-24 lg:pt-48">
+      <div className="relative z-10 mx-auto max-w-[1180px] px-5 pb-20 pt-44 sm:px-8 lg:pb-24 lg:pt-52">
         {/* Logo card — kept solid so the mark stays crisp over the photo. */}
         <Reveal>
           <div className="inline-flex w-fit items-center gap-2.5 rounded-2xl bg-white px-4 py-3 shadow-xl shadow-black/30 ring-1 ring-black/5">
