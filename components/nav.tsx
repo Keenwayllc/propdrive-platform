@@ -37,6 +37,9 @@ export default function Nav({
   const pathname = usePathname();
   const { scrollY } = useScroll();
   const initial = companyName.trim().charAt(0).toUpperCase() || "P";
+  // The /about hero is a full-bleed dark photo, so the transparent nav needs
+  // light text there until the user scrolls and the solid backdrop kicks in.
+  const lightOnHero = pathname === "/about" && !scrolled;
 
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 24));
 
@@ -61,10 +64,18 @@ export default function Nav({
             />
           ) : (
             <>
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-ink text-background transition-transform duration-300 group-hover:-rotate-6">
+              <span
+                className={`flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:-rotate-6 ${
+                  lightOnHero ? "bg-white text-ink" : "bg-ink text-background"
+                }`}
+              >
                 <span className="font-display text-lg leading-none">{initial}</span>
               </span>
-              <span className="text-lg font-semibold tracking-tight text-ink">
+              <span
+                className={`text-lg font-semibold tracking-tight ${
+                  lightOnHero ? "text-white" : "text-ink"
+                }`}
+              >
                 {companyName}
               </span>
             </>
@@ -78,13 +89,17 @@ export default function Nav({
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="group relative text-sm font-medium text-muted transition-colors hover:text-ink"
+                  className={`group relative text-sm font-medium transition-colors ${
+                    lightOnHero
+                      ? "text-white/80 hover:text-white"
+                      : "text-muted hover:text-ink"
+                  }`}
                 >
                   {link.label}
                   <span
-                    className={`absolute -bottom-1.5 left-0 h-px bg-accent transition-all duration-300 ${
-                      active ? "w-full" : "w-0 group-hover:w-full"
-                    }`}
+                    className={`absolute -bottom-1.5 left-0 h-px transition-all duration-300 ${
+                      lightOnHero ? "bg-white" : "bg-accent"
+                    } ${active ? "w-full" : "w-0 group-hover:w-full"}`}
                   />
                 </Link>
               </li>
@@ -95,7 +110,11 @@ export default function Nav({
         <div className="hidden lg:block">
           <Link
             href="/auth/login"
-            className="group relative inline-flex items-center overflow-hidden rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-background transition-colors duration-300 hover:bg-accent active:translate-y-px"
+            className={`group relative inline-flex items-center overflow-hidden rounded-full px-5 py-2.5 text-sm font-semibold transition-colors duration-300 active:translate-y-px ${
+              lightOnHero
+                ? "bg-white text-ink hover:bg-white/90"
+                : "bg-ink text-background hover:bg-accent"
+            }`}
           >
             <span className="relative z-10">Agent Login</span>
             {/* Elegant sheen — a soft light glides across on hover (button stays put) */}
@@ -111,7 +130,11 @@ export default function Nav({
           aria-label="Toggle navigation menu"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className="rounded-xl bg-surface/60 p-2 text-ink backdrop-blur transition-colors hover:bg-surface lg:hidden"
+          className={`rounded-xl p-2 backdrop-blur transition-colors lg:hidden ${
+            lightOnHero
+              ? "bg-white/10 text-white hover:bg-white/20"
+              : "bg-surface/60 text-ink hover:bg-surface"
+          }`}
         >
           {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
