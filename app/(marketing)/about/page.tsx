@@ -126,11 +126,11 @@ export default async function AboutPage() {
           </div>
         </Reveal>
 
-        {/* Stat glass cards. */}
-        <Stagger className="mt-6 flex flex-wrap gap-4">
+        {/* Stat glass cards — single full-width column on mobile, row on desktop. */}
+        <Stagger className="mt-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
           {stats.map((stat, i) => (
-            <StaggerItem key={`${stat.label}-${i}`}>
-              <div className={`${GLASS} min-w-[150px] px-6 py-5 text-center`}>
+            <StaggerItem key={`${stat.label}-${i}`} className="w-full sm:w-auto">
+              <div className={`${GLASS} w-full px-6 py-5 text-center sm:w-auto sm:min-w-[150px]`}>
                 <p className="font-mono text-4xl font-semibold text-white">
                   {stat.value}
                   {stat.suffix}
