@@ -134,6 +134,32 @@ export const DEFAULT_STATS = [
   { value: 98.2, suffix: "%", label: "Of list price" },
 ];
 
+// Homepage "Recent results" highlight cards. Icons are a curated set the owner
+// picks from (mapped to lucide icons in home-highlights.tsx).
+export const HIGHLIGHT_ICONS = [
+  "trending-up",
+  "sparkles",
+  "handshake",
+  "home",
+  "key",
+  "award",
+  "badge-check",
+  "map-pin",
+] as const;
+
+export const highlightCardSchema = z.object({
+  icon: z.enum(HIGHLIGHT_ICONS).default("sparkles"),
+  title: z.string().max(60).default(""),
+  description: z.string().max(120).default(""),
+  date: z.string().max(60).default(""),
+});
+
+export const DEFAULT_HIGHLIGHTS = [
+  { icon: "trending-up", title: "Sold over ask", description: "Bel Air · 9 days on market", date: "Closed last week" },
+  { icon: "sparkles", title: "Just listed", description: "Santa Monica · $4,200,000", date: "2 days ago" },
+  { icon: "handshake", title: "In escrow", description: "Pacific Palisades · 5 days", date: "Today" },
+] as const;
+
 /** Editable marketing copy (site_settings). */
 export const siteSettingsSchema = z.object({
   company_name: z.string().min(1, "Company name is required."),
@@ -168,6 +194,13 @@ export const siteSettingsSchema = z.object({
       tiktok: "",
     }),
   stats: z.array(siteStatSchema).length(3).default(DEFAULT_STATS),
+  highlights_eyebrow: z.string().max(60).default(""),
+  highlights_title: z.string().max(120).default(""),
+  highlights_subtitle: z.string().max(400).default(""),
+  highlights_cards: z
+    .array(highlightCardSchema)
+    .length(3)
+    .default(DEFAULT_HIGHLIGHTS.map((c) => ({ ...c }))),
 });
 export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;
 

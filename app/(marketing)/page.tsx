@@ -20,7 +20,8 @@ import {
   getNeighborhoods,
   getBanners,
 } from "@/lib/queries";
-import { DEFAULT_STATS } from "@/lib/form-schemas";
+import { DEFAULT_STATS, DEFAULT_HIGHLIGHTS } from "@/lib/form-schemas";
+import type { HighlightCard } from "@/lib/types";
 
 const FALLBACK_TESTIMONIALS = [
   {
@@ -76,6 +77,17 @@ export default async function HomePage() {
   const heroImage = brand?.hero_image_url || "/hero/hero-banner.png";
   const ctaText = site?.cta_text || "Browse listings";
   const serviceArea = site?.service_area || "Los Angeles County, California";
+
+  // "Recent results" section — owner-editable via the Website Editor.
+  const highlightsEyebrow = site?.highlights_eyebrow?.trim() || "Recent results";
+  const highlightsTitle = site?.highlights_title?.trim() || "Momentum you can feel.";
+  const highlightsSubtitle =
+    site?.highlights_subtitle?.trim() ||
+    "New listings, fresh escrows, and over-ask closings — a steady cadence across LA's best neighborhoods. Hover to bring the latest into focus.";
+  const highlightCards: HighlightCard[] =
+    site?.highlights_cards?.length === 3
+      ? site.highlights_cards
+      : DEFAULT_HIGHLIGHTS.map((c) => ({ ...c }));
 
   // Hero slideshow: use the dashboard banner slides if any, else a single slide
   // built from the site/brand settings so the hero always renders.
@@ -347,15 +359,13 @@ export default async function HomePage() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:py-28">
           <Reveal>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-              Recent results
+              {highlightsEyebrow}
             </p>
             <h2 className="mt-3 max-w-md font-display text-3xl font-medium tracking-tight text-white sm:text-4xl">
-              Momentum you can feel.
+              {highlightsTitle}
             </h2>
             <p className="mt-5 max-w-md text-lg leading-relaxed text-white/70">
-              New listings, fresh escrows, and over-ask closings — a steady
-              cadence across LA&apos;s best neighborhoods. Hover to bring the
-              latest into focus.
+              {highlightsSubtitle}
             </p>
           </Reveal>
 
@@ -363,7 +373,7 @@ export default async function HomePage() {
             delay={0.12}
             className="flex min-h-[22rem] items-center justify-center lg:justify-start"
           >
-            <HomeHighlights />
+            <HomeHighlights cards={highlightCards} />
           </Reveal>
         </div>
       </section>

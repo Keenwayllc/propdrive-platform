@@ -24,6 +24,14 @@ export interface SiteStat {
   label: string;
 }
 
+/** A homepage "Recent results" highlight card. */
+export interface HighlightCard {
+  icon: string;
+  title: string;
+  description: string;
+  date: string;
+}
+
 /** Editable marketing copy that powers the public-facing website. */
 export interface SiteSettings {
   id: string;
@@ -47,6 +55,10 @@ export interface SiteSettings {
   office_address: string;
   social_links: SocialLinks;
   stats: SiteStat[];
+  highlights_eyebrow: string;
+  highlights_title: string;
+  highlights_subtitle: string;
+  highlights_cards: HighlightCard[];
   created_at: string;
   updated_at: string;
 }

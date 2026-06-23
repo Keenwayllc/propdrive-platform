@@ -6,7 +6,12 @@
  */
 import { useState } from "react";
 import { updateSiteSettings } from "@/lib/admin-actions";
-import { DEFAULT_STATS, type SiteSettingsInput } from "@/lib/form-schemas";
+import {
+  DEFAULT_STATS,
+  DEFAULT_HIGHLIGHTS,
+  HIGHLIGHT_ICONS,
+  type SiteSettingsInput,
+} from "@/lib/form-schemas";
 import type { SiteSettings } from "@/lib/types";
 import AddressAutocomplete from "@/components/address-autocomplete";
 import AiFieldAssist from "@/components/ai-field-assist";
@@ -40,6 +45,18 @@ function toInput(s: SiteSettings | null): SiteSettingsInput {
       s?.stats && s.stats.length === 3
         ? s.stats.map((t) => ({ value: t.value, suffix: t.suffix, label: t.label }))
         : DEFAULT_STATS,
+    highlights_eyebrow: s?.highlights_eyebrow ?? "",
+    highlights_title: s?.highlights_title ?? "",
+    highlights_subtitle: s?.highlights_subtitle ?? "",
+    highlights_cards:
+      s?.highlights_cards && s.highlights_cards.length === 3
+        ? s.highlights_cards.map((c) => ({
+            icon: c.icon as SiteSettingsInput["highlights_cards"][number]["icon"],
+            title: c.title,
+            description: c.description,
+            date: c.date,
+          }))
+        : DEFAULT_HIGHLIGHTS.map((c) => ({ ...c })),
   };
 }
 
@@ -69,6 +86,19 @@ export default function SiteSettingsForm({
     setForm((prev) => ({
       ...prev,
       stats: prev.stats.map((s, i) => (i === index ? { ...s, ...patch } : s)),
+    }));
+    setStatus("idle");
+  }
+
+  function setHighlight(
+    index: number,
+    patch: Partial<SiteSettingsInput["highlights_cards"][number]>
+  ) {
+    setForm((prev) => ({
+      ...prev,
+      highlights_cards: prev.highlights_cards.map((c, i) =>
+        i === index ? { ...c, ...patch } : c
+      ),
     }));
     setStatus("idle");
   }
@@ -264,6 +294,81 @@ export default function SiteSettingsForm({
                   className="form-input"
                   placeholder="Homes closed"
                 />
+              </label>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        title="Homepage highlights"
+        description="The 'Recent results' section on your homepage: the heading, intro, and three activity cards (recent sales, new listings, escrows). Leave a field blank to use the default."
+      >
+        <Field label="Eyebrow" hint="Small label above the heading. Default: 'Recent results'.">
+          <input value={form.highlights_eyebrow} onChange={(e) => set("highlights_eyebrow", e.target.value)} className="form-input" placeholder="Recent results" />
+        </Field>
+        <Field
+          label="Heading"
+          hint="Default: 'Momentum you can feel.'"
+          action={
+            <AiFieldAssist
+              aiConnected={aiConnected}
+              instruction="a short, confident heading for a real estate 'recent results' homepage section (under 6 words)"
+              getCurrent={() => form.highlights_title}
+              getContext={brandContext}
+              onResult={(t) => set("highlights_title", t)}
+            />
+          }
+        >
+          <input value={form.highlights_title} onChange={(e) => set("highlights_title", e.target.value)} className="form-input" placeholder="Momentum you can feel." />
+        </Field>
+        <Field
+          label="Intro text"
+          hint="The paragraph under the heading."
+          action={
+            <AiFieldAssist
+              aiConnected={aiConnected}
+              instruction="one or two sentences summarizing a real estate agent's recent market activity (listings, escrows, closings)"
+              getCurrent={() => form.highlights_subtitle}
+              getContext={brandContext}
+              onResult={(t) => set("highlights_subtitle", t)}
+            />
+          }
+        >
+          <textarea rows={3} value={form.highlights_subtitle} onChange={(e) => set("highlights_subtitle", e.target.value)} className="form-input" placeholder="New listings, fresh escrows, and over-ask closings across LA's best neighborhoods." />
+        </Field>
+
+        <div className="space-y-4 border-t border-line pt-4">
+          <p className="text-xs font-medium text-muted">The three activity cards</p>
+          {form.highlights_cards.map((card, i) => (
+            <div key={i} className="grid gap-3 sm:grid-cols-[7rem_1fr_1fr_8rem]">
+              <label className="block">
+                <span className="mb-1.5 block text-xs font-medium text-faint">Icon</span>
+                <select
+                  value={card.icon}
+                  onChange={(e) =>
+                    setHighlight(i, {
+                      icon: e.target.value as SiteSettingsInput["highlights_cards"][number]["icon"],
+                    })
+                  }
+                  className="form-input"
+                >
+                  {HIGHLIGHT_ICONS.map((ic) => (
+                    <option key={ic} value={ic}>{ic}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-xs font-medium text-faint">Title</span>
+                <input value={card.title} onChange={(e) => setHighlight(i, { title: e.target.value })} className="form-input" placeholder="Sold over ask" />
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-xs font-medium text-faint">Detail</span>
+                <input value={card.description} onChange={(e) => setHighlight(i, { description: e.target.value })} className="form-input" placeholder="Bel Air · 9 days on market" />
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-xs font-medium text-faint">Date</span>
+                <input value={card.date} onChange={(e) => setHighlight(i, { date: e.target.value })} className="form-input" placeholder="Closed last week" />
               </label>
             </div>
           ))}
