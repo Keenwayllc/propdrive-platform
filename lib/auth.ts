@@ -4,7 +4,7 @@
  * Thin wrappers around Supabase Auth. Route protection is enforced by proxy.ts.
  */
 import { supabase } from "@/lib/supabase-client";
-import type { Profile, Result } from "@/lib/types";
+import type { Result } from "@/lib/types";
 
 /** Sign a user in with email + password. */
 export async function signIn(
@@ -54,14 +54,6 @@ export async function requestPasswordReset(
 export async function getCurrentUserId(): Promise<string | null> {
   const { data } = await supabase.auth.getUser();
   return data.user?.id ?? null;
-}
-
-/**
- * Placeholder profile loader. Wired to the `profiles` table in Phase 2.
- */
-export async function getCurrentProfile(): Promise<Profile | null> {
-  // TODO(phase-2): query the `profiles` table for the authenticated user.
-  return null;
 }
 
 function toMessage(err: unknown): string {
