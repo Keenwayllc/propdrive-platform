@@ -255,6 +255,22 @@ export const postSchema = z.object({
 });
 export type PostInput = z.infer<typeof postSchema>;
 
+/** Owner-authored standalone page (served at /p/[slug]). */
+export const pageSchema = z.object({
+  title: z.string().min(1, "Title is required."),
+  slug: z
+    .string()
+    .min(1, "Slug is required.")
+    .regex(/^[a-z0-9-]+$/, "Use lowercase letters, numbers, and hyphens only."),
+  body: z.string().optional().default(""),
+  cover_image_url: z.string().optional().default(""),
+  show_in_nav: z.boolean().default(false),
+  show_in_footer: z.boolean().default(false),
+  published: z.boolean().default(true),
+  sort_order: z.coerce.number().int().default(0),
+});
+export type PageInput = z.infer<typeof pageSchema>;
+
 /** A buyer's saved search submitted from the public site. */
 export const savedSearchSchema = z.object({
   email: z.string().email("Please enter a valid email address."),

@@ -21,6 +21,7 @@ import {
   testimonialSchema,
   neighborhoodSchema,
   postSchema,
+  pageSchema,
   bannerSchema,
   type PropertyInput,
   type BannerInput,
@@ -32,6 +33,7 @@ import {
   type TestimonialInput,
   type NeighborhoodInput,
   type PostInput,
+  type PageInput,
 } from "@/lib/form-schemas";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { geocodeAddress, composeAddress } from "@/lib/geocode";
@@ -711,5 +713,74 @@ export async function deletePost(id: string): Promise<MutationResult> {
     return { ok: false, error: "Could not delete the post." };
   }
   revalidatePosts();
+  return { ok: true };
+}
+
+/* ------------------------------------------------------- Custom pages */
+
+function revalidatePages(slug?: string) {
+  // Pages surface in the site-wide nav/footer, so refresh the whole layout.
+  revalidatePath("/", "layout");
+  revalidatePath("/dashboard/pages");
+  if (slug) revalidatePath(`/p/${slug}`);
+}
+
+export async function createPage(input: PageInput): Promise<MutationResult> {
+  const parsed = pageSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Please check the fields." };
+  }
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { data, error } = await supabase
+    .from("pages")
+    .insert(parsed.data)
+    .select("id")
+    .single();
+  if (error) {
+    console.error("[admin] createPage", error.message);
+    const msg = error.message.includes("duplicate")
+      ? "That slug is already used. Pick a unique one."
+      : "Could not create the page.";
+    return { ok: false, error: msg };
+  }
+  revalidatePages(parsed.data.slug);
+  return { ok: true, id: data.id as string };
+}
+
+export async function updatePage(
+  id: string,
+  input: PageInput
+): Promise<MutationResult> {
+  const parsed = pageSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Please check the fields." };
+  }
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { error } = await supabase.from("pages").update(parsed.data).eq("id", id);
+  if (error) {
+    console.error("[admin] updatePage", error.message);
+    const msg = error.message.includes("duplicate")
+      ? "That slug is already used. Pick a unique one."
+      : "Could not update the page.";
+    return { ok: false, error: msg };
+  }
+  revalidatePages(parsed.data.slug);
+  return { ok: true, id };
+}
+
+export async function deletePage(id: string): Promise<MutationResult> {
+  const supabase = await getAuthedClient();
+  if (!supabase) return { ok: false, error: NOT_AUTHED };
+
+  const { error } = await supabase.from("pages").delete().eq("id", id);
+  if (error) {
+    console.error("[admin] deletePage", error.message);
+    return { ok: false, error: "Could not delete the page." };
+  }
+  revalidatePages();
   return { ok: true };
 }

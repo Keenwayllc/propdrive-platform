@@ -32,6 +32,21 @@ export interface HighlightCard {
   date: string;
 }
 
+/** An owner-authored standalone page served at /p/[slug]. */
+export interface Page {
+  id: string;
+  title: string;
+  slug: string;
+  body: string;
+  cover_image_url: string;
+  show_in_nav: boolean;
+  show_in_footer: boolean;
+  published: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 /** Editable marketing copy that powers the public-facing website. */
 export interface SiteSettings {
   id: string;

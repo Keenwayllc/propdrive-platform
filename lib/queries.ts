@@ -14,6 +14,7 @@ import type {
   BrandSettings,
   Lead,
   Neighborhood,
+  Page,
   Post,
   Property,
   PropertyType,
@@ -276,6 +277,58 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     return null;
   }
   return (data as Post | null) ?? null;
+}
+
+/* -------------------------------------------------------- Custom pages */
+
+/** All published custom pages (used to build nav/footer links site-wide). */
+export async function getPublishedPages(): Promise<Page[]> {
+  const supabase = await createServerSupabase();
+  const { data, error } = await supabase
+    .from("pages")
+    .select("*")
+    .eq("published", true)
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("[queries] getPublishedPages", error.message);
+    return [];
+  }
+  return (data as Page[]) ?? [];
+}
+
+/** A single published custom page by slug (public route). */
+export async function getPageBySlug(slug: string): Promise<Page | null> {
+  const supabase = await createServerSupabase();
+  const { data, error } = await supabase
+    .from("pages")
+    .select("*")
+    .eq("slug", slug)
+    .eq("published", true)
+    .maybeSingle();
+
+  if (error) {
+    console.error("[queries] getPageBySlug", error.message);
+    return null;
+  }
+  return (data as Page | null) ?? null;
+}
+
+/** Every custom page, published or not (dashboard manager). */
+export async function getAllPages(): Promise<Page[]> {
+  const supabase = await createServerSupabase();
+  const { data, error } = await supabase
+    .from("pages")
+    .select("*")
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("[queries] getAllPages", error.message);
+    return [];
+  }
+  return (data as Page[]) ?? [];
 }
 
 /* ------------------------------------------------------ Integration keys */

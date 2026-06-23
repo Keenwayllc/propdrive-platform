@@ -28,13 +28,17 @@ const NAV_LINKS: ReadonlyArray<{ href: string; label: string }> = [
 export default function Nav({
   companyName = "PropDrive",
   logoUrl = null,
+  pages = [],
 }: {
   companyName?: string;
   logoUrl?: string | null;
+  pages?: ReadonlyArray<{ href: string; label: string }>;
 }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  // Static routes plus any owner-created pages flagged "show in nav".
+  const links = [...NAV_LINKS, ...pages];
   const { scrollY } = useScroll();
   const initial = companyName.trim().charAt(0).toUpperCase() || "P";
   // The /about hero is a full-bleed dark photo with no light background behind
@@ -76,7 +80,7 @@ export default function Nav({
         </Link>
 
         <ul className="hidden items-center gap-7 lg:flex">
-          {NAV_LINKS.map((link) => {
+          {links.map((link) => {
             const active = pathname.startsWith(link.href);
             return (
               <li key={link.href}>
@@ -131,7 +135,7 @@ export default function Nav({
             className="overflow-hidden border-t border-line bg-background lg:hidden"
           >
             <ul className="flex flex-col px-4 py-3">
-              {NAV_LINKS.map((link) => (
+              {links.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}

@@ -40,9 +40,14 @@ const FOOTER_COLUMNS: ReadonlyArray<{
 export interface FooterProps {
   site?: SiteSettings | null;
   brand?: BrandSettings | null;
+  pages?: ReadonlyArray<{ href: string; label: string }>;
 }
 
-export default function Footer({ site, brand }: FooterProps) {
+export default function Footer({ site, brand, pages = [] }: FooterProps) {
+  // Append any owner-created pages flagged "show in footer" to the Company column.
+  const columns = FOOTER_COLUMNS.map((col) =>
+    col.title === "Company" ? { ...col, links: [...col.links, ...pages] } : col
+  );
   const year = new Date().getFullYear();
   const company = site?.company_name || brand?.company_name || "PropDrive";
   const initial = company.trim().charAt(0).toUpperCase() || "P";
@@ -131,7 +136,7 @@ export default function Footer({ site, brand }: FooterProps) {
             )}
           </div>
 
-          {FOOTER_COLUMNS.map((col) => (
+          {columns.map((col) => (
             <div key={col.title}>
               <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-white/40">
                 {col.title}

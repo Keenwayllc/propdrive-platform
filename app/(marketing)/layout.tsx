@@ -11,17 +11,29 @@ import type { CSSProperties } from "react";
 import Nav from "@/components/nav";
 import Footer from "@/components/footer";
 import ScrollToTop from "@/components/scroll-to-top";
-import { getSiteSettings, getBrandSettings } from "@/lib/queries";
+import {
+  getSiteSettings,
+  getBrandSettings,
+  getPublishedPages,
+} from "@/lib/queries";
 
 export default async function MarketingLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [site, brand] = await Promise.all([
+  const [site, brand, pages] = await Promise.all([
     getSiteSettings(),
     getBrandSettings(),
+    getPublishedPages(),
   ]);
+
+  const navPages = pages
+    .filter((p) => p.show_in_nav)
+    .map((p) => ({ href: `/p/${p.slug}`, label: p.title }));
+  const footerPages = pages
+    .filter((p) => p.show_in_footer)
+    .map((p) => ({ href: `/p/${p.slug}`, label: p.title }));
 
   const companyName = site?.company_name || brand?.company_name || "PropDrive";
   const accent = brand?.primary_color || "#006aff";
@@ -36,9 +48,9 @@ export default async function MarketingLayout({
 
   return (
     <div style={brandStyle} className="flex min-h-screen flex-col">
-      <Nav companyName={companyName} logoUrl={brand?.logo_url} />
+      <Nav companyName={companyName} logoUrl={brand?.logo_url} pages={navPages} />
       <main className="flex-1">{children}</main>
-      <Footer site={site} brand={brand} />
+      <Footer site={site} brand={brand} pages={footerPages} />
       <ScrollToTop />
     </div>
   );
