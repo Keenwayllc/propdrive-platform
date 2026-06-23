@@ -36,6 +36,9 @@ interface PropertyFormValues {
   lng: string;
   featured: boolean;
   active: boolean;
+  open_house_date: string;
+  open_house_start: string;
+  open_house_end: string;
 }
 
 const PROPERTY_TYPES: PropertyType[] = [
@@ -75,6 +78,9 @@ function toDefaults(property?: Property): PropertyFormValues {
     lng: property?.lng != null ? String(property.lng) : "",
     featured: property?.featured ?? false,
     active: property?.active ?? true,
+    open_house_date: property?.open_house_date ?? "",
+    open_house_start: property?.open_house_start ?? "",
+    open_house_end: property?.open_house_end ?? "",
   };
 }
 
@@ -168,6 +174,9 @@ export default function PropertyForm({ property }: PropertyFormProps) {
       lng: values.lng ? Number(values.lng) : null,
       featured: values.featured,
       active: values.active,
+      open_house_date: values.open_house_date || null,
+      open_house_start: values.open_house_start || null,
+      open_house_end: values.open_house_end || null,
     };
 
     const result = isEdit
@@ -295,6 +304,26 @@ export default function PropertyForm({ property }: PropertyFormProps) {
       <Field label="Features (one per line)">
         <textarea rows={5} {...register("features")} className="form-input" placeholder={"Infinity pool\nChef's kitchen"} />
       </Field>
+
+      <div className="rounded-2xl border border-line bg-background/60 p-4">
+        <p className="text-sm font-medium text-ink">Open house (optional)</p>
+        <p className="mt-1 text-xs text-faint">
+          Set a date and time to feature this listing on your public Open Houses
+          page. Leave the date blank for no open house. It drops off the page
+          automatically once the date passes.
+        </p>
+        <div className="mt-3 grid gap-4 sm:grid-cols-3">
+          <Field label="Date">
+            <input type="date" {...register("open_house_date")} className="form-input" />
+          </Field>
+          <Field label="Start time">
+            <input type="time" {...register("open_house_start")} className="form-input" />
+          </Field>
+          <Field label="End time">
+            <input type="time" {...register("open_house_end")} className="form-input" />
+          </Field>
+        </div>
+      </div>
 
       <ImageUpload label="Photos" value={imageUrls} onChange={setImageUrls} />
 

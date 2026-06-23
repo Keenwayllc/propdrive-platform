@@ -118,6 +118,23 @@ export const propertyInputSchema = z.object({
   lng: z.coerce.number().nullable().optional(),
   featured: z.boolean().default(false),
   active: z.boolean().default(true),
+  // Open house (optional). Empty strings are normalized to null so blank dates
+  // never reach the date column.
+  open_house_date: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => (v && v.trim() ? v.trim() : null)),
+  open_house_start: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => (v && v.trim() ? v.trim() : null)),
+  open_house_end: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => (v && v.trim() ? v.trim() : null)),
 });
 export type PropertyInput = z.infer<typeof propertyInputSchema>;
 

@@ -132,6 +132,28 @@ export async function getPropertyById(id: string): Promise<Property | null> {
   return (data as Property | null) ?? null;
 }
 
+/**
+ * Active listings with an open house scheduled today or later, soonest first.
+ * Powers the public /open-houses page.
+ */
+export async function getUpcomingOpenHouses(): Promise<Property[]> {
+  const supabase = await createServerSupabase();
+  const today = new Date().toISOString().slice(0, 10);
+  const { data, error } = await supabase
+    .from("properties")
+    .select("*")
+    .eq("active", true)
+    .not("open_house_date", "is", null)
+    .gte("open_house_date", today)
+    .order("open_house_date", { ascending: true });
+
+  if (error) {
+    console.error("[queries] getUpcomingOpenHouses", error.message);
+    return [];
+  }
+  return (data ?? []) as Property[];
+}
+
 /** The single site_settings row (marketing copy). */
 export async function getSiteSettings(): Promise<SiteSettings | null> {
   const supabase = await createServerSupabase();

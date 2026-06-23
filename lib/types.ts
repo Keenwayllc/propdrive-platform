@@ -197,6 +197,9 @@ export interface Property {
   active: boolean;
   lat: number | null;
   lng: number | null;
+  open_house_date: string | null;
+  open_house_start: string | null;
+  open_house_end: string | null;
   created_at: string;
   updated_at: string;
 }

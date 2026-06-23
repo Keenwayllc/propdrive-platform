@@ -92,6 +92,7 @@ async function withCoordinates(input: PropertyInput): Promise<PropertyInput> {
 function revalidateProperty(id?: string) {
   revalidatePath("/");
   revalidatePath("/properties");
+  revalidatePath("/open-houses");
   revalidatePath("/dashboard/properties");
   if (id) revalidatePath(`/properties/${id}`);
 }
