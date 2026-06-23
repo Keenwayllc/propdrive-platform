@@ -58,10 +58,10 @@ export default function PagesHub({
             <optgroup label="Built-in pages">
               <option value="home">Home page</option>
               <option value="about">About page</option>
-              <option value="properties">Properties page</option>
-              <option value="openhouses">Open Houses page</option>
-              <option value="valuation">Home Value page</option>
-              <option value="mortgage">Mortgage page</option>
+              <option value="properties">Properties — page heading</option>
+              <option value="openhouses">Open Houses — heading</option>
+              <option value="valuation">Home Value — heading</option>
+              <option value="mortgage">Mortgage — heading</option>
               <option value="contact">Contact &amp; footer</option>
             </optgroup>
             <optgroup label="Your pages">
