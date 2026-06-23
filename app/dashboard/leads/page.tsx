@@ -1,5 +1,5 @@
 /**
- * Leads management page. Phase 2 fetches leads and wires status updates.
+ * Leads management page. Fetches leads, supports CSV export and status updates.
  */
 import { Download } from "lucide-react";
 import LeadsTable from "@/components/leads-table";

@@ -54,8 +54,12 @@ export default function Footer({ site, brand, pages = [] }: FooterProps) {
   const logoUrl = brand?.logo_url ?? null;
   const logoLightUrl = brand?.logo_light_url ?? null;
   const tagline =
-    site?.footer_text || "A professional realtor website with a built-in admin dashboard.";
-  const license = brand?.license_number || "DRE License #00000000";
+    site?.footer_text || "Your trusted partner for buying and selling homes.";
+  const license = brand?.license_number?.trim() || "";
+  const area = site?.service_area?.trim();
+  const ctaHeading = area
+    ? `Ready to find your place in ${area}?`
+    : "Ready to find your place?";
   const social = site?.social_links ?? {};
 
   const socialLinks = SOCIAL_PLATFORMS.map((p) => ({
@@ -69,7 +73,7 @@ export default function Footer({ site, brand, pages = [] }: FooterProps) {
       <div className="mx-auto max-w-7xl px-4 pt-16 sm:px-6">
         <div className="flex flex-col items-start justify-between gap-6 border-b border-white/10 pb-12 md:flex-row md:items-end">
           <h2 className="max-w-xl font-display text-3xl font-medium leading-tight tracking-tight sm:text-4xl">
-            Ready to find your place in Los Angeles?
+            {ctaHeading}
           </h2>
           <Link
             href="/contact"
@@ -161,7 +165,7 @@ export default function Footer({ site, brand, pages = [] }: FooterProps) {
           <p>
             &copy; {year} {company}. All rights reserved.
           </p>
-          <p>Equal Housing Opportunity &middot; {license}</p>
+          <p>Equal Housing Opportunity{license ? ` · ${license}` : ""}</p>
         </div>
       </div>
     </footer>

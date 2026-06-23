@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * Agent login. Phase 1 validates input and simulates sign-in. Phase 2 calls
- * the Supabase auth helper and redirects to the dashboard.
+ * Agent login. Validates input, signs in via the Supabase auth helper, and
+ * redirects to the dashboard (or a safe ?redirect target).
  */
 import { Suspense, useState } from "react";
 import Link from "next/link";

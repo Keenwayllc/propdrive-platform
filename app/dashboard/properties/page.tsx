@@ -1,5 +1,5 @@
 /**
- * Properties management page. Phase 2 adds create/edit/delete + image uploads.
+ * Properties management page. Full create/edit/delete with image uploads.
  */
 import Link from "next/link";
 import { Plus } from "lucide-react";

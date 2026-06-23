@@ -29,10 +29,15 @@ const DEFAULT_STATS: SiteStat[] = [
   { value: 4.97, suffix: "", label: "Client rating" },
 ];
 
-const DEFAULT_BIO = [
-  "With deep roots across Los Angeles, Marcus helps buyers and sellers navigate every step of their move. This is placeholder biography copy that the agent edits from the dashboard website editor.",
-  "From first-time buyers in Westwood to luxury sellers in Beverly Hills and Malibu, Marcus brings local market expertise, sharp negotiation, and white-glove service to every transaction.",
-];
+// Generic placeholder bio, built from the owner's agent name + service area so an
+// un-edited About page never shows another agent's name or city. Overridden the
+// moment the owner sets site_settings.about_text (Pages → About).
+function defaultBio(agentName: string, area: string): string[] {
+  return [
+    `With deep roots across ${area}, ${agentName} helps buyers and sellers navigate every step of their move with clarity and care. This is placeholder biography copy you can edit from the dashboard under Pages → About.`,
+    `From first-time buyers to luxury sellers, ${agentName} brings local market expertise, sharp negotiation, and white-glove service to every transaction.`,
+  ];
+}
 
 export default async function AboutPage() {
   const [site, brand] = await Promise.all([
@@ -43,7 +48,7 @@ export default async function AboutPage() {
   const agentName = brand?.agent_name || "Marcus Rivera";
   const brokerage =
     brand?.brokerage_name || site?.company_name || "California Realty Group";
-  const companyName = site?.company_name || brand?.company_name || "PropDrive";
+  const companyName = site?.company_name || brand?.company_name || brokerage;
   const photo = brand?.agent_photo_url || brand?.hero_image_url || null;
   const logoUrl = brand?.logo_url || null;
   const initial = companyName.trim().charAt(0).toUpperCase() || "P";
@@ -53,7 +58,7 @@ export default async function AboutPage() {
   const bioParagraphs =
     site?.about_text && site.about_text.trim() !== ""
       ? site.about_text.split(/\n{2,}/).filter(Boolean)
-      : DEFAULT_BIO;
+      : defaultBio(agentName, area);
 
   // CTA copy is owner-editable (Website Editor); blank falls back to agent-aware defaults.
   const ctaTitle = site?.about_cta_title?.trim() || "Ready to make your move?";

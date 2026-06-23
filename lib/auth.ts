@@ -1,8 +1,7 @@
 /**
  * PropDrive — Authentication helpers.
  *
- * Thin wrappers around Supabase Auth. Phase 1 ships the signatures and basic
- * implementations; route protection / middleware is wired in Phase 2.
+ * Thin wrappers around Supabase Auth. Route protection is enforced by proxy.ts.
  */
 import { supabase } from "@/lib/supabase-client";
 import type { Profile, Result } from "@/lib/types";

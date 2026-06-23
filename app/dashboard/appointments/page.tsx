@@ -1,5 +1,5 @@
 /**
- * Appointments management page. Phase 2 fetches appointments + status updates.
+ * Appointments management page. Fetches appointments and wires status updates.
  */
 import AppointmentsTable from "@/components/appointments-table";
 import { getAppointments } from "@/lib/queries";

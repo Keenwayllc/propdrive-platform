@@ -128,6 +128,7 @@ export default async function HomePage() {
     : NEIGHBORHOODS;
 
   const agentName = brand?.agent_name || "Marcus Rivera";
+  const agentFirst = agentName.split(" ")[0];
   const brokerage = brand?.brokerage_name || site?.company_name || "California Realty Group";
   const agentPhoto =
     brand?.agent_photo_url ||
@@ -204,9 +205,9 @@ export default async function HomePage() {
             <BentoCard
               icon={<MapPin className="h-5 w-5" />}
               title="Block-by-block local"
-              text="Twelve years from the Westside to Calabasas. Ask about any street."
+              text="Deep neighborhood knowledge, street by street. Ask us about any block."
               image="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
-              imageAlt="Los Angeles streets and skyline"
+              imageAlt="City streets and skyline"
             />
           </StaggerItem>
 
@@ -427,7 +428,7 @@ export default async function HomePage() {
               Tell us what you&apos;re looking for.
             </h2>
             <p className="mt-5 max-w-md text-lg leading-relaxed text-muted">
-              Share a few details and Marcus will follow up with homes that
+              Share a few details and {agentFirst} will follow up with homes that
               actually fit — no spam, no obligation.
             </p>
             <ul className="mt-8 space-y-3 text-sm text-muted">

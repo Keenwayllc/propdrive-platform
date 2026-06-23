@@ -9,16 +9,18 @@ import { getSiteSettings } from "@/lib/queries";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Get in touch with your Los Angeles real estate advisor.",
+  description: "Get in touch with our real estate team.",
 };
 
 export default async function ContactPage() {
   const site = await getSiteSettings();
+  // No demo fallbacks — only show a detail the owner has actually set, so a fresh
+  // site never displays placeholder contact info. Set these under Pages → Contact.
   const CONTACT_DETAILS = [
-    { icon: Phone, label: site?.contact_phone || "(310) 555-0148" },
-    { icon: Mail, label: site?.contact_email || "marcus@marcusriverarealty.com" },
-    { icon: MapPin, label: site?.office_address || "9601 Wilshire Blvd, Beverly Hills, CA 90210" },
-  ].filter((d) => d.label.trim() !== "");
+    { icon: Phone, label: site?.contact_phone?.trim() || "" },
+    { icon: Mail, label: site?.contact_email?.trim() || "" },
+    { icon: MapPin, label: site?.office_address?.trim() || "" },
+  ].filter((d) => d.label !== "");
 
   return (
     <div className="mx-auto grid max-w-7xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">

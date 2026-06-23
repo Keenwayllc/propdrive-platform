@@ -1,6 +1,6 @@
 /**
  * Leads table for the dashboard. Renders an array of leads; shows an empty
- * state when none are passed. Data fetching is wired in Phase 2.
+ * state when none are passed.
  */
 import { Inbox } from "lucide-react";
 import type { Lead } from "@/lib/types";

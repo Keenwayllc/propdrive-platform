@@ -1,5 +1,5 @@
 /**
- * Appointments table for the dashboard. Data fetching is wired in Phase 2.
+ * Appointments table for the dashboard.
  */
 import { CalendarDays } from "lucide-react";
 import type { Appointment } from "@/lib/types";

@@ -2,9 +2,7 @@
 
 /**
  * Generic lead capture form for buyer / seller / general / valuation enquiries.
- *
- * Phase 1: validates with Zod and simulates submission. The Supabase insert is
- * wired in Phase 2 (see the TODO in `onSubmit`).
+ * Validates with Zod and persists the lead to Supabase via the submitLead action.
  */
 import { useState } from "react";
 import { useForm } from "react-hook-form";

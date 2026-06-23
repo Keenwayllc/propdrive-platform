@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { SITE_URL } from "@/lib/site";
+import { getSiteSettings, getBrandSettings } from "@/lib/queries";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -37,38 +38,45 @@ export const viewport: Viewport = {
   themeColor: "#f5f7fb",
 };
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    default: "PropDrive — Realtor Website With Admin Dashboard",
-    template: "%s | PropDrive",
-  },
-  description:
-    "Launch a professional realtor website with a built-in admin dashboard. Manage listings, leads, appointments, branding, testimonials, and website content from one clean backend.",
-  openGraph: {
-    title: "PropDrive — Realtor Website With Admin Dashboard",
-    description:
-      "A professional realtor website with a built-in admin dashboard for listings, leads, appointments, branding, and content.",
-    url: SITE_URL,
-    siteName: "PropDrive",
-    type: "website",
-    images: [
-      {
-        url: "/hero/hero-banner.png",
-        width: 2048,
-        height: 1152,
-        alt: "PropDrive — luxury Los Angeles real estate",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "PropDrive — Realtor Website With Admin Dashboard",
-    description:
-      "A professional realtor website with a built-in admin dashboard for listings, leads, appointments, branding, and content.",
-    images: ["/hero/hero-banner.png"],
-  },
-};
+// Public metadata is white-labeled: the title, description, and social cards all
+// derive from the owner's brand/site settings so the product name never leaks
+// onto a buyer's live site. Falls back to neutral real-estate copy before setup.
+export async function generateMetadata(): Promise<Metadata> {
+  const [site, brand] = await Promise.all([getSiteSettings(), getBrandSettings()]);
+  const company =
+    site?.company_name?.trim() ||
+    brand?.company_name?.trim() ||
+    brand?.brokerage_name?.trim() ||
+    "Real Estate";
+  const area = site?.service_area?.trim();
+  const title = area ? `${company} — Real Estate in ${area}` : `${company} — Real Estate`;
+  const description =
+    site?.footer_text?.trim() ||
+    `Browse homes for sale, get a free home valuation, and connect with ${company}${
+      area ? ` across ${area}` : ""
+    }.`;
+  const ogImage = brand?.hero_image_url?.trim() || "/hero/hero-banner.png";
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: { default: title, template: `%s | ${company}` },
+    description,
+    openGraph: {
+      title,
+      description,
+      url: SITE_URL,
+      siteName: company,
+      type: "website",
+      images: [{ url: ogImage, width: 2048, height: 1152, alt: company }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
+  };
+}
 
 export default function RootLayout({
   children,
