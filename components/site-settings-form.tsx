@@ -60,12 +60,17 @@ function toInput(s: SiteSettings | null): SiteSettingsInput {
   };
 }
 
+type PageView = "home" | "about" | "contact";
+
 export default function SiteSettingsForm({
   initial,
   aiConnected = false,
+  page,
 }: {
   initial: SiteSettings | null;
   aiConnected?: boolean;
+  /** When set, only that page's sections render (used by the Pages hub). */
+  page?: PageView;
 }) {
   const [form, setForm] = useState<SiteSettingsInput>(toInput(initial));
   const [saving, setSaving] = useState(false);
@@ -127,8 +132,11 @@ export default function SiteSettingsForm({
     setStatus("saved");
   }
 
+  const show = (p: PageView) => !page || page === p;
+
   return (
     <div className="space-y-6">
+      {show("home") && (
       <Section
         title="Brand & hero"
         description="Your business name and the first thing visitors see at the top of your homepage."
@@ -185,7 +193,9 @@ export default function SiteSettingsForm({
           </Field>
         </div>
       </Section>
+      )}
 
+      {show("about") && (
       <Section
         title="About"
         description="The 'About' block on your homepage and About page."
@@ -222,7 +232,9 @@ export default function SiteSettingsForm({
           <textarea rows={4} value={form.about_text} onChange={(e) => set("about_text", e.target.value)} className="form-input" />
         </Field>
       </Section>
+      )}
 
+      {show("about") && (
       <Section
         title="About page CTA"
         description="The call-to-action card at the bottom of your About page. Leave a field blank to use the default."
@@ -255,7 +267,9 @@ export default function SiteSettingsForm({
           <input value={form.about_cta_button} onChange={(e) => set("about_cta_button", e.target.value)} className="form-input" placeholder="Start a conversation" />
         </Field>
       </Section>
+      )}
 
+      {show("home") && (
       <Section
         title="Highlight stats"
         description="The three numbers shown on your homepage and About page. Use the value plus an optional suffix like % or +. For example: 127 / Homes closed, 12 / Years in LA, 4.97 / Client rating."
@@ -299,7 +313,9 @@ export default function SiteSettingsForm({
           ))}
         </div>
       </Section>
+      )}
 
+      {show("home") && (
       <Section
         title="Homepage highlights"
         description="The 'Recent results' section on your homepage: the heading, intro, and three activity cards (recent sales, new listings, escrows). Leave a field blank to use the default."
@@ -374,7 +390,9 @@ export default function SiteSettingsForm({
           ))}
         </div>
       </Section>
+      )}
 
+      {show("contact") && (
       <Section
         title="Contact & footer"
         description="How clients reach you. These appear on your contact page and in the footer."
@@ -410,7 +428,9 @@ export default function SiteSettingsForm({
           <input value={form.footer_text} onChange={(e) => set("footer_text", e.target.value)} className="form-input" />
         </Field>
       </Section>
+      )}
 
+      {show("contact") && (
       <Section
         title="Social links"
         description="Links to your profiles. Paste the full address, or leave a field blank to hide that icon on your site. Icons appear in your footer automatically."
@@ -437,6 +457,7 @@ export default function SiteSettingsForm({
           })}
         </div>
       </Section>
+      )}
 
       <div className="flex items-center gap-4">
         <button
