@@ -11,12 +11,24 @@ import SiteSettingsForm from "@/components/site-settings-form";
 import PagesManager from "@/components/pages-manager";
 import type { SiteSettings, Page } from "@/lib/types";
 
-type View = "home" | "about" | "contact" | "custom";
+type View =
+  | "home"
+  | "about"
+  | "contact"
+  | "properties"
+  | "openhouses"
+  | "valuation"
+  | "mortgage"
+  | "custom";
 
 const HELP: Record<View, string> = {
   home: "Your homepage: business name, hero headline, the 'Recent results' section, and stat cards.",
   about: "Your About page: heading, bio, and the call-to-action card.",
   contact: "Your contact details and the site-wide footer (tagline + social links).",
+  properties: "Your listings page: the heading above your live properties. The listing count fills in automatically.",
+  openhouses: "Your open houses page: the heading and intro. The events list fills in automatically.",
+  valuation: "Your home valuation page: the heading and intro beside the valuation form.",
+  mortgage: "Your mortgage page: the heading and intro above the calculator.",
   custom: "Pages you create yourself — services, FAQ, team, and more. Each lives at /p/your-slug.",
 };
 
@@ -46,6 +58,10 @@ export default function PagesHub({
             <optgroup label="Built-in pages">
               <option value="home">Home page</option>
               <option value="about">About page</option>
+              <option value="properties">Properties page</option>
+              <option value="openhouses">Open Houses page</option>
+              <option value="valuation">Home Value page</option>
+              <option value="mortgage">Mortgage page</option>
               <option value="contact">Contact &amp; footer</option>
             </optgroup>
             <optgroup label="Your pages">

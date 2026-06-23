@@ -9,7 +9,7 @@ import PropertyFilter from "@/components/property-filter";
 import PropertyCard from "@/components/property-card";
 import PropertyMap from "@/components/property-map";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
-import { getActiveProperties } from "@/lib/queries";
+import { getActiveProperties, getSiteSettings } from "@/lib/queries";
 import type { PropertyType } from "@/lib/types";
 
 export const metadata: Metadata = {
@@ -26,22 +26,27 @@ export default async function PropertiesPage({
   const min = sp.min ? Number(sp.min) : null;
   const max = sp.max ? Number(sp.max) : null;
   const hasFilters = Boolean(sp.q || (sp.type && sp.type !== "any") || sp.min || sp.max);
-  const properties = await getActiveProperties({
-    query: sp.q,
-    property_type: (sp.type as PropertyType | "any") || "any",
-    min_price: Number.isFinite(min) ? min : null,
-    max_price: Number.isFinite(max) ? max : null,
-  });
+  const [properties, settings] = await Promise.all([
+    getActiveProperties({
+      query: sp.q,
+      property_type: (sp.type as PropertyType | "any") || "any",
+      min_price: Number.isFinite(min) ? min : null,
+      max_price: Number.isFinite(max) ? max : null,
+    }),
+    getSiteSettings(),
+  ]);
+  const eyebrow = settings?.properties_eyebrow?.trim() || "For sale";
+  const title = settings?.properties_title?.trim() || "Homes across Los Angeles";
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-20">
       <Reveal>
         <header className="mb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-            For sale
+            {eyebrow}
           </p>
           <h1 className="mt-3 font-display text-4xl font-medium tracking-tight text-ink sm:text-5xl">
-            Homes across Los Angeles
+            {title}
           </h1>
           <p className="mt-3 text-muted">
             {properties.length} listings in Los Angeles County

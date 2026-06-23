@@ -5,25 +5,33 @@
 import type { Metadata } from "next";
 import { CalendarDays } from "lucide-react";
 import { Reveal } from "@/components/motion";
+import { getSiteSettings } from "@/lib/queries";
 
 export const metadata: Metadata = {
   title: "Open Houses",
   description: "Upcoming open houses across Los Angeles County.",
 };
 
-export default function OpenHousesPage() {
+export default async function OpenHousesPage() {
+  const settings = await getSiteSettings();
+  const eyebrow = settings?.openhouses_eyebrow?.trim() || "This week";
+  const title = settings?.openhouses_title?.trim() || "Open houses";
+  const subtitle =
+    settings?.openhouses_subtitle?.trim() ||
+    "Tour homes in person across Los Angeles County.";
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-24">
       <Reveal>
         <header className="mb-10 max-w-xl">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-            This week
+            {eyebrow}
           </p>
           <h1 className="mt-3 font-display text-4xl font-medium tracking-tight text-ink sm:text-5xl">
-            Open houses
+            {title}
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-muted">
-            Tour homes in person across Los Angeles County.
+            {subtitle}
           </p>
         </header>
       </Reveal>

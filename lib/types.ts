@@ -74,6 +74,17 @@ export interface SiteSettings {
   highlights_title: string;
   highlights_subtitle: string;
   highlights_cards: HighlightCard[];
+  properties_eyebrow: string;
+  properties_title: string;
+  openhouses_eyebrow: string;
+  openhouses_title: string;
+  openhouses_subtitle: string;
+  valuation_eyebrow: string;
+  valuation_title: string;
+  valuation_subtitle: string;
+  mortgage_eyebrow: string;
+  mortgage_title: string;
+  mortgage_subtitle: string;
   created_at: string;
   updated_at: string;
 }

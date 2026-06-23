@@ -201,6 +201,17 @@ export const siteSettingsSchema = z.object({
     .array(highlightCardSchema)
     .length(3)
     .default(DEFAULT_HIGHLIGHTS.map((c) => ({ ...c }))),
+  properties_eyebrow: z.string().max(60).default(""),
+  properties_title: z.string().max(120).default(""),
+  openhouses_eyebrow: z.string().max(60).default(""),
+  openhouses_title: z.string().max(120).default(""),
+  openhouses_subtitle: z.string().max(400).default(""),
+  valuation_eyebrow: z.string().max(60).default(""),
+  valuation_title: z.string().max(120).default(""),
+  valuation_subtitle: z.string().max(400).default(""),
+  mortgage_eyebrow: z.string().max(60).default(""),
+  mortgage_title: z.string().max(120).default(""),
+  mortgage_subtitle: z.string().max(400).default(""),
 });
 export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;
 

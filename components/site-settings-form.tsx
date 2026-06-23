@@ -57,10 +57,28 @@ function toInput(s: SiteSettings | null): SiteSettingsInput {
             date: c.date,
           }))
         : DEFAULT_HIGHLIGHTS.map((c) => ({ ...c })),
+    properties_eyebrow: s?.properties_eyebrow ?? "",
+    properties_title: s?.properties_title ?? "",
+    openhouses_eyebrow: s?.openhouses_eyebrow ?? "",
+    openhouses_title: s?.openhouses_title ?? "",
+    openhouses_subtitle: s?.openhouses_subtitle ?? "",
+    valuation_eyebrow: s?.valuation_eyebrow ?? "",
+    valuation_title: s?.valuation_title ?? "",
+    valuation_subtitle: s?.valuation_subtitle ?? "",
+    mortgage_eyebrow: s?.mortgage_eyebrow ?? "",
+    mortgage_title: s?.mortgage_title ?? "",
+    mortgage_subtitle: s?.mortgage_subtitle ?? "",
   };
 }
 
-type PageView = "home" | "about" | "contact";
+type PageView =
+  | "home"
+  | "about"
+  | "contact"
+  | "properties"
+  | "openhouses"
+  | "valuation"
+  | "mortgage";
 
 export default function SiteSettingsForm({
   initial,
@@ -389,6 +407,128 @@ export default function SiteSettingsForm({
             </div>
           ))}
         </div>
+      </Section>
+      )}
+
+      {show("properties") && (
+      <Section
+        title="Properties page"
+        description="The heading at the top of your listings page. The line below the heading shows your live listing count automatically. Leave a field blank to use the default."
+      >
+        <Field label="Eyebrow" hint="Small label above the heading. Default: 'For sale'.">
+          <input value={form.properties_eyebrow} onChange={(e) => set("properties_eyebrow", e.target.value)} className="form-input" placeholder="For sale" />
+        </Field>
+        <Field
+          label="Heading"
+          hint="Default: 'Homes across Los Angeles'."
+          action={
+            <AiFieldAssist
+              aiConnected={aiConnected}
+              instruction="a short, inviting heading for a real estate listings page (under 7 words)"
+              getCurrent={() => form.properties_title}
+              getContext={brandContext}
+              onResult={(t) => set("properties_title", t)}
+            />
+          }
+        >
+          <input value={form.properties_title} onChange={(e) => set("properties_title", e.target.value)} className="form-input" placeholder="Homes across Los Angeles" />
+        </Field>
+      </Section>
+      )}
+
+      {show("openhouses") && (
+      <Section
+        title="Open Houses page"
+        description="The heading and intro at the top of your open houses page. The events list below fills in automatically. Leave a field blank to use the default."
+      >
+        <Field label="Eyebrow" hint="Small label above the heading. Default: 'This week'.">
+          <input value={form.openhouses_eyebrow} onChange={(e) => set("openhouses_eyebrow", e.target.value)} className="form-input" placeholder="This week" />
+        </Field>
+        <Field
+          label="Heading"
+          hint="Default: 'Open houses'."
+        >
+          <input value={form.openhouses_title} onChange={(e) => set("openhouses_title", e.target.value)} className="form-input" placeholder="Open houses" />
+        </Field>
+        <Field
+          label="Intro text"
+          hint="The sentence under the heading. Default: 'Tour homes in person across Los Angeles County.'"
+          action={
+            <AiFieldAssist
+              aiConnected={aiConnected}
+              instruction="one inviting sentence for a real estate open houses page (one sentence)"
+              getCurrent={() => form.openhouses_subtitle}
+              getContext={brandContext}
+              onResult={(t) => set("openhouses_subtitle", t)}
+            />
+          }
+        >
+          <textarea rows={2} value={form.openhouses_subtitle} onChange={(e) => set("openhouses_subtitle", e.target.value)} className="form-input" placeholder="Tour homes in person across Los Angeles County." />
+        </Field>
+      </Section>
+      )}
+
+      {show("valuation") && (
+      <Section
+        title="Home Value page"
+        description="The heading and intro on your home valuation page. The valuation form beside it stays as-is. Leave a field blank to use the default."
+      >
+        <Field label="Eyebrow" hint="Small label above the heading. Default: 'Sellers'.">
+          <input value={form.valuation_eyebrow} onChange={(e) => set("valuation_eyebrow", e.target.value)} className="form-input" placeholder="Sellers" />
+        </Field>
+        <Field
+          label="Heading"
+          hint="Default: 'What's your home worth?'"
+        >
+          <input value={form.valuation_title} onChange={(e) => set("valuation_title", e.target.value)} className="form-input" placeholder="What's your home worth?" />
+        </Field>
+        <Field
+          label="Intro text"
+          hint="The paragraph under the heading."
+          action={
+            <AiFieldAssist
+              aiConnected={aiConnected}
+              instruction="one or two sentences inviting a homeowner to get a free home valuation from a local real estate agent"
+              getCurrent={() => form.valuation_subtitle}
+              getContext={brandContext}
+              onResult={(t) => set("valuation_subtitle", t)}
+            />
+          }
+        >
+          <textarea rows={3} value={form.valuation_subtitle} onChange={(e) => set("valuation_subtitle", e.target.value)} className="form-input" placeholder="Get a free, personalized valuation based on recent sales and current market conditions in your LA neighborhood." />
+        </Field>
+      </Section>
+      )}
+
+      {show("mortgage") && (
+      <Section
+        title="Mortgage page"
+        description="The heading and intro above your mortgage calculator. The calculator itself stays as-is. Leave a field blank to use the default."
+      >
+        <Field label="Eyebrow" hint="Small label above the heading. Default: 'Buyers'.">
+          <input value={form.mortgage_eyebrow} onChange={(e) => set("mortgage_eyebrow", e.target.value)} className="form-input" placeholder="Buyers" />
+        </Field>
+        <Field
+          label="Heading"
+          hint="Default: 'Mortgage calculator'."
+        >
+          <input value={form.mortgage_title} onChange={(e) => set("mortgage_title", e.target.value)} className="form-input" placeholder="Mortgage calculator" />
+        </Field>
+        <Field
+          label="Intro text"
+          hint="The sentence under the heading. Default: 'Estimate your monthly payment including taxes and insurance.'"
+          action={
+            <AiFieldAssist
+              aiConnected={aiConnected}
+              instruction="one helpful sentence introducing a mortgage payment calculator for homebuyers (one sentence)"
+              getCurrent={() => form.mortgage_subtitle}
+              getContext={brandContext}
+              onResult={(t) => set("mortgage_subtitle", t)}
+            />
+          }
+        >
+          <textarea rows={2} value={form.mortgage_subtitle} onChange={(e) => set("mortgage_subtitle", e.target.value)} className="form-input" placeholder="Estimate your monthly payment including taxes and insurance." />
+        </Field>
       </Section>
       )}
 
