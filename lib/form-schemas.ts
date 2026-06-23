@@ -192,6 +192,24 @@ export const DEFAULT_WHYUS_CARDS = [
   { icon: "handshake", title: "Concierge, start to close", text: "Staging, photography, paperwork, and negotiation, handled for you.", image: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=800&q=80" },
 ] as const;
 
+// Fallback legal copy — shown until the owner replaces it (Pages → Terms / Privacy).
+// Blank lines separate paragraphs when rendered. Must be reviewed by counsel.
+export const DEFAULT_TERMS_BODY = `This is placeholder legal text. Replace it with terms reviewed by qualified counsel before launch.
+
+Use of this site: This website provides real estate information for general purposes. Listings, pricing, and availability are subject to change without notice.
+
+No warranty: Information is provided "as is" without warranties of any kind. Verify all details independently before making decisions.
+
+Contact: Questions about these terms can be directed to the contact details on our contact page.`;
+
+export const DEFAULT_PRIVACY_BODY = `This is placeholder legal text. Replace it with a policy reviewed by qualified counsel before launch.
+
+Information we collect: We collect information you provide through our contact and lead forms, such as your name, email, phone number, and message.
+
+How we use your information: We use your information to respond to enquiries, schedule appointments, and provide the real estate services you request.
+
+Contact: Questions about this policy can be directed to the contact details on our contact page.`;
+
 /** Editable marketing copy (site_settings). */
 export const siteSettingsSchema = z.object({
   company_name: z.string().min(1, "Company name is required."),
@@ -256,6 +274,10 @@ export const siteSettingsSchema = z.object({
   mortgage_eyebrow: z.string().max(60).default(""),
   mortgage_title: z.string().max(120).default(""),
   mortgage_subtitle: z.string().max(400).default(""),
+  terms_body: z.string().max(20000).default(""),
+  terms_updated: z.string().max(120).default(""),
+  privacy_body: z.string().max(20000).default(""),
+  privacy_updated: z.string().max(120).default(""),
 });
 export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;
 

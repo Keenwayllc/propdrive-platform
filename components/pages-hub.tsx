@@ -19,6 +19,8 @@ type View =
   | "openhouses"
   | "valuation"
   | "mortgage"
+  | "terms"
+  | "privacy"
   | "custom";
 
 const HELP: Record<View, string> = {
@@ -29,6 +31,8 @@ const HELP: Record<View, string> = {
   openhouses: "Your open houses page: the heading and intro. The events list fills in automatically.",
   valuation: "Your home valuation page: the heading and intro beside the valuation form.",
   mortgage: "Your mortgage page: the heading and intro above the calculator.",
+  terms: "Your Terms of Service page. Have it reviewed by counsel before launch.",
+  privacy: "Your Privacy Policy page. Have it reviewed by counsel before launch.",
   custom: "Pages you create yourself — services, FAQ, team, and more. Each lives at /p/your-slug.",
 };
 
@@ -62,6 +66,8 @@ export default function PagesHub({
               <option value="openhouses">Open Houses — heading</option>
               <option value="valuation">Home Value — heading</option>
               <option value="mortgage">Mortgage — heading</option>
+              <option value="terms">Terms of Service</option>
+              <option value="privacy">Privacy Policy</option>
               <option value="contact">Contact &amp; footer</option>
             </optgroup>
             <optgroup label="Your pages">

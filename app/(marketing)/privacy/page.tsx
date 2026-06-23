@@ -1,40 +1,36 @@
 /**
- * Privacy policy. Placeholder legal copy — must be reviewed by the buyer's
- * legal counsel before going live (see docs/TRANSFER_CHECKLIST.md).
+ * Privacy policy. Body is owner-editable from the dashboard (Pages → Privacy);
+ * falls back to placeholder template copy. Either way it must be reviewed by the
+ * buyer's legal counsel before going live (see docs/BUYER-SETUP.md).
  */
 import type { Metadata } from "next";
+import { getSiteSettings } from "@/lib/queries";
+import { DEFAULT_PRIVACY_BODY } from "@/lib/form-schemas";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How PropDrive handles your personal information.",
+  description: "How we handle your personal information.",
 };
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const site = await getSiteSettings();
+  const body = site?.privacy_body?.trim() || DEFAULT_PRIVACY_BODY;
+  const updated = site?.privacy_updated?.trim();
+  const paragraphs = body.split(/\n{2,}/).filter((p) => p.trim() !== "");
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
       <h1 className="text-3xl font-bold text-ink">Privacy Policy</h1>
-      <p className="mt-2 text-sm text-faint">Last updated: placeholder</p>
+      {updated && (
+        <p className="mt-2 text-sm text-faint">Last updated: {updated}</p>
+      )}
 
-      <div className="prose mt-8 max-w-none text-muted">
-        <p>
-          <strong>Template notice:</strong> This is placeholder legal text. Replace
-          it with a policy reviewed by qualified counsel before launch.
-        </p>
-        <h2>Information we collect</h2>
-        <p>
-          We collect information you provide through our contact and lead forms,
-          such as your name, email, phone number, and message.
-        </p>
-        <h2>How we use your information</h2>
-        <p>
-          We use your information to respond to enquiries, schedule appointments,
-          and provide real estate services you request.
-        </p>
-        <h2>Contact</h2>
-        <p>
-          Questions about this policy can be directed to the contact details on
-          our contact page.
-        </p>
+      <div className="mt-8 space-y-4 text-muted">
+        {paragraphs.map((p, i) => (
+          <p key={i} className="leading-relaxed">
+            {p}
+          </p>
+        ))}
       </div>
     </div>
   );

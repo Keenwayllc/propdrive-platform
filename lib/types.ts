@@ -102,6 +102,10 @@ export interface SiteSettings {
   mortgage_eyebrow: string;
   mortgage_title: string;
   mortgage_subtitle: string;
+  terms_body: string;
+  terms_updated: string;
+  privacy_body: string;
+  privacy_updated: string;
   created_at: string;
   updated_at: string;
 }

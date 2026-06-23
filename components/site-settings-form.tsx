@@ -87,6 +87,10 @@ function toInput(s: SiteSettings | null): SiteSettingsInput {
     mortgage_eyebrow: s?.mortgage_eyebrow ?? "",
     mortgage_title: s?.mortgage_title ?? "",
     mortgage_subtitle: s?.mortgage_subtitle ?? "",
+    terms_body: s?.terms_body ?? "",
+    terms_updated: s?.terms_updated ?? "",
+    privacy_body: s?.privacy_body ?? "",
+    privacy_updated: s?.privacy_updated ?? "",
   };
 }
 
@@ -97,7 +101,9 @@ type PageView =
   | "properties"
   | "openhouses"
   | "valuation"
-  | "mortgage";
+  | "mortgage"
+  | "terms"
+  | "privacy";
 
 export default function SiteSettingsForm({
   initial,
@@ -531,7 +537,16 @@ export default function SiteSettingsForm({
                 </label>
               </div>
               <label className="block">
-                <span className="mb-1.5 block text-xs font-medium text-faint">Text</span>
+                <span className="mb-1.5 flex items-center justify-between gap-2">
+                  <span className="text-xs font-medium text-faint">Text</span>
+                  <AiFieldAssist
+                    aiConnected={aiConnected}
+                    instruction="one short sentence describing a real estate service benefit (under 16 words, no period needed)"
+                    getCurrent={() => card.text}
+                    getContext={brandContext}
+                    onResult={(t) => setWhyusCard(i, { text: t })}
+                  />
+                </span>
                 <textarea rows={2} value={card.text} onChange={(e) => setWhyusCard(i, { text: e.target.value })} className="form-input" placeholder="Deep neighborhood knowledge, street by street." />
               </label>
               <ImageUpload
@@ -664,6 +679,60 @@ export default function SiteSettingsForm({
           }
         >
           <textarea rows={2} value={form.mortgage_subtitle} onChange={(e) => set("mortgage_subtitle", e.target.value)} className="form-input" placeholder="Estimate your monthly payment including taxes and insurance." />
+        </Field>
+      </Section>
+      )}
+
+      {show("terms") && (
+      <Section
+        title="Terms of Service"
+        description="The body of your Terms of Service page. Blank lines separate paragraphs. Have it reviewed by qualified counsel before launch. Leave the body blank to use the default template."
+      >
+        <Field label="Last updated" hint="Shown under the title, e.g. 'June 23, 2026'. Leave blank to hide it.">
+          <input value={form.terms_updated} onChange={(e) => set("terms_updated", e.target.value)} className="form-input" placeholder="June 23, 2026" />
+        </Field>
+        <Field
+          label="Body"
+          hint="Your full terms. Press Enter twice to start a new paragraph."
+          action={
+            <AiFieldAssist
+              aiConnected={aiConnected}
+              maxTokens={1400}
+              instruction="a clear, plain-English Terms of Service for a real estate agent's website, as short titled paragraphs (use of the site, accuracy of listings, no warranty, intellectual property, limitation of liability, governing law, contact). Keep it general and note it should be reviewed by counsel."
+              getCurrent={() => form.terms_body}
+              getContext={brandContext}
+              onResult={(t) => set("terms_body", t)}
+            />
+          }
+        >
+          <textarea rows={16} value={form.terms_body} onChange={(e) => set("terms_body", e.target.value)} className="form-input" placeholder="Paste or write your Terms of Service here…" />
+        </Field>
+      </Section>
+      )}
+
+      {show("privacy") && (
+      <Section
+        title="Privacy Policy"
+        description="The body of your Privacy Policy page. Blank lines separate paragraphs. Have it reviewed by qualified counsel before launch. Leave the body blank to use the default template."
+      >
+        <Field label="Last updated" hint="Shown under the title, e.g. 'June 23, 2026'. Leave blank to hide it.">
+          <input value={form.privacy_updated} onChange={(e) => set("privacy_updated", e.target.value)} className="form-input" placeholder="June 23, 2026" />
+        </Field>
+        <Field
+          label="Body"
+          hint="Your full privacy policy. Press Enter twice to start a new paragraph."
+          action={
+            <AiFieldAssist
+              aiConnected={aiConnected}
+              maxTokens={1400}
+              instruction="a clear, plain-English Privacy Policy for a real estate agent's website, as short titled paragraphs (information we collect, how we use it, cookies and analytics, sharing with third parties, data retention, your rights, contact). Keep it general and note it should be reviewed by counsel."
+              getCurrent={() => form.privacy_body}
+              getContext={brandContext}
+              onResult={(t) => set("privacy_body", t)}
+            />
+          }
+        >
+          <textarea rows={16} value={form.privacy_body} onChange={(e) => set("privacy_body", e.target.value)} className="form-input" placeholder="Paste or write your Privacy Policy here…" />
         </Field>
       </Section>
       )}
