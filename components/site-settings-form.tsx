@@ -9,12 +9,14 @@ import { updateSiteSettings } from "@/lib/admin-actions";
 import {
   DEFAULT_STATS,
   DEFAULT_HIGHLIGHTS,
+  DEFAULT_WHYUS_CARDS,
   HIGHLIGHT_ICONS,
   type SiteSettingsInput,
 } from "@/lib/form-schemas";
 import type { SiteSettings } from "@/lib/types";
 import AddressAutocomplete from "@/components/address-autocomplete";
 import AiFieldAssist from "@/components/ai-field-assist";
+import ImageUpload from "@/components/image-upload";
 import { SocialIcon, SOCIAL_PLATFORMS, type SocialPlatform } from "@/components/social-icons";
 
 function toInput(s: SiteSettings | null): SiteSettingsInput {
@@ -57,6 +59,23 @@ function toInput(s: SiteSettings | null): SiteSettingsInput {
             date: c.date,
           }))
         : DEFAULT_HIGHLIGHTS.map((c) => ({ ...c })),
+    whyus_eyebrow: s?.whyus_eyebrow ?? "",
+    whyus_title: s?.whyus_title ?? "",
+    whyus_feature_title: s?.whyus_feature_title ?? "",
+    whyus_feature_text: s?.whyus_feature_text ?? "",
+    whyus_feature_button: s?.whyus_feature_button ?? "",
+    whyus_feature_image: s?.whyus_feature_image ?? "",
+    whyus_market_label: s?.whyus_market_label ?? "",
+    whyus_market_caption: s?.whyus_market_caption ?? "",
+    whyus_cards:
+      s?.whyus_cards && s.whyus_cards.length === 4
+        ? s.whyus_cards.map((c) => ({
+            icon: c.icon as SiteSettingsInput["whyus_cards"][number]["icon"],
+            title: c.title,
+            text: c.text,
+            image: c.image,
+          }))
+        : DEFAULT_WHYUS_CARDS.map((c) => ({ ...c })),
     properties_eyebrow: s?.properties_eyebrow ?? "",
     properties_title: s?.properties_title ?? "",
     openhouses_eyebrow: s?.openhouses_eyebrow ?? "",
@@ -120,6 +139,19 @@ export default function SiteSettingsForm({
     setForm((prev) => ({
       ...prev,
       highlights_cards: prev.highlights_cards.map((c, i) =>
+        i === index ? { ...c, ...patch } : c
+      ),
+    }));
+    setStatus("idle");
+  }
+
+  function setWhyusCard(
+    index: number,
+    patch: Partial<SiteSettingsInput["whyus_cards"][number]>
+  ) {
+    setForm((prev) => ({
+      ...prev,
+      whyus_cards: prev.whyus_cards.map((c, i) =>
         i === index ? { ...c, ...patch } : c
       ),
     }));
@@ -404,6 +436,110 @@ export default function SiteSettingsForm({
                 <span className="mb-1.5 block text-xs font-medium text-faint">Date</span>
                 <input value={card.date} onChange={(e) => setHighlight(i, { date: e.target.value })} className="form-input" placeholder="Closed last week" />
               </label>
+            </div>
+          ))}
+        </div>
+      </Section>
+      )}
+
+      {show("home") && (
+      <Section
+        title="Why work with us"
+        description="The bento section on your homepage: the heading, the large image tile, the 'On market' stat card, and the four feature cards. Leave a field blank to use the default."
+      >
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Eyebrow" hint="Small label above the heading. Default: 'Why work with us'.">
+            <input value={form.whyus_eyebrow} onChange={(e) => set("whyus_eyebrow", e.target.value)} className="form-input" placeholder="Why work with us" />
+          </Field>
+          <Field label="Heading" hint="Default: 'A calmer way to buy and sell.'">
+            <input value={form.whyus_title} onChange={(e) => set("whyus_title", e.target.value)} className="form-input" placeholder="A calmer way to buy and sell." />
+          </Field>
+        </div>
+
+        <div className="space-y-4 border-t border-line pt-4">
+          <p className="text-xs font-medium text-muted">Large image tile</p>
+          <Field label="Title" hint="Default: 'Listings worth the drive'.">
+            <input value={form.whyus_feature_title} onChange={(e) => set("whyus_feature_title", e.target.value)} className="form-input" placeholder="Listings worth the drive" />
+          </Field>
+          <Field
+            label="Text"
+            hint="The paragraph on the large tile."
+            action={
+              <AiFieldAssist
+                aiConnected={aiConnected}
+                instruction="one or two sentences on why a real estate agent's listings are worth viewing (vetted, well photographed, fairly priced)"
+                getCurrent={() => form.whyus_feature_text}
+                getContext={brandContext}
+                onResult={(t) => set("whyus_feature_text", t)}
+              />
+            }
+          >
+            <textarea rows={2} value={form.whyus_feature_text} onChange={(e) => set("whyus_feature_text", e.target.value)} className="form-input" placeholder="Every home is vetted in person, photographed properly, and priced with real comps — no surprises at the showing." />
+          </Field>
+          <Field label="Button text" hint="Links to your listings page. Default: 'See the collection'.">
+            <input value={form.whyus_feature_button} onChange={(e) => set("whyus_feature_button", e.target.value)} className="form-input" placeholder="See the collection" />
+          </Field>
+          <ImageUpload
+            label="Image (defaults to your homepage hero image when empty)"
+            multiple={false}
+            value={form.whyus_feature_image ? [form.whyus_feature_image] : []}
+            onChange={(urls) => set("whyus_feature_image", urls[urls.length - 1] ?? "")}
+          />
+        </div>
+
+        <div className="space-y-4 border-t border-line pt-4">
+          <p className="text-xs font-medium text-muted">
+            &quot;On market&quot; stat card{" "}
+            <span className="font-normal text-faint">
+              — the big number comes from your second Highlight stat above.
+            </span>
+          </p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Label" hint="Small label. Default: 'On market'.">
+              <input value={form.whyus_market_label} onChange={(e) => set("whyus_market_label", e.target.value)} className="form-input" placeholder="On market" />
+            </Field>
+            <Field label="Caption" hint="Line under the number. Default: 'median days before an offer'.">
+              <input value={form.whyus_market_caption} onChange={(e) => set("whyus_market_caption", e.target.value)} className="form-input" placeholder="median days before an offer" />
+            </Field>
+          </div>
+        </div>
+
+        <div className="space-y-5 border-t border-line pt-4">
+          <p className="text-xs font-medium text-muted">The four feature cards</p>
+          {form.whyus_cards.map((card, i) => (
+            <div key={i} className="space-y-3 rounded-xl border border-line bg-background/50 p-4">
+              <div className="grid gap-3 sm:grid-cols-[7rem_1fr]">
+                <label className="block">
+                  <span className="mb-1.5 block text-xs font-medium text-faint">Icon</span>
+                  <select
+                    value={card.icon}
+                    onChange={(e) =>
+                      setWhyusCard(i, {
+                        icon: e.target.value as SiteSettingsInput["whyus_cards"][number]["icon"],
+                      })
+                    }
+                    className="form-input"
+                  >
+                    {HIGHLIGHT_ICONS.map((ic) => (
+                      <option key={ic} value={ic}>{ic}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block">
+                  <span className="mb-1.5 block text-xs font-medium text-faint">Title</span>
+                  <input value={card.title} onChange={(e) => setWhyusCard(i, { title: e.target.value })} className="form-input" placeholder="Block-by-block local" />
+                </label>
+              </div>
+              <label className="block">
+                <span className="mb-1.5 block text-xs font-medium text-faint">Text</span>
+                <textarea rows={2} value={card.text} onChange={(e) => setWhyusCard(i, { text: e.target.value })} className="form-input" placeholder="Deep neighborhood knowledge, street by street." />
+              </label>
+              <ImageUpload
+                label="Card image"
+                multiple={false}
+                value={card.image ? [card.image] : []}
+                onChange={(urls) => setWhyusCard(i, { image: urls[urls.length - 1] ?? "" })}
+              />
             </div>
           ))}
         </div>

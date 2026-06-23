@@ -177,6 +177,21 @@ export const DEFAULT_HIGHLIGHTS = [
   { icon: "handshake", title: "In escrow", description: "Pacific Palisades · 5 days", date: "Today" },
 ] as const;
 
+// "Why work with us" feature cards. Same curated icon set as the highlights.
+export const whyUsCardSchema = z.object({
+  icon: z.enum(HIGHLIGHT_ICONS).default("sparkles"),
+  title: z.string().max(80).default(""),
+  text: z.string().max(220).default(""),
+  image: z.string().default(""),
+});
+
+export const DEFAULT_WHYUS_CARDS = [
+  { icon: "map-pin", title: "Block-by-block local", text: "Deep neighborhood knowledge, street by street. Ask us about any block.", image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80" },
+  { icon: "trending-up", title: "Priced on real data", text: "98.2% of list price, on average. Not guesswork.", image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80" },
+  { icon: "sparkles", title: "Smart, not pushy", text: "Useful updates when they matter. Silence when they don't.", image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80" },
+  { icon: "handshake", title: "Concierge, start to close", text: "Staging, photography, paperwork, and negotiation, handled for you.", image: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=800&q=80" },
+] as const;
+
 /** Editable marketing copy (site_settings). */
 export const siteSettingsSchema = z.object({
   company_name: z.string().min(1, "Company name is required."),
@@ -218,6 +233,18 @@ export const siteSettingsSchema = z.object({
     .array(highlightCardSchema)
     .length(3)
     .default(DEFAULT_HIGHLIGHTS.map((c) => ({ ...c }))),
+  whyus_eyebrow: z.string().max(60).default(""),
+  whyus_title: z.string().max(120).default(""),
+  whyus_feature_title: z.string().max(80).default(""),
+  whyus_feature_text: z.string().max(300).default(""),
+  whyus_feature_button: z.string().max(40).default(""),
+  whyus_feature_image: z.string().default(""),
+  whyus_market_label: z.string().max(40).default(""),
+  whyus_market_caption: z.string().max(80).default(""),
+  whyus_cards: z
+    .array(whyUsCardSchema)
+    .length(4)
+    .default(DEFAULT_WHYUS_CARDS.map((c) => ({ ...c }))),
   properties_eyebrow: z.string().max(60).default(""),
   properties_title: z.string().max(120).default(""),
   openhouses_eyebrow: z.string().max(60).default(""),

@@ -32,6 +32,14 @@ export interface HighlightCard {
   date: string;
 }
 
+/** A "Why work with us" feature card on the homepage bento. */
+export interface WhyUsCard {
+  icon: string;
+  title: string;
+  text: string;
+  image: string;
+}
+
 /** An owner-authored standalone page served at /p/[slug]. */
 export interface Page {
   id: string;
@@ -74,6 +82,15 @@ export interface SiteSettings {
   highlights_title: string;
   highlights_subtitle: string;
   highlights_cards: HighlightCard[];
+  whyus_eyebrow: string;
+  whyus_title: string;
+  whyus_feature_title: string;
+  whyus_feature_text: string;
+  whyus_feature_button: string;
+  whyus_feature_image: string;
+  whyus_market_label: string;
+  whyus_market_caption: string;
+  whyus_cards: WhyUsCard[];
   properties_eyebrow: string;
   properties_title: string;
   openhouses_eyebrow: string;

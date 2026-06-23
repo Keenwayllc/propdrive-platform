@@ -6,7 +6,20 @@
  */
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, MapPin, TrendingUp, Sparkles, Star, Quote, Handshake } from "lucide-react";
+import {
+  ArrowUpRight,
+  MapPin,
+  TrendingUp,
+  Sparkles,
+  Star,
+  Quote,
+  Handshake,
+  Home,
+  Key,
+  Award,
+  BadgeCheck,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import HomeHero, { type HeroSlide } from "@/components/home-hero";
 import HomeHighlights from "@/components/home-highlights";
 import LeadForm from "@/components/lead-form";
@@ -20,8 +33,20 @@ import {
   getNeighborhoods,
   getBanners,
 } from "@/lib/queries";
-import { DEFAULT_STATS, DEFAULT_HIGHLIGHTS } from "@/lib/form-schemas";
-import type { HighlightCard } from "@/lib/types";
+import { DEFAULT_STATS, DEFAULT_HIGHLIGHTS, DEFAULT_WHYUS_CARDS } from "@/lib/form-schemas";
+
+// "Why work with us" card icons — keyed by the curated set the owner picks from.
+const WHYUS_ICONS: Record<string, LucideIcon> = {
+  "trending-up": TrendingUp,
+  sparkles: Sparkles,
+  handshake: Handshake,
+  home: Home,
+  key: Key,
+  award: Award,
+  "badge-check": BadgeCheck,
+  "map-pin": MapPin,
+};
+import type { HighlightCard, WhyUsCard } from "@/lib/types";
 
 const FALLBACK_TESTIMONIALS = [
   {
@@ -72,8 +97,27 @@ export default async function HomePage() {
     "Hand-picked listings and local guidance from an advisor who knows every street from the Palisades to the Valley.";
 
   const stats = site?.stats?.length ? site.stats : DEFAULT_STATS;
-  const stat = (i: number) =>
-    stats[i] ? `${stats[i].value}${stats[i].suffix}` : "";
+
+  // "Why work with us" bento — all owner-editable (Pages → Home), with the large
+  // tile image falling back to the homepage hero image.
+  const whyEyebrow = site?.whyus_eyebrow?.trim() || "Why work with us";
+  const whyTitle = site?.whyus_title?.trim() || "A calmer way to buy and sell.";
+  const whyFeatureTitle =
+    site?.whyus_feature_title?.trim() || "Listings worth the drive";
+  const whyFeatureText =
+    site?.whyus_feature_text?.trim() ||
+    "Every home is vetted in person, photographed properly, and priced with real comps — no surprises at the showing.";
+  const whyFeatureButton =
+    site?.whyus_feature_button?.trim() || "See the collection";
+  const whyFeatureImage =
+    site?.whyus_feature_image?.trim() || brand?.hero_image_url || "/hero/hero-glow.png";
+  const whyMarketLabel = site?.whyus_market_label?.trim() || "On market";
+  const whyMarketCaption =
+    site?.whyus_market_caption?.trim() || "median days before an offer";
+  const whyCards =
+    site?.whyus_cards && site.whyus_cards.length === 4
+      ? site.whyus_cards
+      : DEFAULT_WHYUS_CARDS;
   const heroImage = brand?.hero_image_url || "/hero/hero-banner.png";
   const ctaText = site?.cta_text || "Browse listings";
   const serviceArea = site?.service_area || "Los Angeles County, California";
@@ -163,38 +207,38 @@ export default async function HomePage() {
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28">
         <Reveal>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-            Why work with us
+            {whyEyebrow}
           </p>
           <h2 className="mt-3 max-w-2xl font-display text-3xl font-medium tracking-tight text-ink sm:text-4xl">
-            A calmer way to buy and sell.
+            {whyTitle}
           </h2>
         </Reveal>
 
         <Stagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:auto-rows-[230px]">
-          {/* Large feature tile — reuses the second generated estate render */}
+          {/* Large feature tile — image defaults to the homepage hero. */}
           <StaggerItem className="sm:col-span-2 lg:row-span-2">
             <div className="group relative flex h-full min-h-[300px] flex-col justify-end overflow-hidden rounded-[1.75rem] border border-line bg-ink p-8 text-background">
-              <Image
-                src="/hero/hero-glow.png"
-                alt="Modern Los Angeles hillside estate with infinity pool at golden hour"
-                fill
-                sizes="(max-width: 1024px) 100vw, 60vw"
-                className="object-cover opacity-80 transition-transform duration-700 group-hover:scale-105"
+              {/* Owner-uploaded images are arbitrary remote hosts; a plain img
+                  avoids the next/image remote-host allowlist. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={whyFeatureImage}
+                alt={whyFeatureTitle}
+                className="absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent" />
               <div className="relative">
                 <h3 className="font-display text-2xl font-medium tracking-tight">
-                  Listings worth the drive
+                  {whyFeatureTitle}
                 </h3>
                 <p className="mt-2 max-w-sm text-sm leading-relaxed text-white/70">
-                  Every home is vetted in person, photographed properly, and
-                  priced with real comps — no surprises at the showing.
+                  {whyFeatureText}
                 </p>
                 <Link
                   href="/properties"
                   className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-white"
                 >
-                  See the collection
+                  {whyFeatureButton}
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -202,13 +246,7 @@ export default async function HomePage() {
           </StaggerItem>
 
           <StaggerItem>
-            <BentoCard
-              icon={<MapPin className="h-5 w-5" />}
-              title="Block-by-block local"
-              text="Deep neighborhood knowledge, street by street. Ask us about any block."
-              image="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
-              imageAlt="City streets and skyline"
-            />
+            <WhyCard card={whyCards[0]} />
           </StaggerItem>
 
           <StaggerItem>
@@ -223,49 +261,31 @@ export default async function HomePage() {
               />
               <div className="absolute inset-0 bg-gradient-to-tr from-accent-soft via-accent-soft/75 to-transparent" />
               <span className="relative text-xs font-semibold uppercase tracking-[0.18em] text-accent-strong">
-                On market
+                {whyMarketLabel}
               </span>
               <div className="relative">
                 <p className="font-mono text-4xl font-semibold text-ink">
                   {stats[1]?.value ?? 11}
                 </p>
                 <p className="mt-1 text-sm text-muted">
-                  median days before an offer
+                  {whyMarketCaption}
                 </p>
               </div>
             </div>
           </StaggerItem>
 
           <StaggerItem>
-            <BentoCard
-              icon={<TrendingUp className="h-5 w-5" />}
-              title="Priced on real data"
-              text={`${stat(2)} of list price, on average. Not guesswork.`}
-              image="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80"
-              imageAlt="Bright modern living room interior"
-            />
+            <WhyCard card={whyCards[1]} />
           </StaggerItem>
 
           <StaggerItem>
-            <BentoCard
-              icon={<Sparkles className="h-5 w-5" />}
-              title="Smart, not pushy"
-              text="Useful updates when they matter. Silence when they don't."
-              image="https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80"
-              imageAlt="Calm, elegant living space"
-            />
+            <WhyCard card={whyCards[2]} />
           </StaggerItem>
 
           {/* Full-width on the 2-col tablet grid, single cell on the 3-col
               desktop grid — keeps both layouts gap-free. */}
           <StaggerItem className="sm:col-span-2 lg:col-span-1">
-            <BentoCard
-              icon={<Handshake className="h-5 w-5" />}
-              title="Concierge, start to close"
-              text="Staging, photography, paperwork, and negotiation, handled for you."
-              image="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=800&q=80"
-              imageAlt="Luxury home exterior at dusk"
-            />
+            <WhyCard card={whyCards[3]} />
           </StaggerItem>
         </Stagger>
       </section>
@@ -458,6 +478,20 @@ export default async function HomePage() {
  * Bento tile for the value section. With `image`, renders a rich photo-backed
  * tile (ink wash + white text); otherwise a clean light card.
  */
+/** Renders one editable "Why work with us" card, resolving its icon by key. */
+function WhyCard({ card }: { card: WhyUsCard }) {
+  const Ic = WHYUS_ICONS[card.icon] ?? Sparkles;
+  return (
+    <BentoCard
+      icon={<Ic className="h-5 w-5" />}
+      title={card.title}
+      text={card.text}
+      image={card.image || undefined}
+      imageAlt={card.title}
+    />
+  );
+}
+
 function BentoCard({
   icon,
   title,
